@@ -138,5 +138,8 @@
       "linkedin": "https://www.linkedin.com/company/trfyx",
       "website": "https://www.trfyx.com/"
     }
+  },
+  "variables": {
+    "SCRIPT_PATH": "https://app.trfyx.com/script.js"
   }
 }
