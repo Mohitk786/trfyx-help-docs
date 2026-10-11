@@ -1,0 +1,36 @@
+---
+title: "Squarespace"
+description: "Install Trfyx analytics on a Squarespace site."
+sidebarTitle: "Squarespace"
+---
+
+# Add Trfyx to your Squarespace site
+
+Squarespace supports custom JavaScript through Code Injection. The cleanest setup is to add the Trfyx tracker to the site-wide header.
+
+## Add the tracking script
+
+1. Log in to Squarespace.
+2. Open **Settings → Advanced → Code Injection**.
+3. Paste the Trfyx tracking script into the **Header** field.
+4. Replace the placeholders with your Trfyx project values.
+5. Save the changes and publish the site.
+
+```html
+<script
+  defer
+  data-website-id="YOUR_WEBSITE_ID"
+  data-domain="your_domain.com"
+  src="YOUR_TRFYX_SCRIPT_URL"
+></script>
+```
+
+## Verify installation
+
+Visit the live Squarespace site, navigate through a few pages, and check your Trfyx dashboard for incoming traffic.
+
+If your Squarespace plan restricts Code Injection, confirm that your plan supports the feature before troubleshooting the script.
+
+## Troubleshooting
+
+Make sure the script is in the site-wide Header rather than a single page, the changes are published, and the Website ID and domain correspond to the Trfyx project you are checking.

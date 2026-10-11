@@ -1,0 +1,43 @@
+---
+title: "Bolt"
+description: "Install Trfyx analytics in a Bolt-built application."
+sidebarTitle: "Bolt"
+---
+
+# Add Trfyx to your Bolt application
+
+Bolt generates the application code from prompts. Ask Bolt's AI assistant to add the Trfyx tracker globally so it works across all pages and routes.
+
+## Get your Trfyx details
+
+Open your Trfyx project settings and copy the Website ID and domain. Use the current Trfyx tracking script URL provided in your installation settings.
+
+## Ask Bolt to install Trfyx
+
+Paste a prompt like this into Bolt:
+
+```text
+I need to integrate Trfyx analytics into my application.
+
+Please implement tracking across every page and route using the Trfyx tracking script and the Website ID and domain I provide.
+
+Implementation guidelines:
+- For React or Next.js, use the framework's recommended global script component/layout.
+- For a vanilla HTML app, load the script in the head of every page.
+- Ensure the tracker is not installed more than once.
+- Keep the script deferred where supported.
+
+Please confirm where you implemented it and verify that analytics will work across all routes.
+```
+
+## Verify installation
+
+1. Let Bolt apply the changes.
+2. Review the generated code.
+3. Test the Bolt preview.
+4. Deploy the application.
+5. Visit the deployed site and check your Trfyx dashboard for incoming traffic.
+
+## Troubleshooting
+
+If only the landing page is tracked, move the tracker into the application's root layout or equivalent global document. Also verify the Website ID, domain, deployment, and script URL.

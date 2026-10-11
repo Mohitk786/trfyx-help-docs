@@ -1,0 +1,48 @@
+---
+title: "Laravel"
+description: "Install Trfyx analytics in a Laravel application."
+sidebarTitle: "Laravel"
+---
+
+# Add Trfyx to your Laravel project
+
+The recommended approach is to add the tracker to the shared Blade layout so it loads on every page.
+
+## Add the tracker to your layout
+
+Open your main layout, commonly `resources/views/layouts/app.blade.php`, and add the tracker inside `<head>`:
+
+```html
+<script
+  defer
+  data-website-id="YOUR_WEBSITE_ID"
+  data-domain="your_domain.com"
+  src="YOUR_TRFYX_SCRIPT_URL"
+></script>
+```
+
+Use the Website ID, domain, and script URL provided by Trfyx. Do not hard-code secret server-side API keys into this template.
+
+## Optional: use environment configuration
+
+For cleaner deployments, keep non-secret project configuration in `.env` and expose it through a Laravel config file. This is useful when staging and production use different Trfyx projects.
+
+```php
+return [
+    'website_id' => env('TRFYX_WEBSITE_ID'),
+    'domain' => env('TRFYX_DOMAIN'),
+];
+```
+
+Then reference the values from your Blade layout.
+
+## Verify installation
+
+1. Deploy the Laravel application.
+2. Open the production URL.
+3. Navigate through multiple pages.
+4. Check the Trfyx dashboard for the incoming visit.
+
+## Troubleshooting
+
+If tracking is missing, verify the layout is actually used by all pages, inspect the browser network panel for blocked requests, check the Website ID and hostname, and make sure your production deployment contains the latest configuration.

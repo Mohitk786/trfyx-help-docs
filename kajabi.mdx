@@ -1,0 +1,37 @@
+---
+title: "Kajabi"
+description: "Install Trfyx analytics on a Kajabi site."
+sidebarTitle: "Kajabi"
+---
+
+# Add Trfyx to your Kajabi site
+
+Kajabi supports custom code through its website theme customization options. Add the tracker globally to measure your site consistently.
+
+## Add the tracking script
+
+1. Log in to your Kajabi dashboard.
+2. Open **Website → Themes** and customize the active theme.
+3. Find the theme's custom or header code area.
+4. Paste the Trfyx tracking script.
+5. Replace the placeholders with the values from your Trfyx project.
+6. Save and publish the theme.
+
+```html
+<script
+  defer
+  data-website-id="YOUR_WEBSITE_ID"
+  data-domain="your_domain.com"
+  src="YOUR_TRFYX_SCRIPT_URL"
+></script>
+```
+
+## Verify installation
+
+Open the published Kajabi site, visit a few pages, and check your Trfyx dashboard for incoming traffic.
+
+For a site with multiple themes or custom landing pages, make sure the tracker is present wherever traffic should be measured.
+
+## Troubleshooting
+
+Check that the active theme contains the script, the changes were published, and the Website ID and domain match your Trfyx project.

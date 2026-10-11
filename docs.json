@@ -43,7 +43,16 @@
           "django",
           "react-router",
           "vuejs",
-          "ghost-cms"
+          "ghost-cms",
+          "framer",
+          "laravel",
+          "bubble",
+          "podia",
+          "kajabi",
+          "wix",
+          "squarespace",
+          "lovable",
+          "bolt"
         ]
       },
       {
