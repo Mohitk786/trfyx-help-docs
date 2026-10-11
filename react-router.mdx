@@ -22,7 +22,7 @@ export default function App() {
     script.defer = true
     script.src = "https://app.trfyx.com/script.js"
     script.setAttribute("data-website-id", "YOUR_TRFYX_PROJECT_ID")
-    script.setAttribute("data-domain", "your_domain.com")
+    script.setAttribute("data-domain", "yourdomain.com")
     document.head.appendChild(script)
 
     return () => script.remove()
@@ -33,7 +33,7 @@ export default function App() {
 ```
 
 <Warning>
-  Replace `YOUR_TRFYX_PROJECT_ID` with the Website ID from your Trfyx project and `your_domain.com` with the domain you want to track. Keep the script URL as `https://app.trfyx.com/script.js`.
+  Replace `YOUR_TRFYX_PROJECT_ID` with the Website ID from your Trfyx project and `yourdomain.com` with the domain you want to track. Keep the script URL as `https://app.trfyx.com/script.js`.
 </Warning>
 
 <Tip>

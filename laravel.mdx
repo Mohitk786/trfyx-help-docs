@@ -17,29 +17,51 @@ Open your main layout, commonly `resources/views/layouts/app.blade.php`, and add
 <script
   defer
   data-website-id="YOUR_TRFYX_PROJECT_ID"
-  data-domain="your_domain.com"
+  data-domain="yourdomain.com"
   src="https://app.trfyx.com/script.js"
 ></script>
 ```
 
 <Warning>
-  Replace `YOUR_TRFYX_PROJECT_ID` with the Website ID from your Trfyx project and `your_domain.com` with the domain you want to track. Keep the script URL as `https://app.trfyx.com/script.js`. Do not copy another project's Website ID.
+  Replace `YOUR_TRFYX_PROJECT_ID` with the Website ID from your Trfyx project and `yourdomain.com` with the domain you want to track. Keep the script URL as `https://app.trfyx.com/script.js`. Do not copy another project's Website ID.
 </Warning>
 
-Use the Website ID, domain, and script URL provided by Trfyx. Do not hard-code secret server-side API keys into this template.
+The Website ID and domain are public browser-tracking configuration. Never place private API keys or server-side secrets in a Blade template.
 
 ## Optional: use environment configuration
 
-For cleaner deployments, keep non-secret project configuration in `.env` and expose it through a Laravel config file. This is useful when staging and production use different Trfyx projects.
+If staging and production use different Trfyx projects, you can keep each environment's public tracking values in `.env` and expose them through Laravel configuration.
+
+Add the values to your environment file:
+
+```dotenv
+TRFYX_WEBSITE_ID=YOUR_TRFYX_PROJECT_ID
+TRFYX_DOMAIN=yourdomain.com
+```
+
+Create or update `config/trfyx.php`:
 
 ```php
+<?php
+
 return [
     'website_id' => env('TRFYX_WEBSITE_ID'),
     'domain' => env('TRFYX_DOMAIN'),
 ];
 ```
 
-Then reference the values from your Blade layout.
+Then use those values in your Blade layout while keeping the real tracker URL visible:
+
+```blade
+<script
+  defer
+  data-website-id="{{ config('trfyx.website_id') }}"
+  data-domain="{{ config('trfyx.domain') }}"
+  src="https://app.trfyx.com/script.js"
+></script>
+```
+
+Replace the environment placeholders with the values from your Trfyx project. Never put secret API credentials in `.env` values that are exposed to the browser.
 
 ## Verify installation
 
