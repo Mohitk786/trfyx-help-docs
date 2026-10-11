@@ -1,0 +1,71 @@
+---
+title: "Install tracking"
+description: "Install the Trfyx tracker safely and verify that your site is sending data."
+sidebarTitle: "Install tracking"
+icon: "code"
+---
+
+# Install Trfyx tracking
+
+Trfyx needs to receive website or product activity before its analytics reports can be useful. This guide covers the implementation checks that apply across common web stacks.
+
+**Use the tracking snippet and stack-specific instructions displayed in your Trfyx workspace.** Do not copy a script URL, project key, or configuration from another website or from an unrelated analytics product.
+
+## Install the tracker
+
+<Steps>
+  <Step title="Open your project setup">
+    In Trfyx, open the project you want to measure and locate its installation instructions. Confirm the website or hostname shown there is the one you intend to track.
+  </Step>
+  <Step title="Choose where the code belongs">
+    For a traditional website, tracking code is commonly added to the shared document layout. In a framework application, use the integration method recommended by Trfyx for that framework so it loads on the pages you intend to measure.
+
+    Add the tracker once. Installing it in a shared layout and again on individual pages can create duplicate collection.
+  </Step>
+  <Step title="Deploy to the correct environment">
+    Publish the change to the intended environment. If you test on preview or staging domains, keep them distinguishable from production so test activity does not distort business reports.
+  </Step>
+  <Step title="Verify a real visit">
+    Open the deployed site in a regular browser session and navigate through a few pages. Return to Trfyx and confirm the visit and expected activity are being recorded.
+  </Step>
+</Steps>
+
+## Implementation checks
+
+### Load coverage
+
+Ensure the tracker is included on all pages that should be measured—not only the homepage. If your app uses client-side navigation, test transitions between routes and confirm they appear as expected in Trfyx.
+
+### Avoid duplicate collection
+
+Check that the tracker is not added in multiple places, such as both a framework component and a tag manager. Also verify that the same event is not sent from multiple implementations unless that behavior is intentional.
+
+### Review content security policy
+
+A strict Content Security Policy can block analytics scripts or their network requests. If you use CSP, follow the current Trfyx installation requirements and allow only the sources required for your configuration. Avoid broadly weakening your site's policy to solve a tracking issue.
+
+### Consider consent and privacy
+
+Review your privacy notice, consent behavior, and applicable obligations before collecting data. Configure any privacy or exclusion controls available in your setup, and validate their effect before collecting real user sessions.
+
+### Protect configuration
+
+Use only the project-specific configuration supplied for your site. Never expose secret credentials or server-side API tokens in client-side code. If the installation instructions include a public site identifier, distinguish it from any secret token your workspace may also use.
+
+## Verify the installation
+
+After deployment, confirm each of the following:
+
+- [ ] The tracker is present on the intended domain.
+- [ ] It loads without script errors.
+- [ ] Browser developer tools do not show blocked collection requests.
+- [ ] Page navigation is represented as expected.
+- [ ] A test goal or event is recorded when the intended action completes.
+- [ ] The project, hostname, environment, and reporting date range are correct.
+- [ ] Test traffic is not being mistaken for production user activity.
+
+## If data is missing
+
+Start with the browser console and network panel, then check for duplicate installation, content security policy restrictions, consent configuration, ad blockers, hostname mismatches, and report filters. Follow [Troubleshooting](/troubleshooting) for a step-by-step diagnostic checklist.
+
+After tracking works, continue with the [Quickstart](/quickstart), then define your first [goal](/goals) or [funnel](/funnels).
