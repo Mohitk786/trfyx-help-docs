@@ -1,0 +1,63 @@
+---
+title: "Replit"
+description: "Add Trfyx analytics to a Replit application."
+---
+
+# Add Trfyx to your Replit project
+
+Replit supports many application frameworks and includes Replit Agent for making code changes. You can use the Agent to install Trfyx across your application, then verify the integration on the deployed site.
+
+## 1. Get your Trfyx tracking details
+
+Open your Trfyx project and copy the tracking snippet from the installation settings.
+
+Use the exact script URL, project identifier, and domain supplied by Trfyx for this project. Do not reuse configuration from another analytics project.
+
+## 2. Ask Replit Agent to add tracking
+
+Open Replit Agent and use a prompt similar to:
+
+```text
+Help me integrate Trfyx analytics into my web application.
+
+Use the Trfyx tracking snippet from my project and add it so it loads across the entire application.
+
+Requirements:
+- Detect the framework and use its recommended root/layout integration point.
+- For HTML applications, add the tracker to the shared <head>.
+- For React/Next.js applications, add it to the root layout or entry point.
+- For server-rendered applications, add it to the shared base/template.
+- Load the tracker once and avoid duplicate installations.
+- Preserve the exact Trfyx configuration provided to me.
+- Show me exactly which files you changed.
+```
+
+The correct file depends on the framework Replit generated. The important part is that the tracker is included in the shared application shell rather than individual pages or components.
+
+## 3. Run and deploy
+
+Use Replit's Run action to test the application, then deploy it using your normal Replit deployment flow.
+
+For analytics verification, prefer the public/deployed URL because it represents the environment your Trfyx project is configured to measure.
+
+## 4. Verify tracking
+
+After deployment:
+
+1. Open the public URL.
+2. Visit a few pages or navigate between routes.
+3. Open browser developer tools and confirm the Trfyx script and tracking requests load successfully.
+4. Check your Trfyx dashboard for incoming activity.
+
+## Troubleshooting
+
+If tracking is not working, ask Replit Agent to check:
+
+- Which framework and entry/layout file the application uses.
+- Whether the Trfyx script is present in the final HTML.
+- Whether the browser Network tab shows the tracker loading and sending events.
+- Whether the correct Trfyx project identifier and domain are configured.
+- Whether CSP or other security settings block the tracker.
+- Whether the tracker was accidentally installed in multiple components.
+
+If you change frameworks or regenerate the application with Replit Agent, re-check the shared layout so the Trfyx installation remains present exactly once.

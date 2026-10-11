@@ -1,0 +1,87 @@
+---
+title: "Astro"
+description: "Add Trfyx analytics to an Astro project."
+---
+
+# Add Trfyx to your Astro project
+
+Astro sites can install Trfyx through a shared layout so the tracker is included across pages.
+
+## 1. Get your Trfyx tracking details
+
+Open your Trfyx project and copy the tracking snippet from the installation settings.
+
+Use the exact script URL, project identifier, and domain supplied by Trfyx. Do not replace them with values from another project or analytics provider.
+
+## 2. Add the tracker to your shared layout
+
+The recommended approach is to add the tracker to the layout used by your site's pages. For example, if your project has `src/layouts/Layout.astro`:
+
+```astro
+---
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>{title}</title>
+
+    <!-- Paste the exact Trfyx project tracking snippet here -->
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
+```
+
+Use the snippet generated for your Trfyx project rather than manually constructing analytics configuration.
+
+Make sure your pages actually use the shared layout. For example:
+
+```astro
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="My site">
+  <main>
+    <h1>Welcome</h1>
+  </main>
+</Layout>
+```
+
+## Alternative: add it to individual page heads
+
+If your project does not use a shared layout, the Trfyx snippet can be added to each page's `<head>`. A shared layout is preferred because it reduces the risk of missing pages or installing the tracker multiple times.
+
+## 3. Build and deploy
+
+Build your Astro project and deploy it using your normal hosting provider.
+
+Check the generated production site rather than relying only on local development when verifying analytics.
+
+## 4. Verify tracking
+
+After deployment:
+
+1. Open the live website.
+2. Visit multiple pages.
+3. Use browser developer tools to confirm the Trfyx script loads successfully.
+4. Check the Network tab for tracking requests.
+5. Check your Trfyx dashboard for incoming page activity.
+
+## Troubleshooting
+
+If analytics are not appearing:
+
+- Confirm every relevant page uses the layout containing the tracker.
+- Confirm the exact Trfyx project snippet is being rendered in the final HTML.
+- Check for CSP restrictions that could block the script or event requests.
+- Confirm the configured domain and project identifier belong to the correct Trfyx project.
+- Search the codebase for multiple Trfyx installations and remove duplicates.
+- Test the deployed site rather than only localhost.
+
+For Astro projects using server-side rendering, middleware, or a custom proxy, keep the standard installation separate from any advanced proxy configuration so you can isolate tracking problems more easily.
