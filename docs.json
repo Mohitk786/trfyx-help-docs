@@ -15,14 +15,16 @@
           "index",
           "quickstart",
           "install-tracking"
-        ]
+        ],
+        "expanded": false
       },
       {
         "group": "Analytics & Insights",
         "icon": "chart-no-axes-combined",
         "pages": [
           "analytics/overview"
-        ]
+        ],
+        "expanded": false
       },
       {
         "group": "Behavior Analytics",
@@ -30,7 +32,8 @@
         "pages": [
           "session-replay",
           "user-journeys"
-        ]
+        ],
+        "expanded": false
       },
       {
         "group": "Installation Guide",
@@ -56,7 +59,8 @@
           "vercel-v0",
           "replit",
           "astro"
-        ]
+        ],
+        "expanded": false
       },
       {
         "group": "Goals & Attribution",
@@ -65,7 +69,8 @@
           "goals",
           "funnels",
           "revenue-attribution"
-        ]
+        ],
+        "expanded": false
       },
       {
         "group": "Data & Sharing",
@@ -73,14 +78,16 @@
         "pages": [
           "import-analytics-data",
           "embedded-dashboards"
-        ]
+        ],
+        "expanded": false
       },
       {
         "group": "Troubleshooting",
         "icon": "life-buoy",
         "pages": [
           "troubleshooting"
-        ]
+        ],
+        "expanded": false
       }
     ]
   },
