@@ -1,0 +1,69 @@
+---
+title: "Troubleshooting"
+description: "Diagnose missing events, unexpected metrics, replay issues, and import problems."
+sidebarTitle: "Troubleshooting"
+icon: "life-buoy"
+---
+
+# Troubleshooting Trfyx
+
+When analytics look wrong, start by checking the data collection path and report settings before changing your implementation. Many apparent reporting issues come from selecting the wrong project, date range, hostname, or filter—or from a tracking change that was not deployed as expected.
+
+## Data is not appearing
+
+<Steps>
+  <Step title="Check the project and environment">
+    Confirm the dashboard is showing the correct Trfyx project, domain, environment, and date range.
+  </Step>
+  <Step title="Verify the installation">
+    Compare the deployed tracking code with the current installation instructions in your workspace. Confirm that it loads on the pages you expect to track.
+  </Step>
+  <Step title="Inspect the browser">
+    Open the site in a browser, use developer tools to check for script-loading errors or blocked network requests, and note whether a content security policy or browser extension is blocking collection.
+  </Step>
+  <Step title="Test a real action">
+    Visit a tracked page and complete an intended action. Then check the appropriate report or event view for the resulting data.
+  </Step>
+  <Step title="Check filters and timing">
+    Remove restrictive filters, broaden the date range, and allow for any documented processing or import delay.
+  </Step>
+</Steps>
+
+## Metrics look too high
+
+Check whether the tracker is installed more than once, the same event is sent from both client and server, a repeated action fires multiple times, or an import overlaps with live tracking. Confirm whether the metric counts events, sessions, users, or conversions—these are not interchangeable.
+
+## Metrics changed suddenly
+
+Review recent deployments, consent or privacy changes, campaign tagging, traffic mix, event names, filters, and import schedules. Compare equivalent time ranges and segments. A tracking change can create a discontinuity even when underlying user behavior has not changed.
+
+## Goals or funnel steps are missing
+
+Verify that the event is triggered, the name and conditions match the goal or funnel definition, and the event reaches the expected project. Make sure the goal fires only at the confirmed success state. For funnels, confirm that each step is defined consistently and can occur in the intended order.
+
+See [Goals and conversions](/goals) and [Funnels](/funnels).
+
+## Session replay is empty or incomplete
+
+Confirm that replay is enabled and installed according to the current workspace instructions, that the relevant sessions satisfy any configured capture conditions, and that browser privacy settings or request blocking are not preventing recording. Review privacy and masking settings before testing with real data. Do not weaken safeguards to capture sensitive fields.
+
+See [Session replay](/session-replay).
+
+## Imported or revenue data is incorrect
+
+Check the source and date range, timestamp timezone, event or transaction identity, currency handling, repeated imports, and duplicate events. Compare equivalent definitions rather than expecting every analytics system to have identical totals.
+
+See [Import analytics data](/import-analytics-data) and [Revenue attribution](/revenue-attribution).
+
+## Before contacting support
+
+Collect enough context to reproduce the issue, but do not send secrets or sensitive user data:
+
+- The affected Trfyx project and relevant page or report.
+- Approximate timestamp and timezone of the test.
+- What you expected to happen and what happened instead.
+- Steps to reproduce the issue.
+- Browser, framework, integration, and deployment details relevant to the problem.
+- Sanitized error messages or screenshots, with personal data and credentials removed.
+
+Never share API secrets, authentication tokens, payment details, or unredacted session recordings in a support request.

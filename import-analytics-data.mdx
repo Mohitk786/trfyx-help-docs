@@ -1,0 +1,63 @@
+---
+title: "Import analytics data"
+description: "Plan an analytics data import and validate the resulting reports."
+sidebarTitle: "Import analytics data"
+icon: "database"
+---
+
+# Import analytics data
+
+Trfyx supports importing analytics data so you can bring supported historical or external data into the same workflow as your product analytics. The exact source types, accepted formats, fields, and import limits depend on the import option available in your workspace.
+
+Use the import interface and its current requirements as the source of truth for supported inputs. Do not assume that any arbitrary export can be imported without mapping or transformation.
+
+## Plan an import
+
+Before uploading or connecting data, answer these questions:
+
+- **What is the source?** Identify the product or system the data came from.
+- **What period does it cover?** Record the start and end dates and the timezone used by the source.
+- **What does each row represent?** Examples could include an event, session, page view, or transaction.
+- **Which dimensions are included?** Review timestamps, source and campaign fields, page or event names, identifiers, and any other available properties.
+- **How will it overlap with live tracking?** Imports and live collection may cover the same period or events, creating a risk of duplicated counts.
+- **What can be safely imported?** Remove secrets and unnecessary personal or sensitive information before sending data.
+
+## Import and validate
+
+<Steps>
+  <Step title="Review the supported import method">
+    Open the data import area in Trfyx and review the accepted source, format, required fields, date handling, and any documented limits.
+  </Step>
+  <Step title="Prepare a representative sample">
+    Inspect a small sample for missing timestamps, inconsistent names, invalid values, duplicate rows, and unexpected timezone conversions before processing a full dataset.
+  </Step>
+  <Step title="Run the import">
+    Follow the instructions in the workspace. Keep a record of the source, period, import time, and any mapping or transformation applied.
+  </Step>
+  <Step title="Compare totals">
+    Check the resulting counts and date range against the source system. Differences may be expected if the systems define events, sessions, attribution, or exclusions differently; document those differences instead of assuming the import is incorrect.
+  </Step>
+  <Step title="Check for overlap">
+    Compare imported data with live collection for the same period. Confirm that shared events are not being counted twice and that re-running an import behaves as intended.
+  </Step>
+</Steps>
+
+## Data hygiene checklist
+
+- Timestamps use a known timezone and consistent format.
+- Event or page names have a clear mapping to Trfyx concepts.
+- Duplicate records are identified or handled according to the import method.
+- Currency, numeric fields, and missing values are interpreted consistently.
+- The imported date range is documented.
+- Sensitive or irrelevant fields are not included unnecessarily.
+- Import results have been checked before using them for a business report.
+
+## Why totals may differ from the source
+
+Two analytics systems can report different values even when both are working correctly. Differences can come from bot filtering, session definitions, consent and blocking behavior, timezone boundaries, attribution rules, identity resolution, or aggregation logic. Compare equivalent metrics over the same period before trying to reconcile totals.
+
+## If the import fails
+
+Review the error shown by Trfyx, confirm that the source type and schema match the documented requirements, and validate the smallest representative sample. Avoid repeatedly uploading the same dataset until you understand whether the operation is safe to retry.
+
+For more checks, see [Troubleshooting](/troubleshooting).

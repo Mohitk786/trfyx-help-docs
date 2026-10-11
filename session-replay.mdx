@@ -1,0 +1,75 @@
+---
+title: "Session replay"
+description: "Use session replay to investigate how users experience your website or product."
+sidebarTitle: "Session replay"
+icon: "film"
+---
+
+# Session replay
+
+Session replay lets you inspect a recorded user session and see behavioral context that aggregate charts cannot show on their own. Use replays to investigate confusing flows, repeated interactions, navigation problems, and potential friction around conversion.
+
+Replay is most effective when you first identify a pattern in analytics and then review representative sessions to understand what might explain it.
+
+## When to use replay
+
+Use session replay when you need to investigate questions such as:
+
+- Why are users leaving a page without completing the primary action?
+- Do people repeatedly click or retry an interaction?
+- Where do users appear to hesitate in an onboarding flow?
+- Did a UI change introduce a confusing navigation path?
+- Do mobile visitors experience a different obstacle from desktop visitors?
+
+A replay provides context for a specific session. It does not explain what every user experienced, so use it alongside aggregated reports and funnels.
+
+## Review a session
+
+<Steps>
+  <Step title="Define the behavior you are investigating">
+    Start with a specific observation, such as a decline in signup completion or a page with unusually high exits. Note the time period and relevant audience.
+  </Step>
+  <Step title="Find relevant recordings">
+    Open the session replay area in Trfyx and use the available filters to narrow the recordings to the project, period, page, or user behavior relevant to your question.
+  </Step>
+  <Step title="Watch for observable friction">
+    Look for repeated attempts, backtracking, unexpected navigation, stalled progress, or interactions that do not appear to produce the intended result. Separate what you directly observe from what you infer.
+  </Step>
+  <Step title="Compare more than one session">
+    Review multiple recordings, including sessions that completed the desired action when possible. One unusual session may be an edge case rather than a broad usability issue.
+  </Step>
+  <Step title="Validate the hypothesis">
+    Check the relevant [funnel](/funnels), [goal](/goals), or product behavior. If you change the interface, compare outcomes after the change rather than relying only on a replay impression.
+  </Step>
+</Steps>
+
+## Privacy and responsible use
+
+Session recordings can contain information about people's behavior and may expose sensitive content if the implementation is not configured appropriately.
+
+Before enabling replay in production:
+
+- Review your privacy notice, consent requirements, and internal data-handling policy.
+- Use the masking, exclusion, and privacy controls available in your Trfyx setup, and verify their behavior with test data.
+- Avoid collecting passwords, payment card details, authentication tokens, private messages, or other sensitive inputs.
+- Limit access to recordings to people who need it for their work.
+- Retain recordings only for as long as needed for the intended purpose and applicable obligations.
+
+Do not assume sensitive fields are automatically masked. Test what is captured before collecting real user sessions.
+
+## Common mistakes
+
+**Treating one replay as representative.** Use a set of sessions and compare successful and unsuccessful paths.
+
+**Assuming a click means success.** A recorded interaction does not necessarily mean that a server request succeeded or the intended business action completed. Validate the corresponding event or goal.
+
+**Ignoring device differences.** Responsive layouts and mobile interaction patterns can be different. Compare like with like.
+
+**Using replay without an outcome metric.** Define the problem in analytics, inspect the experience, and then validate the effect of a change.
+
+## Continue investigating
+
+- [User journeys](/user-journeys) — understand navigation across pages and screens.
+- [Funnels](/funnels) — quantify conversion and drop-off between defined steps.
+- [Goals](/goals) — define the outcome you want sessions to lead to.
+- [Troubleshooting](/troubleshooting) — investigate missing or unexpected tracking data.

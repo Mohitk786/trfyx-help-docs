@@ -1,0 +1,69 @@
+---
+title: "Goals and conversions"
+description: "Define meaningful outcomes and measure how often users complete them."
+sidebarTitle: "Goals and conversions"
+icon: "target"
+---
+
+# Goals and conversions
+
+Goals let you measure the actions that matter to your business or product. Instead of stopping at visits and page views, define outcomes such as a completed signup, a qualified lead, activation, or a purchase, then use those outcomes to evaluate product and marketing performance.
+
+The exact goal configuration depends on the event-tracking options available in your Trfyx workspace.
+
+## Choose a useful goal
+
+A strong goal definition is specific, observable, and connected to an outcome you care about.
+
+| Example goal | Definition to agree on |
+| --- | --- |
+| Signup completed | The account creation flow finished successfully. |
+| Trial started | A user entered the trial state, not merely clicked the trial button. |
+| Lead submitted | The form submission was accepted successfully. |
+| Activation reached | The user completed a clearly defined first-value action. |
+| Purchase completed | The payment or order was confirmed, not just initiated. |
+
+Avoid ambiguous goals such as "engaged user" unless your team has defined exactly what engagement means.
+
+## Configure and validate a goal
+
+<Steps>
+  <Step title="Agree on the business definition">
+    Decide what counts as success, what should not count, and whether the goal is a one-time action or can occur multiple times.
+  </Step>
+  <Step title="Choose the event or supported tracking method">
+    In Trfyx, configure the goal using the event or goal setup supported by your project. Follow the product's current setup guidance rather than guessing event names or payload formats.
+  </Step>
+  <Step title="Trigger the intended action">
+    Use a test account to complete the full workflow. Confirm the event occurs at the right point, only after the outcome is real.
+  </Step>
+  <Step title="Check counts and duplication">
+    Verify that one successful action creates the expected number of recorded conversions. Check refreshes, retries, redirects, and repeated submissions for accidental duplicates.
+  </Step>
+  <Step title="Use the goal in analysis">
+    Analyze conversion over time and across relevant audiences. Combine it with [funnels](/funnels), [user journeys](/user-journeys), or [revenue attribution](/revenue-attribution) depending on the question.
+  </Step>
+</Steps>
+
+## Goal quality checklist
+
+- [ ] The goal has a clear business definition.
+- [ ] It fires at the point the outcome is actually completed.
+- [ ] Its event name and properties are consistent across environments.
+- [ ] The implementation avoids accidental duplicate conversions.
+- [ ] Test events and production events are distinguishable.
+- [ ] The team understands the denominator when interpreting a conversion rate.
+
+## Common issues
+
+**The goal never fires.** Verify that the event is sent, that the trigger condition is reached, and that the data arrives in the correct Trfyx project.
+
+**The goal count is too high.** Check duplicate tracking code, repeated event calls, page refreshes, and whether your definition allows multiple conversions per person or session.
+
+**The conversion rate changed suddenly.** Review tracking releases, changes to the form or flow, acquisition mix, and the selected date range before attributing the difference to user behavior.
+
+**The goal is firing before success.** Move the trigger to the confirmed success state rather than a button click or the beginning of a workflow.
+
+## Next steps
+
+Use [funnels](/funnels) to measure the steps leading to a goal and [revenue attribution](/revenue-attribution) to investigate outcomes tied to revenue.

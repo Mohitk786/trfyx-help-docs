@@ -16,6 +16,45 @@
           "index",
           "quickstart"
         ]
+      },
+      {
+        "group": "Analytics & Insights",
+        "icon": "chart-no-axes-combined",
+        "pages": [
+          "analytics/overview"
+        ]
+      },
+      {
+        "group": "Behavior Analytics",
+        "icon": "mouse-pointer-click",
+        "pages": [
+          "session-replay",
+          "user-journeys"
+        ]
+      },
+      {
+        "group": "Goals & Attribution",
+        "icon": "target",
+        "pages": [
+          "goals",
+          "funnels",
+          "revenue-attribution"
+        ]
+      },
+      {
+        "group": "Data & Sharing",
+        "icon": "database",
+        "pages": [
+          "import-analytics-data",
+          "embedded-dashboards"
+        ]
+      },
+      {
+        "group": "Troubleshooting",
+        "icon": "life-buoy",
+        "pages": [
+          "troubleshooting"
+        ]
       }
     ],
     "global": {

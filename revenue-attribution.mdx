@@ -1,0 +1,72 @@
+---
+title: "Revenue attribution"
+description: "Understand how tracked acquisition sources relate to revenue outcomes in Trfyx."
+sidebarTitle: "Revenue attribution"
+icon: "badge-dollar-sign"
+---
+
+# Revenue attribution
+
+Revenue attribution helps connect acquisition context—such as a referral, campaign, or landing page—to revenue outcomes recorded by your analytics setup. It is useful for comparing the performance of marketing activity, but only when both the acquisition context and revenue events are captured consistently.
+
+Attribution is not automatic proof that a channel caused a purchase. Treat it as a model for assigning credit to recorded touchpoints under defined tracking rules.
+
+## What you need
+
+Before interpreting revenue attribution, confirm that:
+
+- Website or product tracking is installed and collecting the expected visits.
+- Campaign links use consistent tracking parameters where applicable.
+- Revenue data reaches Trfyx through a supported integration or import.
+- Purchases are represented accurately and are not duplicated.
+- Your team understands which touchpoints and attribution rules are included in the report.
+
+The available integrations and setup steps can vary by workspace. Use the configuration and connection instructions offered in your Trfyx account.
+
+## Set up a reliable workflow
+
+<Steps>
+  <Step title="Verify acquisition tracking">
+    Test that visits from a tagged campaign or known referral appear with the expected source context. Keep naming conventions consistent across your campaigns.
+  </Step>
+  <Step title="Connect or import revenue data">
+    Use the payment, revenue, or data-import options available in your workspace. Confirm which transactions and fields are included before using the totals for reporting.
+  </Step>
+  <Step title="Validate a transaction end to end">
+    Run a test transaction in an appropriate test environment or trace a known transaction safely. Check that the amount, currency, transaction identity, and associated context are represented as expected.
+  </Step>
+  <Step title="Compare sources and outcomes">
+    Review attributed outcomes across equivalent time ranges. Look beyond raw revenue where the report supports it: conversion volume, revenue per visitor, and the quality of acquired users can answer different questions.
+  </Step>
+  <Step title="Investigate unexpected results">
+    Verify missing campaign parameters, referral changes, duplicate payment events, import delays, and identity mismatches before concluding that a channel performed poorly.
+  </Step>
+</Steps>
+
+## Campaign tracking practices
+
+- Use a consistent convention for campaign, source, and medium values.
+- Tag links that you control, and test the destination URL before launch.
+- Avoid changing campaign naming conventions midway through a comparison.
+- Preserve the original landing and acquisition context where your implementation supports it.
+- Document the attribution rules your team uses for reports and business reviews.
+
+## Revenue data quality checklist
+
+- [ ] Revenue is recorded only when the intended transaction state is reached.
+- [ ] Retried webhooks or imports do not create duplicate revenue.
+- [ ] Amounts and currencies are interpreted consistently.
+- [ ] Refunds, cancellations, and test transactions are handled according to your reporting needs and the capabilities available.
+- [ ] The imported or integrated date range is complete.
+- [ ] Acquisition context is present where expected.
+
+## How to interpret attribution
+
+An attributed revenue report answers "what credit does this tracking model assign to the recorded touchpoints?" It does not necessarily answer "what would have happened if this channel did not exist?" Use experiments, controlled comparisons, and business context when you need stronger causal evidence.
+
+## Related guides
+
+- [Analytics overview](/analytics/overview) — start with traffic and engagement.
+- [Goals and conversions](/goals) — define meaningful conversion events.
+- [Import analytics data](/import-analytics-data) — bring supported historical data into Trfyx.
+- [Troubleshooting](/troubleshooting) — investigate missing or duplicated events.

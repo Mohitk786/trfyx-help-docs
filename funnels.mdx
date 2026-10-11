@@ -1,0 +1,73 @@
+---
+title: "Funnels"
+description: "Measure progression through a defined flow and find where users drop off."
+sidebarTitle: "Funnels"
+icon: "git-branch"
+---
+
+# Funnels
+
+Funnels measure how people progress through a sequence of steps toward a defined outcome. They help answer not only how many people complete a workflow, but where the largest losses occur.
+
+Typical funnels include landing page → signup → activation, pricing page → checkout → purchase, or onboarding started → setup completed → first meaningful action.
+
+## Design a useful funnel
+
+Before creating a funnel, define:
+
+1. **The population:** Which visitors or users should be included?
+2. **The entry point:** What event or step starts the flow?
+3. **The completion point:** What counts as a successful outcome?
+4. **The sequence:** Which intermediate steps matter for the question?
+5. **The time window:** Over what period should users be allowed to progress?
+
+Use events that represent meaningful progress. A click on a "Create account" button is not the same as a successfully created account.
+
+## Build and read a funnel
+
+<Steps>
+  <Step title="Choose the workflow">
+    Select one high-value flow. Start with a short sequence so the result is easy to interpret.
+  </Step>
+  <Step title="Define each step">
+    Use the available Trfyx event or page conditions to define the entry point, intermediate steps, and completion event. Keep definitions consistent when comparing time periods.
+  </Step>
+  <Step title="Set relevant filters and time range">
+    Limit the report to the audience and period relevant to your question. For comparisons, avoid changing several conditions at once.
+  </Step>
+  <Step title="Find the largest drop-off">
+    Identify the stage where the biggest number or proportion of users fail to continue. Check whether the result is stable across different periods or segments before prioritizing it.
+  </Step>
+  <Step title="Investigate the experience">
+    Use [user journeys](/user-journeys) to explore alternate paths and [session replay](/session-replay) to look for friction in the relevant step.
+  </Step>
+  <Step title="Validate a change">
+    Make one targeted improvement and compare the funnel after enough data has accumulated. Account for traffic mix and any tracking changes during the comparison.
+  </Step>
+</Steps>
+
+## Interpreting drop-off
+
+A drop-off is a signal to investigate, not a complete explanation. Users may leave for many reasons: confusing copy, a technical error, an expected exit, poor traffic quality, or a step that is not required for every user.
+
+Ask these questions before changing the product:
+
+- Is the step instrumented correctly?
+- Is the next step required for every user in this funnel?
+- Does the drop-off differ by device, source, or audience?
+- Do recordings or support reports reveal a consistent obstacle?
+- Did a release or campaign change the mix of visitors?
+
+## Common funnel mistakes
+
+**Too many steps.** Begin with the core flow and add detail only when it helps diagnose a question.
+
+**Inconsistent events.** Renamed or missing events can make historical comparisons unreliable.
+
+**Confusing sequence with causality.** A step that correlates with conversion does not necessarily cause it.
+
+**Comparing different audiences.** A funnel for high-intent returning visitors may behave differently from one for all first-time visitors.
+
+## Recommended next steps
+
+Start with [goals](/goals) to define the successful outcome, use [analytics overview](/analytics/overview) to establish the baseline, and inspect [session replay](/session-replay) when a stage needs deeper investigation.
