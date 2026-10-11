@@ -1,31 +1,106 @@
 ---
 title: "Webflow"
-description: "Install Trfyx on a Webflow site using custom code."
+description: "Install Trfyx on a Webflow site using site-wide custom code, then verify your live tracking setup."
 sidebarTitle: "Webflow"
 icon: "globe"
 ---
 
 # Install Trfyx on Webflow
 
-Webflow lets you add the Trfyx tracker through your site's custom code settings.
+Add Trfyx to your Webflow site using **Site settings → Custom Code**. This installs the tracker site-wide so your published pages can send analytics data to your Trfyx project.
+
+<Note>
+  **Before you start:** Make sure you have access to your Webflow site's **Custom Code** settings and have a Trfyx project ready in [app.trfyx.com](https://app.trfyx.com/).
+</Note>
 
 ## Add the tracker
 
 <Steps>
   <Step title="Open Site Settings">
-    In your Webflow dashboard, select your project and open **Site settings**.
+    In your Webflow dashboard, select the site you want to track and open **Site settings**.
   </Step>
   <Step title="Open Custom Code">
-    Go to **Custom Code** and locate the **Head Code** section.
+    Open the **Custom Code** tab and find the **Head Code** section. Site-wide head code is added to the `<head>` of your published pages.
   </Step>
   <Step title="Add the Trfyx snippet">
-    Paste the tracking snippet generated for your Trfyx project into the Head Code section. Use your actual Trfyx project identifier and domain configuration.
+    Paste the following snippet into **Head Code**:
+
+    ```html
+    <script>
+      (function () {
+        var script = document.createElement('script');
+        script.defer = true;
+        script.setAttribute('data-website-id', 'YOUR_TRFYX_PROJECT_ID');
+        script.setAttribute('data-domain', 'yourdomain.com');
+        script.src = 'https://app.trfyx.com/script.js';
+        document.head.appendChild(script);
+      })();
+    </script>
+    ```
+
+    <Warning>
+      Replace `YOUR_TRFYX_PROJECT_ID` with the project identifier from your Trfyx workspace and `yourdomain.com` with the domain you are tracking. **Do not copy these placeholder values into production.**
+    </Warning>
+
+    <Tip>
+      Keep the tracker in Webflow's **site-wide Head Code** when you want Trfyx on the entire website. You do not need to paste the snippet separately into every page.
+    </Tip>
   </Step>
   <Step title="Save and publish">
-    Save the changes and publish the site.
+    Click **Save changes**, then publish your Webflow site. Custom code may appear while testing in Webflow, but the changes are not live until the site is published.
   </Step>
 </Steps>
 
 ## Verify installation
 
-Open the published website, browse a few pages, and check your Trfyx dashboard for incoming activity. Changes made in Webflow custom code are reflected on the published site, so verify the live domain rather than relying only on Designer preview.
+After publishing, verify the **live website** rather than relying only on the Webflow Designer.
+
+1. Open your published domain in a new browser tab.
+2. Visit a few pages and navigate between them.
+3. Open [app.trfyx.com](https://app.trfyx.com/) and select the Trfyx project connected to that domain.
+4. Confirm that new activity is appearing for the correct project and hostname.
+
+<Note>
+  If you test using Webflow Preview, make sure custom code is enabled. For the final verification, use the published site because Webflow custom-code changes do not become live until publication.
+</Note>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="No data is appearing in Trfyx">
+    Confirm that you replaced both placeholders with the correct Trfyx project ID and domain. Then make sure the Webflow site was published after saving the custom code.
+  </Accordion>
+
+  <Accordion title="The tracker is not loading">
+    Open your browser's Developer Tools and check the **Console** and **Network** tabs for blocked requests or Content Security Policy errors. Also confirm that the snippet contains both the opening and closing `<script>` tags.
+  </Accordion>
+
+  <Accordion title="I am seeing duplicate page views">
+    Check whether Trfyx has also been installed through Google Tag Manager, another Webflow integration, or custom code on individual pages. Keep one tracker installation for the same site unless you intentionally handle duplicate collection.
+  </Accordion>
+
+  <Accordion title="Should I put the code on every page?">
+    No. Use Webflow's site-wide **Head Code** section when you want Trfyx across the entire site. Use page-level custom code only when you intentionally want tracking on specific pages.
+  </Accordion>
+</AccordionGroup>
+
+## Important Webflow notes
+
+<Warning>
+  Do not paste `<html>`, `<body>`, or `<head>` tags into Webflow's Custom Code fields. Webflow's documentation warns that these tags can break the site's layout.
+</Warning>
+
+<Tip>
+  Webflow recommends using `async` or `defer` for external scripts placed in the head when appropriate. The Trfyx snippet already uses `defer` so the browser can continue parsing the page while the tracker loads.
+</Tip>
+
+If your site uses a strict **Content Security Policy (CSP)** or a consent-management platform, make sure your configuration allows the Trfyx script and analytics requests required by your setup.
+
+## Next steps
+
+Once installation is verified, continue with:
+
+- [Quickstart](/quickstart) — Set up your first Trfyx analytics workflow.
+- [Goals](/goals) — Define important user actions and conversions.
+- [Funnels](/funnels) — Understand where users convert or drop off.
+- [Troubleshooting](/troubleshooting) — Diagnose missing or unexpected data.
