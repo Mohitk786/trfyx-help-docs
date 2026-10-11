@@ -20,7 +20,7 @@ export default function App() {
   useEffect(() => {
     const script = document.createElement("script")
     script.defer = true
-    script.src = "YOUR_TRFYX_TRACKING_SCRIPT"
+    script.src = "https://app.trfyx.com/script.js"
     script.setAttribute("data-website-id", "YOUR_TRFYX_PROJECT_ID")
     script.setAttribute("data-domain", "your_domain.com")
     document.head.appendChild(script)
@@ -32,7 +32,13 @@ export default function App() {
 }
 ```
 
-Replace the placeholders with the values supplied by Trfyx.
+<Warning>
+  Replace `YOUR_TRFYX_PROJECT_ID` with the Website ID from your Trfyx project. Replace `your_domain.com` with the domain you want to track. Keep the script URL as `https://app.trfyx.com/script.js`.
+</Warning>
+
+<Tip>
+  Add the tracker once at the application root. Do not add it inside individual route components, or you may collect duplicate pageviews.
+</Tip>
 
 ## Verify route tracking
 

@@ -1,16 +1,16 @@
 ---
-title: "Next.js App Router"
-description: "Install Trfyx in a Next.js App Router application."
-sidebarTitle: "Next.js App Router"
+title: "Next.js"
+description: "Install Trfyx in a Next.js application."
+sidebarTitle: "Next.js"
 icon: "triangle"
 ---
 
-# Install Trfyx in Next.js App Router
+# Install Trfyx in Next.js
 
 The recommended approach is to load the Trfyx tracker from your root layout so it is available across the application without adding it to individual pages.
 
 <Note>
-  **Prerequisites:** You should have a working Next.js App Router project and access to the Trfyx project installation settings.
+  **Prerequisites:** You should have a working Next.js project using the App Router and access to the Trfyx project installation settings.
 </Note>
 
 ## Add the tracker to the root layout
@@ -26,7 +26,7 @@ export default function RootLayout({ children }) {
       <body>
         {children}
         <Script
-          src="YOUR_TRFYX_TRACKING_SCRIPT"
+          src="https://app.trfyx.com/script.js"
           data-website-id="YOUR_TRFYX_PROJECT_ID"
           strategy="afterInteractive"
         />
@@ -36,15 +36,17 @@ export default function RootLayout({ children }) {
 }
 ```
 
-Replace the placeholders with the values shown in your Trfyx project installation settings.
-
 <Warning>
-  Do not paste server-side secrets into this component. Anything included in client-side HTML or JavaScript can be visible to visitors. Use only the public project configuration intended for browser tracking.
+  Replace `YOUR_TRFYX_PROJECT_ID` with the Website ID from your Trfyx project. Keep the script URL as `https://app.trfyx.com/script.js`.
 </Warning>
 
 <Tip>
-  Keep the tracker in the root layout rather than individual route components. This prevents duplicate installation and makes the integration easier to maintain.
+  Keep the tracker in the root layout so it loads once across your application. Do not add the same tracker to individual pages or nested layouts.
 </Tip>
+
+<Note>
+  Do not paste server-side secrets into this component. Anything included in client-side HTML or JavaScript can be visible to visitors. Use only the public project configuration intended for browser tracking.
+</Note>
 
 ## Deploy
 
