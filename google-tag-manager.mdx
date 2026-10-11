@@ -1,35 +1,101 @@
 ---
 title: "Google Tag Manager"
-description: "Install Trfyx using Google Tag Manager without modifying your application code."
+description: "Install Trfyx through Google Tag Manager with a production-ready tracking setup, verification steps, and troubleshooting guidance."
 sidebarTitle: "Google Tag Manager"
 icon: "tag"
 ---
 
-# Install Trfyx with Google Tag Manager
+# Get started with Google Tag Manager
 
-Use Google Tag Manager (GTM) to deploy the Trfyx tracking script across your website without changing your application code directly.
+Install Trfyx through **Google Tag Manager (GTM)** without changing your website's source code. This is a good option when your team already manages analytics and marketing scripts from a central GTM container.
+
+<Note>
+  **Before you start:** Make sure you have access to the GTM container used by your production website and a Trfyx project ready to receive traffic.
+</Note>
 
 ## Add the Trfyx tag
 
-<Steps>
-  <Step title="Open your GTM container">
-    Sign in to Google Tag Manager and select the container used by your production website.
-  </Step>
-  <Step title="Create a Custom HTML tag">
-    Go to **Tags → New**, choose **Custom HTML**, and add the Trfyx tracking snippet from your Trfyx project installation settings.
+1. Log in to your [Google Tag Manager account](https://tagmanager.google.com/).
+2. Select the **container** used by your website.
+3. Click **Tags → New**.
+4. Give the tag a descriptive name, such as **Trfyx Analytics**.
+5. Click **Tag Configuration** and select **Custom HTML**.
+6. Paste the following JavaScript code into the HTML field:
 
-    Use the exact project-specific identifier and script configuration provided by Trfyx.
-  </Step>
-  <Step title="Trigger on all pages">
-    Set the trigger to **All Pages** so the tracker loads across your website.
-  </Step>
-  <Step title="Save and publish">
-    Save the tag, submit the container changes, and publish the container.
-  </Step>
-</Steps>
+```html
+<script>
+  (function () {
+    var script = document.createElement('script');
+    script.defer = true;
+    script.setAttribute('data-website-id', 'YOUR_TRFYX_PROJECT_ID');
+    script.setAttribute('data-domain', 'yourdomain.com');
+    script.src = 'https://app.trfyx.com/script.js';
+    document.head.appendChild(script);
+  })();
+</script>
+```
 
-## Verify installation
+<Warning>
+  Replace `YOUR_TRFYX_PROJECT_ID` and `yourdomain.com` with the values for the Trfyx project you want to track. Do not copy an ID or domain from another project.
+</Warning>
 
-Use GTM Preview mode to confirm the tag fires, then visit the live website and check Trfyx for incoming activity.
+<Tip>
+  **Use the Custom HTML tag exactly as shown.** The `<script>` wrapper is required because GTM is injecting the tracker into your website. Do not paste only the JavaScript body unless your GTM configuration specifically expects it.
+</Tip>
 
-If data is missing, verify the tag trigger, project identifier, browser console, CSP configuration, and whether another Trfyx installation is already present. Avoid installing the tracker both through GTM and your application unless you intentionally prevent duplicate collection.
+7. Click **Triggering**, select **All Pages**, and click **Add**.
+8. Click **Save**.
+9. Click **Submit** in the top-right corner, then **Publish** the container.
+
+## Verify your installation
+
+After publishing, verify the tag before relying on your analytics data.
+
+### 1. Test with GTM Preview
+
+Open **Preview** in Google Tag Manager and enter your production website URL. Confirm that the **Trfyx Analytics** tag fires when the page loads.
+
+### 2. Verify the live website
+
+Open your published website in a normal browser window and navigate through a few pages. Then open [app.trfyx.com](https://app.trfyx.com/) and check that incoming activity appears for the correct project.
+
+<Note>
+  Analytics data may take a short amount of time to appear. Make sure you are viewing the correct project, environment, hostname, and reporting date range before assuming tracking is broken.
+</Note>
+
+## Common problems
+
+<AccordionGroup>
+  <Accordion title="The tag does not fire in GTM Preview">
+    Check that the trigger is set to **All Pages**, the tag is published to the correct container, and the container is installed on the website you are testing.
+  </Accordion>
+
+  <Accordion title="Trfyx receives no data">
+    Confirm that the project ID and domain are correct. Then check the browser console and Network tab for blocked scripts or requests. A Content Security Policy, consent tool, or browser extension can prevent analytics from loading.
+  </Accordion>
+
+  <Accordion title="I see duplicate pageviews">
+    Make sure Trfyx is installed only once. Check whether the tracker is also present in your application source code, another GTM tag, a CMS integration, or another analytics integration.
+  </Accordion>
+
+  <Accordion title="Should I use GTM and a direct installation together?">
+    Normally, no. Choose one installation method for the same website. Installing the tracker through both GTM and your application can result in duplicate collection.
+  </Accordion>
+</AccordionGroup>
+
+## Security and privacy
+
+<Tip>
+  Keep the GTM container restricted to trusted team members. Anyone with permission to publish a container can add or modify scripts that run on your website.
+</Tip>
+
+Review your consent requirements and privacy configuration before collecting production user data. If your site uses a strict Content Security Policy, make sure it permits the Trfyx script and collection requests required by your setup.
+
+## Next steps
+
+Once tracking is verified, continue with:
+
+- [Quickstart](/quickstart) — Set up your first Trfyx reports.
+- [Goals and conversions](/goals) — Define the actions that matter to your business.
+- [Funnels](/funnels) — Measure where users convert or drop off.
+- [Troubleshooting](/troubleshooting) — Diagnose missing or unexpected data.
