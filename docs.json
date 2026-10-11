@@ -33,6 +33,13 @@
         ]
       },
       {
+        "group": "Installation Guide",
+        "icon": "download",
+        "pages": [
+          "shopify"
+        ]
+      },
+      {
         "group": "Goals & Attribution",
         "icon": "target",
         "pages": [
