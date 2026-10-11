@@ -16,7 +16,8 @@
           "quickstart",
           "install-tracking"
         ],
-        "expanded": false
+        "expanded": false,
+        "icon": "book-open"
       },
       {
         "group": "Analytics & Insights",
@@ -92,7 +93,6 @@
     ]
   },
   "navbar": {
-    "links": [],
     "primary": {
       "type": "button",
       "label": "Visit Trfyx",
@@ -117,8 +117,7 @@
     "dark": "/images/trfyx-dark.svg"
   },
   "fonts": {
-    "family": "Inter",
-    "weight": 400
+    "family": "DM Sans"
   },
   "styling": {
     "eyebrows": "breadcrumbs",
@@ -130,5 +129,14 @@
   },
   "metadata": {
     "timestamp": true
+  },
+  "interaction": {
+    "drilldown": false
+  },
+  "footer": {
+    "socials": {
+      "linkedin": "https://www.linkedin.com/company/trfyx",
+      "website": "https://www.trfyx.com/"
+    }
   }
 }
