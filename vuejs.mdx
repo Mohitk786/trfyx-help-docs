@@ -7,9 +7,11 @@ icon: "code"
 
 # Install Trfyx in Vue.js
 
-Add the Trfyx tracker from your application's main entry point so it loads for the whole application.
+Add the Trfyx tracker from your application's main entry point so it loads once for the whole Vue application.
 
 ## Add the tracker to `main.js` or `main.ts`
+
+Open your main entry file and add the tracker before mounting the Vue app:
 
 ```ts
 import { createApp } from "vue"
@@ -17,20 +19,42 @@ import App from "./App.vue"
 
 const script = document.createElement("script")
 script.defer = true
+script.src = "https://app.trfyx.com/script.js"
 script.setAttribute("data-website-id", "YOUR_TRFYX_PROJECT_ID")
-script.setAttribute("data-domain", "your_domain.com")
-script.src = "YOUR_TRFYX_TRACKING_SCRIPT"
+script.setAttribute("data-domain", "yourdomain.com")
 document.head.appendChild(script)
 
 createApp(App).mount("#app")
 ```
 
-Replace the placeholders with the configuration from your Trfyx project.
+<Warning>
+  Replace `YOUR_TRFYX_PROJECT_ID` with the Website ID from your Trfyx project and `yourdomain.com` with the domain you want to track. Keep the script URL as `https://app.trfyx.com/script.js`.
+</Warning>
 
-## Alternative: `index.html`
+<Tip>
+  Install the tracker in the main entry point or shared HTML shell. Do not inject it from individual Vue components; components can mount more than once and create duplicate tracking.
+</Tip>
 
-For a simple setup, you can place the Trfyx installation snippet directly in the `<head>` of the application's `index.html`.
+## Alternative: add the script to `index.html`
+
+If your project uses a standard Vite-generated `index.html`, you can place the following inside its `<head>` instead. Use one installation method, not both.
+
+```html
+<script
+  defer
+  data-website-id="YOUR_TRFYX_PROJECT_ID"
+  data-domain="yourdomain.com"
+  src="https://app.trfyx.com/script.js"
+></script>
+```
 
 ## Verify installation
 
-Deploy the application, visit the live URL, and check Trfyx for incoming activity. Navigate between client-side routes and make sure the tracker is not injected again by individual components.
+1. Deploy the application and open the live URL.
+2. Navigate between several client-side routes.
+3. Check [app.trfyx.com](https://app.trfyx.com/) for activity in the matching project.
+4. If nothing appears, inspect the browser's **Console** and **Network** tabs for blocked script or tracking requests.
+
+## Troubleshooting
+
+Confirm the Website ID and domain, verify that the deployed build includes the change, and check whether a Content Security Policy (CSP), consent manager, or browser extension blocks the tracker. If pageviews are duplicated, make sure the snippet appears only once.

@@ -122,5 +122,9 @@
   },
   "styling": {
     "codeblocks": {}
+  },
+  "favicon": {
+    "light": "/images/trfyx-icon.png",
+    "dark": "/images/trfyx-icon.png"
   }
 }

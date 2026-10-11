@@ -1,38 +1,52 @@
 ---
 title: "Django"
-description: "Install Trfyx in a Django application using your shared base template."
+description: "Install Trfyx in a Django application using a shared base template."
 sidebarTitle: "Django"
 icon: "server"
 ---
 
 # Install Trfyx in Django
 
-The recommended approach is to add the Trfyx tracker to the base template used by your site's pages.
+Add the Trfyx tracker to your shared Django base template so it loads across the pages that extend that template.
+
+<Note>
+  **Before you start:** Identify the base template used by your site (commonly `templates/base.html`) and have the Trfyx Website ID for the domain you want to track.
+</Note>
 
 ## Add the tracker to your base template
 
-Open your shared template, commonly `templates/base.html`, and add the Trfyx installation snippet inside `<head>`.
+Open your shared base template and add the following snippet inside the existing `<head>` element:
 
 ```html
 <head>
-  <!-- your existing head content -->
-  YOUR_TRFYX_TRACKING_SNIPPET
+  <!-- Keep your existing head content -->
+  <script
+    defer
+    data-website-id="YOUR_TRFYX_PROJECT_ID"
+    data-domain="yourdomain.com"
+    src="https://app.trfyx.com/script.js"
+  ></script>
 </head>
 ```
 
-Use the project-specific configuration shown in your Trfyx installation settings.
+<Warning>
+  Replace `YOUR_TRFYX_PROJECT_ID` with the Website ID from your Trfyx project and `yourdomain.com` with the domain you want to track. Keep the script URL as `https://app.trfyx.com/script.js`. These are public browser-tracking settings, not secret API credentials.
+</Warning>
 
-## Optional: configure values through Django settings
-
-For deployments where the project identifier or domain differs by environment, keep the values in Django settings and expose only the required public configuration to the template.
-
-```python
-TRFYX_PROJECT_ID = "YOUR_TRFYX_PROJECT_ID"
-TRFYX_DOMAIN = "your_domain.com"
-```
-
-Then reference those values from the template instead of hard-coding them.
+<Tip>
+  Put the snippet in the shared base template once, not in individual child templates. Pages that extend the base template will then use the same tracker installation.
+</Tip>
 
 ## Verify installation
 
-Deploy the application, visit the live site, and check Trfyx for incoming activity. If nothing appears, inspect the browser network panel and console, then check CSP, hostname, consent, and duplicate-installation issues.
+1. Deploy the Django application.
+2. Open the live site and visit a few pages.
+3. Open [app.trfyx.com](https://app.trfyx.com/) and check the matching Trfyx project for activity.
+4. If no activity appears, inspect the browser's **Console** and **Network** tabs for failed or blocked requests.
+
+## Troubleshooting
+
+- **No data appears:** Check the Website ID, domain, and selected Trfyx project.
+- **Only some pages are tracked:** Confirm those pages extend the base template containing the snippet.
+- **The script is blocked:** Check Content Security Policy (CSP), consent settings, and browser extensions.
+- **Duplicate pageviews appear:** Search your templates and tag manager for another Trfyx installation and remove the duplicate.

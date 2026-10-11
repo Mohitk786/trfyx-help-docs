@@ -16,7 +16,18 @@ Ghost provides a built-in Code Injection feature that makes adding the Trfyx tra
     Log in to your Ghost admin dashboard and open **Settings → Code Injection**.
   </Step>
   <Step title="Add the tracker to Site Header">
-    Paste the Trfyx tracking snippet from your project installation settings into the **Site Header** section.
+    Paste this snippet into the **Site Header** section:
+
+    ```html
+    <script
+      defer
+      data-website-id="YOUR_TRFYX_PROJECT_ID"
+      data-domain="yourdomain.com"
+      src="https://app.trfyx.com/script.js"
+    ></script>
+    ```
+
+    Replace the Website ID and domain placeholders with the values for your Trfyx project.
   </Step>
   <Step title="Save the changes">
     Save the Code Injection settings and open your published site.
