@@ -1,0 +1,37 @@
+---
+title: "Bubble"
+description: "Install Trfyx analytics in a Bubble.io application."
+sidebarTitle: "Bubble"
+---
+
+# Add Trfyx to your Bubble app
+
+Bubble supports custom code through its SEO and metadata settings. Add the tracker globally so it can load across your application.
+
+## Add the tracking script
+
+1. Open your Bubble app editor.
+2. Go to **Settings → SEO / Metatags**.
+3. Find the field for scripts or meta tags in the page header.
+4. Paste the Trfyx tracking script.
+5. Replace the placeholders with the values from your Trfyx project.
+6. Save and deploy the application.
+
+```html
+<script
+  defer
+  data-website-id="YOUR_WEBSITE_ID"
+  data-domain="your_domain.com"
+  src="YOUR_TRFYX_SCRIPT_URL"
+></script>
+```
+
+## Verify installation
+
+Open the deployed Bubble application, visit a few pages, and check your Trfyx dashboard for incoming traffic.
+
+If your Bubble plan or configuration restricts custom code, confirm that the feature is available before troubleshooting the tracker itself.
+
+## Troubleshooting
+
+Check that the script is in the global header rather than only one page, the app has been deployed after the change, and browser developer tools show the tracker loading without errors.

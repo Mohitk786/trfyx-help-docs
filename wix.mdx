@@ -1,0 +1,35 @@
+---
+title: "Wix"
+description: "Install Trfyx analytics on a Wix site."
+sidebarTitle: "Wix"
+---
+
+# Add Trfyx to your Wix site
+
+Wix lets you add custom tracking code through its Tracking & Analytics settings.
+
+## Add the tracking script
+
+1. Open your Wix dashboard or editor.
+2. Go to **Settings → Tracking & Analytics**.
+3. Choose **Add New Tool** and select the custom-code option.
+4. Paste the Trfyx tracking script.
+5. Configure it to load on **all pages** and place it in the **head**.
+6. Save the tool and publish your site.
+
+```html
+<script
+  defer
+  data-website-id="YOUR_WEBSITE_ID"
+  data-domain="your_domain.com"
+  src="YOUR_TRFYX_SCRIPT_URL"
+></script>
+```
+
+## Verify installation
+
+Publish the site, open the live domain, and browse several pages. Then check your Trfyx dashboard for incoming traffic.
+
+## Troubleshooting
+
+If data does not appear, verify that the custom code is enabled on all pages, the code is placed in the head, the site has been published, and the Trfyx Website ID and domain are correct.

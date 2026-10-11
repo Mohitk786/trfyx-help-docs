@@ -1,0 +1,52 @@
+---
+title: "Next.js App Router"
+description: "Install Trfyx in a Next.js App Router application."
+sidebarTitle: "Next.js App Router"
+icon: "triangle"
+---
+
+# Install Trfyx in Next.js App Router
+
+The cleanest approach is to add the Trfyx tracker to your root layout so it is available across your application.
+
+## Add the tracker to the root layout
+
+Open `app/layout.tsx` or `app/layout.jsx` and use the framework's script component or the installation snippet supplied by Trfyx.
+
+```tsx
+import Script from "next/script"
+
+export default function RootLayout({ children }) {
+  return (
+    <html lang="en">
+      <body>
+        {children}
+        <Script
+          src="YOUR_TRFYX_TRACKING_SCRIPT"
+          data-website-id="YOUR_TRFYX_PROJECT_ID"
+          strategy="afterInteractive"
+        />
+      </body>
+    </html>
+  )
+}
+```
+
+Replace the placeholders with the values shown in your Trfyx project installation settings.
+
+## Deploy
+
+Build and deploy the application to the environment you want to measure. Avoid counting preview traffic as production traffic if your project has separate environments.
+
+## Verify
+
+Visit the deployed application and navigate between routes. Check Trfyx for the visit and page activity.
+
+### Common issues
+
+- The script is rendered more than once through nested layouts or another integration.
+- CSP blocks the script or collection request.
+- The wrong Trfyx project or hostname is configured.
+- You are checking preview traffic while viewing production analytics.
+
+If your app uses a custom navigation architecture, verify route changes as well as full page loads.

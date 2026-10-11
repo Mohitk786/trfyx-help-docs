@@ -1,0 +1,41 @@
+---
+title: "Lovable"
+description: "Install Trfyx analytics in a Lovable-built website."
+sidebarTitle: "Lovable"
+---
+
+# Add Trfyx to your Lovable website
+
+Lovable generates the application code for you, so the easiest setup is to ask its AI assistant to add the Trfyx tracker in the correct global location.
+
+## Get your Trfyx details
+
+From your Trfyx project, copy the Website ID and domain used by the tracking installation. Use the script URL supplied by Trfyx.
+
+## Ask Lovable to install Trfyx
+
+Paste a prompt like this into your Lovable project:
+
+```text
+Add Trfyx analytics tracking to my website.
+
+I need the tracker to load on every page and route. Use the Trfyx tracking script and the Website ID and domain I provide.
+
+If this project uses React or another framework, implement the tracker using the framework's recommended global/head mechanism rather than adding it to a single page.
+
+Please confirm where you added the tracker and verify that it will load across all routes.
+```
+
+Replace the placeholders or provide your actual Trfyx installation values when Lovable asks for them.
+
+## Verify installation
+
+1. Ask Lovable to apply the changes.
+2. Review the generated implementation.
+3. Publish the site.
+4. Visit the live site and navigate across multiple routes.
+5. Check your Trfyx dashboard for incoming traffic.
+
+## Troubleshooting
+
+If tracking only works on one page, ask Lovable to move the tracker to the application's global layout. Also verify that the Website ID and domain are correct and that the published version contains the latest changes.

@@ -1,0 +1,34 @@
+---
+title: "Ghost CMS"
+description: "Install Trfyx on a Ghost CMS site using Code Injection."
+sidebarTitle: "Ghost CMS"
+icon: "ghost"
+---
+
+# Install Trfyx on Ghost CMS
+
+Ghost provides a built-in Code Injection feature that makes adding the Trfyx tracker straightforward.
+
+## Add the tracker with Code Injection
+
+<Steps>
+  <Step title="Open Ghost settings">
+    Log in to your Ghost admin dashboard and open **Settings → Code Injection**.
+  </Step>
+  <Step title="Add the tracker to Site Header">
+    Paste the Trfyx tracking snippet from your project installation settings into the **Site Header** section.
+  </Step>
+  <Step title="Save the changes">
+    Save the Code Injection settings and open your published site.
+  </Step>
+</Steps>
+
+## Alternative: custom theme
+
+If you maintain a custom Ghost theme, you can add the Trfyx snippet directly to the theme's `default.hbs` file before the closing `</head>` tag.
+
+## Verify installation
+
+Visit the published site and check Trfyx for incoming activity. Ghost code changes are reflected on the published site, so verify against the live site rather than relying only on the editor preview.
+
+If data is missing, check the browser console, CSP rules, hostname configuration, consent settings, and whether the tracker has been installed more than once.

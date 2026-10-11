@@ -33,6 +33,32 @@
         ]
       },
       {
+        "group": "Installation Guide",
+        "icon": "download",
+        "pages": [
+          "shopify",
+          "google-tag-manager",
+          "nextjs-app-router",
+          "webflow",
+          "django",
+          "react-router",
+          "vuejs",
+          "ghost-cms",
+          "framer",
+          "laravel",
+          "bubble",
+          "podia",
+          "kajabi",
+          "wix",
+          "squarespace",
+          "lovable",
+          "bolt",
+          "vercel-v0",
+          "replit",
+          "astro"
+        ]
+      },
+      {
         "group": "Goals & Attribution",
         "icon": "target",
         "pages": [
