@@ -1,11 +1,11 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
-  "name": "Trfyx Help Center",
+  "theme": "maple",
+  "name": "Trfyx Documentation",
   "colors": {
-    "primary": "#E1885B",
-    "light": "#E3BE90",
-    "dark": "#D27D0B"
+    "primary": "#6E56CF",
+    "light": "#8B7AE8",
+    "dark": "#A78BFA"
   },
   "navigation": {
     "pages": [
@@ -111,9 +111,16 @@
       "vscode"
     ]
   },
-  "description": "Official Trfyx documentation for setup, analytics, user behavior, conversion, revenue attribution, data imports, and embedded dashboards.",
+  "description": "Developer documentation for Trfyx — analytics, attribution, funnels, session replay, user journeys, goals, revenue, and integrations for SaaS and modern web products.",
   "logo": {
     "light": "/images/trfyx-icon.png",
     "dark": "/images/trfyx-dark.svg"
+  },
+  "fonts": {
+    "family": "Inter",
+    "weight": 400
+  },
+  "styling": {
+    "codeblocks": {}
   }
 }

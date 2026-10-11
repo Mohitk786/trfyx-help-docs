@@ -9,7 +9,9 @@ icon: "code"
 
 Trfyx needs to receive website or product activity before its analytics reports can be useful. This guide covers the implementation checks that apply across common web stacks.
 
-**Use the tracking snippet and stack-specific instructions displayed in your Trfyx workspace.** Do not copy a script URL, project key, or configuration from another website or from an unrelated analytics product.
+<Warning>
+  Use the tracking snippet and stack-specific instructions displayed in your Trfyx workspace. Do not copy a script URL, project key, or configuration from another project or from another analytics product.
+</Warning>
 
 ## Install the tracker
 
@@ -29,6 +31,10 @@ Trfyx needs to receive website or product activity before its analytics reports 
     Open the deployed site in a regular browser session and navigate through a few pages. Return to Trfyx and confirm the visit and expected activity are being recorded.
   </Step>
 </Steps>
+
+<Tip>
+  **Best practice:** install the tracker in the highest shared layout that covers the pages you want to measure. This keeps the implementation consistent and makes future maintenance easier.
+</Tip>
 
 ## Implementation checks
 
@@ -63,6 +69,10 @@ After deployment, confirm each of the following:
 - [ ] A test goal or event is recorded when the intended action completes.
 - [ ] The project, hostname, environment, and reporting date range are correct.
 - [ ] Test traffic is not being mistaken for production user activity.
+
+<Note>
+  **Important:** analytics data is only as reliable as the collection and event definitions behind it. Validate tracking before using a report to make product, marketing, or revenue decisions.
+</Note>
 
 ## If data is missing
 

@@ -7,7 +7,11 @@ icon: "triangle"
 
 # Install Trfyx in Next.js App Router
 
-The cleanest approach is to add the Trfyx tracker to your root layout so it is available across your application.
+The recommended approach is to load the Trfyx tracker from your root layout so it is available across the application without adding it to individual pages.
+
+<Note>
+  **Prerequisites:** You should have a working Next.js App Router project and access to the Trfyx project installation settings.
+</Note>
 
 ## Add the tracker to the root layout
 
@@ -33,6 +37,14 @@ export default function RootLayout({ children }) {
 ```
 
 Replace the placeholders with the values shown in your Trfyx project installation settings.
+
+<Warning>
+  Do not paste server-side secrets into this component. Anything included in client-side HTML or JavaScript can be visible to visitors. Use only the public project configuration intended for browser tracking.
+</Warning>
+
+<Tip>
+  Keep the tracker in the root layout rather than individual route components. This prevents duplicate installation and makes the integration easier to maintain.
+</Tip>
 
 ## Deploy
 

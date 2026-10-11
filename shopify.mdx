@@ -7,7 +7,7 @@ icon: shopping-bag
 
 # Add Trfyx to your Shopify store
 
-It takes about 3 minutes and requires no code. Once connected, Trfyx can automatically track:
+Connect Trfyx to Shopify without adding tracking code manually. Once connected, Trfyx can automatically track:
 
 - **Visitor analytics** — Pageviews, visitors, referrers, devices, countries, and more.
 - **Custom events** — `add_to_cart` and `initiate_checkout` events for conversion funnels.
@@ -17,6 +17,10 @@ It takes about 3 minutes and requires no code. Once connected, Trfyx can automat
 <Note>
 If you've previously installed the Trfyx tracking script manually on your Shopify store, remove it before connecting the Shopify integration. The integration installs the tracker automatically, and having both can cause duplicate tracking.
 </Note>
+
+<Tip>
+  Keep the Shopify integration as the single source of storefront tracking. If you also use a tag manager or manual script, verify that the same pageview and purchase events are not being collected twice.
+</Tip>
 
 ## Step 1: Create a Shopify app
 
@@ -42,6 +46,10 @@ To connect Trfyx to Shopify, first create a Shopify app and generate API credent
 4. Shopify will redirect you to your store's admin. Click **Install**.
 
 ## Step 3: Connect Shopify to Trfyx
+
+<Warning>
+  Treat the Shopify Client Secret as sensitive. Store it only in the Trfyx connection form or another secure server-side secret store. Never commit it to source control or expose it in browser code.
+</Warning>
 
 1. In the [Shopify Dev Dashboard](https://dev.shopify.com/), select your app and open **Settings**.
 2. In the **Credentials** section, copy your **Client ID** and **Client Secret**.
