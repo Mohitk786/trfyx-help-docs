@@ -37,7 +37,13 @@
         "icon": "download",
         "pages": [
           "shopify",
-          "google-tag-manager"
+          "google-tag-manager",
+          "nextjs-app-router",
+          "webflow",
+          "django",
+          "react-router",
+          "vuejs",
+          "ghost-cms"
         ]
       },
       {

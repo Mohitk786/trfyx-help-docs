@@ -1,0 +1,41 @@
+---
+title: "React Router"
+description: "Install Trfyx in a React Router application."
+sidebarTitle: "React Router"
+icon: "route"
+---
+
+# Install Trfyx in React Router
+
+Add the Trfyx tracker once at the application's root so it is available across routes.
+
+## Add the tracker
+
+Open your root component, commonly `App.jsx`, `App.tsx`, or your application entry point, and load the Trfyx tracker once.
+
+```tsx
+import { useEffect } from "react"
+
+export default function App() {
+  useEffect(() => {
+    const script = document.createElement("script")
+    script.defer = true
+    script.src = "YOUR_TRFYX_TRACKING_SCRIPT"
+    script.setAttribute("data-website-id", "YOUR_TRFYX_PROJECT_ID")
+    script.setAttribute("data-domain", "your_domain.com")
+    document.head.appendChild(script)
+
+    return () => script.remove()
+  }, [])
+
+  return <YourApp />
+}
+```
+
+Replace the placeholders with the values supplied by Trfyx.
+
+## Verify route tracking
+
+Deploy the app, visit the live site, and navigate through several React Router routes. Confirm that Trfyx receives the expected activity.
+
+Do not mount the tracker separately inside every route component. That can create duplicate scripts and duplicate collection.

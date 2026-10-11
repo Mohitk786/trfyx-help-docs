@@ -1,0 +1,36 @@
+---
+title: "Vue.js"
+description: "Install Trfyx in a Vue.js application."
+sidebarTitle: "Vue.js"
+icon: "code-2"
+---
+
+# Install Trfyx in Vue.js
+
+Add the Trfyx tracker from your application's main entry point so it loads for the whole application.
+
+## Add the tracker to `main.js` or `main.ts`
+
+```ts
+import { createApp } from "vue"
+import App from "./App.vue"
+
+const script = document.createElement("script")
+script.defer = true
+script.setAttribute("data-website-id", "YOUR_TRFYX_PROJECT_ID")
+script.setAttribute("data-domain", "your_domain.com")
+script.src = "YOUR_TRFYX_TRACKING_SCRIPT"
+document.head.appendChild(script)
+
+createApp(App).mount("#app")
+```
+
+Replace the placeholders with the configuration from your Trfyx project.
+
+## Alternative: `index.html`
+
+For a simple setup, you can place the Trfyx installation snippet directly in the `<head>` of the application's `index.html`.
+
+## Verify installation
+
+Deploy the application, visit the live URL, and check Trfyx for incoming activity. Navigate between client-side routes and make sure the tracker is not injected again by individual components.

@@ -1,0 +1,38 @@
+---
+title: "Django"
+description: "Install Trfyx in a Django application using your shared base template."
+sidebarTitle: "Django"
+icon: "server"
+---
+
+# Install Trfyx in Django
+
+The recommended approach is to add the Trfyx tracker to the base template used by your site's pages.
+
+## Add the tracker to your base template
+
+Open your shared template, commonly `templates/base.html`, and add the Trfyx installation snippet inside `<head>`.
+
+```html
+<head>
+  <!-- your existing head content -->
+  YOUR_TRFYX_TRACKING_SNIPPET
+</head>
+```
+
+Use the project-specific configuration shown in your Trfyx installation settings.
+
+## Optional: configure values through Django settings
+
+For deployments where the project identifier or domain differs by environment, keep the values in Django settings and expose only the required public configuration to the template.
+
+```python
+TRFYX_PROJECT_ID = "YOUR_TRFYX_PROJECT_ID"
+TRFYX_DOMAIN = "your_domain.com"
+```
+
+Then reference those values from the template instead of hard-coding them.
+
+## Verify installation
+
+Deploy the application, visit the live site, and check Trfyx for incoming activity. If nothing appears, inspect the browser network panel and console, then check CSP, hostname, consent, and duplicate-installation issues.
