@@ -3,9 +3,9 @@
   "theme": "mint",
   "name": "Trfyx Help Center",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#E1885B",
+    "light": "#DEF0EA",
+    "dark": "#D27D0B"
   },
   "navigation": {
     "pages": [
@@ -78,5 +78,9 @@
       "vscode"
     ]
   },
-  "description": "Official Trfyx documentation for setup, analytics, user behavior, conversion, revenue attribution, data imports, and embedded dashboards."
+  "description": "Official Trfyx documentation for setup, analytics, user behavior, conversion, revenue attribution, data imports, and embedded dashboards.",
+  "logo": {
+    "light": "/images/trfyx-icon.png",
+    "dark": "/images/trfyx-dark.svg"
+  }
 }
