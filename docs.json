@@ -36,7 +36,8 @@
         "group": "Installation Guide",
         "icon": "download",
         "pages": [
-          "shopify"
+          "shopify",
+          "google-tag-manager"
         ]
       },
       {

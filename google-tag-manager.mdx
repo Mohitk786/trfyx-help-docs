@@ -1,0 +1,35 @@
+---
+title: "Google Tag Manager"
+description: "Install Trfyx using Google Tag Manager without modifying your application code."
+sidebarTitle: "Google Tag Manager"
+icon: "tag"
+---
+
+# Install Trfyx with Google Tag Manager
+
+Use Google Tag Manager (GTM) to deploy the Trfyx tracking script across your website without changing your application code directly.
+
+## Add the Trfyx tag
+
+<Steps>
+  <Step title="Open your GTM container">
+    Sign in to Google Tag Manager and select the container used by your production website.
+  </Step>
+  <Step title="Create a Custom HTML tag">
+    Go to **Tags → New**, choose **Custom HTML**, and add the Trfyx tracking snippet from your Trfyx project installation settings.
+
+    Use the exact project-specific identifier and script configuration provided by Trfyx.
+  </Step>
+  <Step title="Trigger on all pages">
+    Set the trigger to **All Pages** so the tracker loads across your website.
+  </Step>
+  <Step title="Save and publish">
+    Save the tag, submit the container changes, and publish the container.
+  </Step>
+</Steps>
+
+## Verify installation
+
+Use GTM Preview mode to confirm the tag fires, then visit the live website and check Trfyx for incoming activity.
+
+If data is missing, verify the tag trigger, project identifier, browser console, CSP configuration, and whether another Trfyx installation is already present. Avoid installing the tracker both through GTM and your application unless you intentionally prevent duplicate collection.
