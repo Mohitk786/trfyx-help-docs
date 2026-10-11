@@ -2,61 +2,57 @@
 title: "Vercel v0"
 description: "Add Trfyx analytics to a Vercel v0 project."
 icon: "sparkles"
+sidebarTitle: "Vercel v0"
 ---
 
 # Add Trfyx to your Vercel v0 project
 
-Vercel v0 generates React and Next.js applications from natural-language prompts. The simplest way to install Trfyx is to ask v0 to add the Trfyx tracking snippet to the application's root layout.
+Vercel v0 can generate React and Next.js applications. Ask v0 to add Trfyx to the root layout and then review the generated code before deploying.
 
-## 1. Get your Trfyx tracking details
+## 1. Set up the tracking snippet
 
-Open your Trfyx project and copy the tracking snippet shown in your project installation settings. Use the exact project-specific script URL, project identifier, and domain provided by Trfyx.
+Use the Trfyx Website ID and domain for the site you want to measure. The script URL is `https://app.trfyx.com/script.js`.
 
-Do not copy another project's identifiers or use a DataFast tracking URL.
+```html
+<script
+  defer
+  data-website-id="YOUR_TRFYX_PROJECT_ID"
+  data-domain="yourdomain.com"
+  src="https://app.trfyx.com/script.js"
+></script>
+```
+
+<Warning>
+  Replace `YOUR_TRFYX_PROJECT_ID` with your Trfyx Website ID and `yourdomain.com` with your website's domain. Keep the script URL exactly as shown; do not use a DataFast URL or another project's identifier.
+</Warning>
 
 ## 2. Ask v0 to add tracking
 
-Open your project in v0 and use a prompt similar to:
+Open your project in v0 and use a prompt similar to this:
 
 ```text
-Add Trfyx analytics tracking to my application.
+Add Trfyx analytics to my application.
 
-Use the Trfyx tracking snippet from my project and integrate it into the root layout so it loads across the entire application.
+Use https://app.trfyx.com/script.js as the script URL, data-website-id="YOUR_TRFYX_PROJECT_ID", and data-domain="yourdomain.com". I will provide the actual Website ID and domain values.
 
-Requirements:
-- Add the script once at the application/root layout level.
-- Make sure it works across all routes.
-- Preserve the script attributes and configuration exactly as provided by Trfyx.
-- Do not add duplicate tracking scripts to individual pages.
-- Show me which file you changed and explain where the tracking code was added.
+Integrate the tracker into the root layout (for example, app/layout.tsx for a Next.js App Router project) using the framework's recommended script mechanism. It must load across the entire application and must not be added separately to individual pages.
+
+Keep the tracker installed once. Show me which file you changed and explain how to verify the script and network requests.
 ```
-
-For a Next.js project, v0 will typically place the integration in `app/layout.tsx`, `app/layout.jsx`, or the application's equivalent root layout.
 
 ## 3. Review and deploy
 
-Before deploying, verify that the generated code contains the correct Trfyx project configuration and that the tracker is not included more than once.
+Before deploying, confirm that the generated code includes `https://app.trfyx.com/script.js`, the correct Website ID, and the correct domain. Make sure another copy of the tracker is not already installed.
 
-Deploy the application from v0/Vercel, then open the live URL.
+Deploy the application through your normal Vercel workflow and open the live URL.
 
 ## 4. Verify tracking
 
-After deployment:
-
-1. Visit the live website yourself.
-2. Open your browser's developer tools and check the Network tab for the Trfyx tracking request.
-3. Check your Trfyx dashboard for the visit and page activity.
-4. Navigate between several routes to confirm tracking continues across the application.
+1. Visit the live website.
+2. Open browser Developer Tools and check the **Network** tab for the Trfyx script and tracking requests.
+3. Navigate between several routes.
+4. Check [app.trfyx.com](https://app.trfyx.com/) for activity in the matching project.
 
 ## Troubleshooting
 
-If data does not appear, ask v0 to inspect the integration and verify:
-
-- The tracker is installed in the root layout.
-- The Trfyx script is actually loading in the browser.
-- The correct Trfyx project identifier and domain are being used.
-- Content Security Policy settings are not blocking the script or event requests.
-- A second copy of the tracker has not been added elsewhere.
-- You are testing the deployed environment associated with the Trfyx project.
-
-Trfyx may not record development traffic in the same way as production, so always confirm the integration on the deployed site.
+If no data appears, verify the tracker is in the root layout, the project ID and domain are correct, and Content Security Policy (CSP) is not blocking the script or requests. Confirm you are checking the deployed environment associated with the Trfyx project.

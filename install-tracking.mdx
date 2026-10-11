@@ -9,8 +9,25 @@ icon: "code"
 
 Trfyx needs to receive website or product activity before its analytics reports can be useful. This guide covers the implementation checks that apply across common web stacks.
 
+<Note>
+  The Trfyx browser tracker is loaded from `https://app.trfyx.com/script.js`. Use that URL in your installation. The framework-specific guides below show how to load the same tracker in different stacks.
+</Note>
+
+## Standard HTML snippet
+
+For a traditional HTML site, add this snippet inside the shared `<head>` section:
+
+```html
+<script
+  defer
+  data-website-id="YOUR_TRFYX_PROJECT_ID"
+  data-domain="yourdomain.com"
+  src="https://app.trfyx.com/script.js"
+></script>
+```
+
 <Warning>
-  Use the tracking snippet and stack-specific instructions displayed in your Trfyx workspace. Do not copy a script URL, project key, or configuration from another project or from another analytics product.
+  Replace `YOUR_TRFYX_PROJECT_ID` with your Trfyx Website ID and `yourdomain.com` with the domain you want to track. Do not copy another project's Website ID. The script URL is shown explicitly above and should not be replaced with a placeholder.
 </Warning>
 
 ## Install the tracker

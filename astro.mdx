@@ -10,7 +10,7 @@ Astro sites can install Trfyx through a shared layout so the tracker is included
 
 ## 1. Get your Trfyx tracking details
 
-Open your Trfyx project and copy the tracking snippet from the installation settings.
+Use the snippet below and replace its Website ID and domain placeholders with the values for your Trfyx project. The tracking script URL is `https://app.trfyx.com/script.js`.
 
 Use the exact script URL, project identifier, and domain supplied by Trfyx. Do not replace them with values from another project or analytics provider.
 
@@ -43,7 +43,9 @@ const { title } = Astro.props;
 </html>
 ```
 
-Use the snippet generated for your Trfyx project rather than manually constructing analytics configuration.
+<Warning>
+  Replace `YOUR_TRFYX_PROJECT_ID` with your Trfyx Website ID and `yourdomain.com` with the domain you want to track. Keep the script URL as `https://app.trfyx.com/script.js`.
+</Warning>
 
 Make sure your pages actually use the shared layout. For example:
 

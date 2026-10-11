@@ -7,36 +7,53 @@ icon: "wand-sparkles"
 
 # Add Trfyx to your Lovable website
 
-Lovable generates the application code for you, so the easiest setup is to ask its AI assistant to add the Trfyx tracker in the correct global location.
+Ask Lovable to add the Trfyx tracker to your app's shared layout or document head. The tracker must load once across the site, not separately inside each page.
 
-## Get your Trfyx details
+## 1. Get the Trfyx tracking values
 
-From your Trfyx project, copy the Website ID and domain used by the tracking installation. Use the script URL supplied by Trfyx.
+Use your Trfyx Website ID and the domain you want to measure. The tracking script URL is:
 
-## Ask Lovable to install Trfyx
+`https://app.trfyx.com/script.js`
 
-Paste a prompt like this into your Lovable project:
+This is the reference snippet Lovable should implement, adapted to your project's framework:
 
-```text
-Add Trfyx analytics tracking to my website.
-
-I need the tracker to load on every page and route. Use the Trfyx tracking script and the Website ID and domain I provide.
-
-If this project uses React or another framework, implement the tracker using the framework's recommended global/head mechanism rather than adding it to a single page.
-
-Please confirm where you added the tracker and verify that it will load across all routes.
+```html
+<script
+  defer
+  data-website-id="YOUR_TRFYX_PROJECT_ID"
+  data-domain="yourdomain.com"
+  src="https://app.trfyx.com/script.js"
+></script>
 ```
 
-Replace the placeholders or provide your actual Trfyx installation values when Lovable asks for them.
+<Warning>
+  Replace `YOUR_TRFYX_PROJECT_ID` with your Trfyx Website ID and `yourdomain.com` with the domain you want to track. Keep the script URL exactly as shown.
+</Warning>
 
-## Verify installation
+## 2. Ask Lovable to install Trfyx
 
-1. Ask Lovable to apply the changes.
-2. Review the generated implementation.
-3. Publish the site.
-4. Visit the live site and navigate across multiple routes.
-5. Check your Trfyx dashboard for incoming traffic.
+Paste this prompt into your Lovable project:
+
+```text
+Install Trfyx analytics in my application.
+
+Use this tracking script URL: https://app.trfyx.com/script.js
+Use data-website-id="YOUR_TRFYX_PROJECT_ID" and data-domain="yourdomain.com".
+
+Replace those two values with the Trfyx Website ID and domain I provide. Follow this project's framework conventions and add the tracker to the global document head or root layout so it runs across all pages and routes.
+
+Install it once only. Do not add duplicate copies to individual pages or components. Show me the file you changed and explain how to verify that the tracker loads.
+```
+
+Review Lovable's changes before publishing. If the app uses React or Next.js, prefer its shared root layout or framework script component rather than adding a raw script to a single page.
+
+## 3. Publish and verify
+
+1. Publish the site.
+2. Open the public URL in a normal browser tab.
+3. Visit the homepage and several additional routes.
+4. Open [app.trfyx.com](https://app.trfyx.com/) and check that activity appears in the correct Trfyx project.
 
 ## Troubleshooting
 
-If tracking only works on one page, ask Lovable to move the tracker to the application's global layout. Also verify that the Website ID and domain are correct and that the published version contains the latest changes.
+If only one page is tracked, move the tracker to the global layout. If no data appears, verify the Website ID and domain, inspect the browser's **Console** and **Network** tabs, and check whether CSP, consent settings, or browser extensions block the script. Remove any duplicate installation.
