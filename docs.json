@@ -50,6 +50,11 @@
           "ghost-cms",
           "framer",
           "laravel",
+          {
+            "group": "Proxy",
+            "icon": "shield-check",
+            "pages": []
+          },
           "bubble",
           "podia",
           "kajabi",
