@@ -1,85 +1,73 @@
 ---
-title: "Astro"
-description: "Add Trfyx analytics to an Astro project."
+title: "Add Trfyx to your Astro project"
+description: "Learn how to add the Trfyx tracker to a shared Astro layout so it tracks page views across your site, then deploy and verify incoming activity in your dashboard."
+sidebarTitle: "Astro"
 icon: "rocket"
 ---
 
-# Add Trfyx to your Astro project
+Astro sites can install Trfyx through a shared layout so the tracker is included across all pages.
 
-Astro sites can install Trfyx through a shared layout so the tracker is included across pages.
+<Steps>
+  <Step title="Get your tracking details">
+    Use the project snippet from your Trfyx installation settings. Keep the script URL as `https://app.trfyx.com/script.js` and replace only the Website ID and domain placeholders with values for your Trfyx project. Do not reuse another project's identifier.
+  </Step>
+  <Step title="Add the tracker to your layout">
+    Add the tracker to the layout used by your site's pages. For example, if your project has `src/layouts/Layout.astro`:
 
-## 1. Get your Trfyx tracking details
+    ```astro src/layouts/Layout.astro
+    ---
+    const { title } = Astro.props;
+    ---
+    
+    <!doctype html>
+    <html lang="en">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width" />
+        <title>{title}</title>
+    
+        <script
+          defer
+          data-website-id="YOUR_TRFYX_PROJECT_ID"
+          data-domain="yourdomain.com"
+          src="https://app.trfyx.com/script.js"
+        ></script>
+      </head>
+      <body>
+        <slot />
+      </body>
+    </html>
+    ```
 
-Use the snippet below and replace its Website ID and domain placeholders with the values for your Trfyx project. The tracking script URL is `https://app.trfyx.com/script.js`.
+    <Warning>
+      Replace `YOUR_TRFYX_PROJECT_ID` with your Trfyx Website ID and `yourdomain.com` with the domain you want to track. Keep the script URL as `https://app.trfyx.com/script.js`.
+    </Warning>
 
-Keep the script URL as `https://app.trfyx.com/script.js` and replace only the Website ID and domain placeholders with values for your Trfyx project. Do not reuse another project's identifier.
+    Make sure your pages use the shared layout. For example:
 
-## 2. Add the tracker to your shared layout
+    ```astro src/pages/index.astro
+    ---
+    import Layout from '../layouts/Layout.astro';
+    ---
+    
+    <Layout title="My site">
+      <main>
+        <h1>Welcome</h1>
+      </main>
+    </Layout>
+    ```
 
-The recommended approach is to add the tracker to the layout used by your site's pages. For example, if your project has `src/layouts/Layout.astro`:
-
-```astro
----
-const { title } = Astro.props;
----
-
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
-    <title>{title}</title>
-
-    <script
-      defer
-      data-website-id="YOUR_TRFYX_PROJECT_ID"
-      data-domain="yourdomain.com"
-      src="https://app.trfyx.com/script.js"
-    ></script>
-  </head>
-  <body>
-    <slot />
-  </body>
-</html>
-```
-
-<Warning>
-  Replace `YOUR_TRFYX_PROJECT_ID` with your Trfyx Website ID and `yourdomain.com` with the domain you want to track. Keep the script URL as `https://app.trfyx.com/script.js`.
-</Warning>
-
-Make sure your pages actually use the shared layout. For example:
-
-```astro
----
-import Layout from '../layouts/Layout.astro';
----
-
-<Layout title="My site">
-  <main>
-    <h1>Welcome</h1>
-  </main>
-</Layout>
-```
-
-## Alternative: add it to individual page heads
-
-If your project does not use a shared layout, the Trfyx snippet can be added to each page's `<head>`. A shared layout is preferred because it reduces the risk of missing pages or installing the tracker multiple times.
-
-## 3. Build and deploy
-
-Build your Astro project and deploy it using your normal hosting provider.
-
-Check the generated production site rather than relying only on local development when verifying analytics.
-
-## 4. Verify tracking
-
-After deployment:
-
-1. Open the live website.
-2. Visit multiple pages.
-3. Use browser developer tools to confirm the Trfyx script loads successfully.
-4. Check the Network tab for tracking requests.
-5. Check your Trfyx dashboard for incoming page activity.
+    <Note>
+      If your project does not use a shared layout, add the Trfyx snippet to each page's `<head>`. A shared layout is preferred because it reduces the risk of missing pages or installing the tracker multiple times.
+    </Note>
+  </Step>
+  <Step title="Build and deploy">
+    Build your Astro project and deploy it using your normal hosting provider. Check the generated production site rather than relying only on local development when verifying analytics.
+  </Step>
+  <Step title="Verify installation">
+    After deployment, open the live website and visit multiple pages. Use browser developer tools to confirm the Trfyx script loads successfully and check the **Network** tab for tracking requests. Then check your Trfyx dashboard for incoming page activity.
+  </Step>
+</Steps>
 
 ## Troubleshooting
 
@@ -87,9 +75,34 @@ If analytics are not appearing:
 
 - Confirm every relevant page uses the layout containing the tracker.
 - Confirm the exact Trfyx project snippet is being rendered in the final HTML.
-- Check for CSP restrictions that could block the script or event requests.
+- Check for Content Security Policy restrictions that could block the script or event requests.
 - Confirm the configured domain and project identifier belong to the correct Trfyx project.
 - Search the codebase for multiple Trfyx installations and remove duplicates.
 - Test the deployed site rather than only localhost.
 
 For Astro projects using server-side rendering, middleware, or a custom proxy, keep the standard installation separate from any advanced proxy configuration so you can isolate tracking problems more easily.
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Analytics overview" icon="chart-line" href="/analytics/overview">
+    Review your Trfyx traffic and behavior reports.
+  </Card>
+
+  <Card title="Goals" icon="bullseye" href="/goals">
+    Define the actions that matter to your business.
+  </Card>
+
+  <Card title="Funnels" icon="filter" href="/funnels">
+    Measure where users convert or drop off.
+  </Card>
+
+  <Card title="Session replay" icon="film" href="/session-replay">
+    Watch how visitors interact with your pages.
+  </Card>
+</CardGroup>
+
+## Related topics
+
+- [Astro Proxy](/astro-proxy)
+- [Proxy setup guide](/proxy-guide)

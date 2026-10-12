@@ -1,64 +1,77 @@
 ---
-title: "Flask Proxy"
+title: "Proxy Trfyx through Flask"
 sidebarTitle: "Flask"
 description: "Proxy Trfyx analytics through Flask."
-icon: "flask-conical"
+icon: "flask"
 ---
-
-# Proxy Trfyx with Flask
 
 Use Flask to expose same-origin routes for the Trfyx script and event collection.
 
-## 1. Install dependencies
+<Steps>
+  <Step title="Install dependencies">
+    ```bash Terminal
+    pip install flask requests
+    ```
+  </Step>
+  <Step title="Add proxy routes">
+    ```python app.py
+    from flask import Flask, request, Response
+    import requests
+    
+    app = Flask(__name__)
+    
+    @app.get("/script.js")
+    def script():
+        r = requests.get("https://app.trfyx.com/script.js", timeout=5)
+        return Response(r.content, status=r.status_code, content_type="application/javascript")
+    
+    @app.post("/api/events")
+    def events():
+        headers = dict(request.headers)
+        headers["Origin"] = request.host_url.rstrip("/")
+        headers["X-Forwarded-For"] = request.headers.get("X-Forwarded-For", request.remote_addr)
+    
+        r = requests.post(
+            "https://app.trfyx.com/api/events",
+            data=request.get_data(),
+            headers=headers,
+            timeout=5,
+        )
+    
+        return Response(r.content, status=r.status_code, content_type=r.headers.get("Content-Type", "application/json"))
+    ```
+  </Step>
+  <Step title="Update your tracker">
+    ```html index.html
+    <script
+      defer
+      data-website-id="YOUR_TRFYX_PROJECT_ID"
+      data-domain="yourdomain.com"
+      src="/script.js"
+    ></script>
+    ```
+  </Step>
+  <Step title="Verify installation">
+    Confirm the browser uses your `/script.js` and `/api/events` endpoints and that activity appears in Trfyx.
 
-```bash
-pip install flask requests
-```
+    <Warning>
+      Do not trust an arbitrary client-supplied `X-Forwarded-For` header in a public deployment. Configure your trusted proxy/load-balancer chain correctly so the forwarded IP represents the real visitor.
+    </Warning>
+  </Step>
+</Steps>
 
-## 2. Add proxy routes
+## Next steps
 
-```python
-from flask import Flask, request, Response
-import requests
+<CardGroup cols={2}>
+  <Card title="Goals" icon="bullseye" href="/goals">
+  </Card>
 
-app = Flask(__name__)
+  <Card title="Funnels" icon="filter" href="/funnels">
+  </Card>
 
-@app.get("/script.js")
-def script():
-    r = requests.get("https://app.trfyx.com/script.js", timeout=5)
-    return Response(r.content, status=r.status_code, content_type="application/javascript")
+  <Card title="Managed Proxy" icon="shield-halved" href="/managed-proxy">
+  </Card>
 
-@app.post("/api/events")
-def events():
-    headers = dict(request.headers)
-    headers["Origin"] = request.host_url.rstrip("/")
-    headers["X-Forwarded-For"] = request.headers.get("X-Forwarded-For", request.remote_addr)
-
-    r = requests.post(
-        "https://app.trfyx.com/api/events",
-        data=request.get_data(),
-        headers=headers,
-        timeout=5,
-    )
-
-    return Response(r.content, status=r.status_code, content_type=r.headers.get("Content-Type", "application/json"))
-```
-
-## 3. Update your tracker
-
-```html
-<script
-  defer
-  data-website-id="YOUR_TRFYX_PROJECT_ID"
-  data-domain="yourdomain.com"
-  src="/script.js"
-></script>
-```
-
-## Verify
-
-Confirm the browser uses your `/script.js` and `/api/events` endpoints and that activity appears in Trfyx.
-
-<Warning>
-  Do not trust an arbitrary client-supplied `X-Forwarded-For` header in a public deployment. Configure your trusted proxy/load-balancer chain correctly so the forwarded IP represents the real visitor.
-</Warning>
+  <Card title="Troubleshooting" icon="life-ring" href="/troubleshooting">
+  </Card>
+</CardGroup>

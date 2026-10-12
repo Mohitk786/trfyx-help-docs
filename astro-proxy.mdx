@@ -1,60 +1,83 @@
 ---
-title: "Astro Proxy"
+title: "Proxy Trfyx with Astro"
 sidebarTitle: "Astro"
 description: "Proxy Trfyx analytics through Astro server routes."
-icon: "rocket"
+icon: "star"
 ---
-
-# Proxy Trfyx with Astro
 
 For Astro SSR or server deployments, expose same-origin routes that forward the Trfyx script and event requests.
 
-## Script route
+<Steps>
+  <Step title="Create the script route">
+    Create `src/pages/script.js.ts`:
 
-Create `src/pages/script.js.ts`:
+    ```ts src/pages/script.js.ts
+    export async function GET() {
+      const response = await fetch("https://app.trfyx.com/script.js");
+      return new Response(await response.arrayBuffer(), {
+        status: response.status,
+        headers: { "Content-Type": "application/javascript" },
+      });
+    }
+    ```
+  </Step>
+  <Step title="Create the event route">
+    Create `src/pages/api/events.ts` and forward the request body to `https://app.trfyx.com/api/events` while preserving the visitor IP.
 
-```ts
-export async function GET() {
-  const response = await fetch("https://app.trfyx.com/script.js");
-  return new Response(await response.arrayBuffer(), {
-    status: response.status,
-    headers: { "Content-Type": "application/javascript" },
-  });
-}
-```
+    ```ts src/pages/api/events.ts
+    export async function POST({ request, clientAddress }) {
+      const body = await request.arrayBuffer();
+      const response = await fetch("https://app.trfyx.com/api/events", {
+        method: "POST",
+        headers: {
+          "Content-Type": request.headers.get("content-type") || "application/json",
+          "Origin": new URL(request.url).origin,
+          "X-Forwarded-For": request.headers.get("x-forwarded-for") || clientAddress,
+        },
+        body,
+      });
+    
+      return new Response(await response.arrayBuffer(), { status: response.status });
+    }
+    ```
+  </Step>
+  <Step title="Update the tracker">
+    Replace the default Trfyx script with the proxied path:
 
-## Event route
-
-Create `src/pages/api/events.ts` and forward the request body to `https://app.trfyx.com/api/events` while preserving the visitor IP.
-
-```ts
-export async function POST({ request, clientAddress }) {
-  const body = await request.arrayBuffer();
-  const response = await fetch("https://app.trfyx.com/api/events", {
-    method: "POST",
-    headers: {
-      "Content-Type": request.headers.get("content-type") || "application/json",
-      "Origin": new URL(request.url).origin,
-      "X-Forwarded-For": request.headers.get("x-forwarded-for") || clientAddress,
-    },
-    body,
-  });
-
-  return new Response(await response.arrayBuffer(), { status: response.status });
-}
-```
-
-## Update the tracker
-
-```html
-<script
-  defer
-  data-website-id="YOUR_TRFYX_PROJECT_ID"
-  data-domain="yourdomain.com"
-  src="/script.js"
-></script>
-```
+    ```html index.html
+    <script
+      defer
+      data-website-id="YOUR_TRFYX_PROJECT_ID"
+      data-domain="yourdomain.com"
+      src="/script.js"
+    ></script>
+    ```
+  </Step>
+  <Step title="Verify installation">
+    Deploy your Astro site and open it in a browser. Check the Network panel to confirm both `script.js` and `/api/events` requests use your domain. Then verify the visit appears in Trfyx.
+  </Step>
+</Steps>
 
 <Note>
   For a fully static Astro site, use [Managed Proxy](/managed-proxy) instead of adding server routes.
 </Note>
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Proxy setup" icon="signs-post" href="/proxy-guide">
+    Read the full proxy setup guide
+  </Card>
+
+  <Card title="Managed Proxy" icon="shield-halved" href="/managed-proxy">
+    Let Trfyx manage the proxy for you
+  </Card>
+
+  <Card title="Goals" icon="bullseye" href="/goals">
+    Start tracking goals with Trfyx
+  </Card>
+
+  <Card title="Troubleshooting" icon="life-ring" href="/troubleshooting">
+    Fix common proxy issues
+  </Card>
+</CardGroup>

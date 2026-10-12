@@ -1,67 +1,59 @@
 ---
-title: "Google Tag Manager"
-description: "Install Trfyx through Google Tag Manager with a production-ready tracking setup, verification steps, and troubleshooting guidance."
+title: "Get started with Google Tag Manager"
+description: "Install Trfyx through Google Tag Manager using a production-ready tracking snippet with verification steps and troubleshooting guidance for your website."
 sidebarTitle: "Google Tag Manager"
 icon: "tag"
 ---
 
-# Get started with Google Tag Manager
-
-Install Trfyx through **Google Tag Manager (GTM)** without changing your website's source code. This is a good option when your team already manages analytics and marketing scripts from a central GTM container.
+Install Trfyx through Google Tag Manager (GTM) without changing your website's source code. This is a good option when your team already manages analytics and marketing scripts from a central GTM container.
 
 <Note>
-  **Before you start:** Make sure you have access to the GTM container used by your production website and a Trfyx project ready to receive traffic.
+  Make sure you have access to the GTM container used by your production website and a Trfyx project ready to receive traffic.
 </Note>
 
-## Add the Trfyx tag
+<Steps>
+  <Step title="Create a new tag">
+    Log in to your [Google Tag Manager account](https://tagmanager.google.com/) and select the container used by your website. Click **Tags → New** and give the tag a descriptive name, such as **Trfyx Analytics**.
+  </Step>
+  <Step title="Add the HTML code">
+    Click **Tag Configuration** and select **Custom HTML**. Paste the following JavaScript code into the HTML field:
 
-1. Log in to your [Google Tag Manager account](https://tagmanager.google.com/).
-2. Select the **container** used by your website.
-3. Click **Tags → New**.
-4. Give the tag a descriptive name, such as **Trfyx Analytics**.
-5. Click **Tag Configuration** and select **Custom HTML**.
-6. Paste the following JavaScript code into the HTML field:
+    ```html GTM custom HTML
+    <script>
+      (function () {
+        var script = document.createElement('script');
+        script.defer = true;
+        script.setAttribute('data-website-id', 'YOUR_TRFYX_PROJECT_ID');
+        script.setAttribute('data-domain', 'yourdomain.com');
+        script.src = 'https://app.trfyx.com/script.js';
+        document.head.appendChild(script);
+      })();
+    </script>
+    ```
 
-```html
-<script>
-  (function () {
-    var script = document.createElement('script');
-    script.defer = true;
-    script.setAttribute('data-website-id', 'YOUR_TRFYX_PROJECT_ID');
-    script.setAttribute('data-domain', 'yourdomain.com');
-    script.src = 'https://app.trfyx.com/script.js';
-    document.head.appendChild(script);
-  })();
-</script>
-```
+    <Warning>
+      Replace `YOUR_TRFYX_PROJECT_ID` and `yourdomain.com` with the values for the Trfyx project you want to track. Do not copy an ID or domain from another project.
+    </Warning>
 
-<Warning>
-  Replace `YOUR_TRFYX_PROJECT_ID` and `yourdomain.com` with the values for the Trfyx project you want to track. Do not copy an ID or domain from another project.
-</Warning>
+    <Tip>
+      Use the Custom HTML tag exactly as shown. The `<script>` wrapper is required because GTM is injecting the tracker into your website. Do not paste only the JavaScript body unless your GTM configuration specifically expects it.
+    </Tip>
+  </Step>
+  <Step title="Set the trigger and publish">
+    Click **Triggering**, select **All Pages**, and click **Add**. Then click **Save**, click **Submit** in the top-right corner, and **Publish** the container.
+  </Step>
+  <Step title="Verify installation">
+    After publishing, verify the tag before relying on your analytics data.
 
-<Tip>
-  **Use the Custom HTML tag exactly as shown.** The `<script>` wrapper is required because GTM is injecting the tracker into your website. Do not paste only the JavaScript body unless your GTM configuration specifically expects it.
-</Tip>
+    **Test with GTM Preview:** Open **Preview** in Google Tag Manager and enter your production website URL. Confirm that the **Trfyx Analytics** tag fires when the page loads.
 
-7. Click **Triggering**, select **All Pages**, and click **Add**.
-8. Click **Save**.
-9. Click **Submit** in the top-right corner, then **Publish** the container.
+    **Verify the live website:** Open your published website in a normal browser window and navigate through a few pages. Then open [app.trfyx.com](https://app.trfyx.com/) and check that incoming activity appears for the correct project.
 
-## Verify your installation
-
-After publishing, verify the tag before relying on your analytics data.
-
-### 1. Test with GTM Preview
-
-Open **Preview** in Google Tag Manager and enter your production website URL. Confirm that the **Trfyx Analytics** tag fires when the page loads.
-
-### 2. Verify the live website
-
-Open your published website in a normal browser window and navigate through a few pages. Then open [app.trfyx.com](https://app.trfyx.com/) and check that incoming activity appears for the correct project.
-
-<Note>
-  Analytics data may take a short amount of time to appear. Make sure you are viewing the correct project, environment, hostname, and reporting date range before assuming tracking is broken.
-</Note>
+    <Note>
+      Analytics data may take a short amount of time to appear. Make sure you are viewing the correct project, environment, hostname, and reporting date range before assuming tracking is broken.
+    </Note>
+  </Step>
+</Steps>
 
 ## Common problems
 
@@ -93,9 +85,27 @@ Review your consent requirements and privacy configuration before collecting pro
 
 ## Next steps
 
-Once tracking is verified, continue with:
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="rocket" href="/quickstart">
+    Set up your first Trfyx reports.
+  </Card>
 
-- [Quickstart](/quickstart) — Set up your first Trfyx reports.
-- [Goals and conversions](/goals) — Define the actions that matter to your business.
-- [Funnels](/funnels) — Measure where users convert or drop off.
-- [Troubleshooting](/troubleshooting) — Diagnose missing or unexpected data.
+  <Card title="Goals" icon="bullseye" href="/goals">
+    Define the actions that matter to your business.
+  </Card>
+
+  <Card title="Funnels" icon="filter" href="/funnels">
+    Measure where users convert or drop off.
+  </Card>
+
+  <Card title="Troubleshooting" icon="life-ring" href="/troubleshooting">
+    Diagnose missing or unexpected data.
+  </Card>
+</CardGroup>
+
+## Related topics
+
+- [Webflow](/webflow)
+- [Install tracking](/install-tracking)
+- [Quickstart](/quickstart)
+- [Django](/django)

@@ -1,42 +1,63 @@
 ---
-title: "Kajabi"
-description: "Install Trfyx analytics on a Kajabi site."
+title: "Add Trfyx to your Kajabi site"
+description: "Install Trfyx analytics on a Kajabi site by adding the tracker to your theme's header code."
 sidebarTitle: "Kajabi"
 icon: "graduation-cap"
 ---
 
-# Add Trfyx to your Kajabi site
-
 Kajabi supports custom code through its website theme customization options. Add the tracker globally to measure your site consistently.
 
-## Add the tracking script
+<Steps>
+  <Step title="Open your theme settings">
+    Log in to your Kajabi dashboard, then open **Website → Themes** and customize the active theme.
+  </Step>
+  <Step title="Find the header code area">
+    Find the theme's custom or header code area.
+  </Step>
+  <Step title="Paste the Trfyx script">
+    Paste the Trfyx tracking script into the header code area:
 
-1. Log in to your Kajabi dashboard.
-2. Open **Website → Themes** and customize the active theme.
-3. Find the theme's custom or header code area.
-4. Paste the Trfyx tracking script.
-5. Replace the placeholders with the values from your Trfyx project.
-6. Save and publish the theme.
+    ```html kajabi-header.html
+    <script
+      defer
+      data-website-id="YOUR_TRFYX_PROJECT_ID"
+      data-domain="yourdomain.com"
+      src="https://app.trfyx.com/script.js"
+    ></script>
+    ```
 
-```html
-<script
-  defer
-  data-website-id="YOUR_TRFYX_PROJECT_ID"
-  data-domain="yourdomain.com"
-  src="https://app.trfyx.com/script.js"
-></script>
-```
-
-<Warning>
-  Replace `YOUR_TRFYX_PROJECT_ID` with the Website ID from your Trfyx project and `yourdomain.com` with the domain you want to track. Keep the script URL as `https://app.trfyx.com/script.js`. Do not copy another project's Website ID.
-</Warning>
-
-## Verify installation
-
-Open the published Kajabi site, visit a few pages, and check your Trfyx dashboard for incoming traffic.
-
-For a site with multiple themes or custom landing pages, make sure the tracker is present wherever traffic should be measured.
+    <Warning>
+      Replace `YOUR_TRFYX_PROJECT_ID` with the Website ID from your Trfyx project and `yourdomain.com` with the domain you want to track. Keep the script URL as `https://app.trfyx.com/script.js`. Do not copy another project's Website ID.
+    </Warning>
+  </Step>
+  <Step title="Save and publish">
+    Save and publish the theme.
+  </Step>
+  <Step title="Verify installation">
+    Open the published Kajabi site, visit a few pages, and check your Trfyx dashboard for incoming traffic. For a site with multiple themes or custom landing pages, make sure the tracker is present wherever traffic should be measured.
+  </Step>
+</Steps>
 
 ## Troubleshooting
 
 Check that the active theme contains the script, the changes were published, and the Website ID and domain match your Trfyx project.
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Goals" icon="bullseye" href="/goals">
+    Set up conversion goals to track what matters.
+  </Card>
+
+  <Card title="Funnels" icon="filter" href="/funnels">
+    Build funnels to analyze user drop-off.
+  </Card>
+
+  <Card title="Session replay" icon="film" href="/session-replay">
+    Watch real user sessions to understand behavior.
+  </Card>
+
+  <Card title="Troubleshooting" icon="life-ring" href="/troubleshooting">
+    Fix common tracking issues.
+  </Card>
+</CardGroup>

@@ -1,67 +1,92 @@
 ---
-title: "Next.js"
-description: "Install Trfyx in a Next.js application."
+title: "Install Trfyx in Next.js"
+description: "Learn how to install the Trfyx tracker in a Next.js App Router application by adding it to the root layout and verifying live page activity across routes."
 sidebarTitle: "Next.js"
-icon: "triangle"
+icon: "react"
 ---
-
-# Install Trfyx in Next.js
 
 The recommended approach is to load the Trfyx tracker from your root layout so it is available across the application without adding it to individual pages.
 
 <Note>
-  **Prerequisites:** You should have a working Next.js project using the App Router and access to the Trfyx project installation settings.
+  You should have a working Next.js project using the App Router and access to the Trfyx project installation settings.
 </Note>
 
-## Add the tracker to the root layout
+<Steps>
+  <Step title="Add the tracker to the root layout">
+    Open `app/layout.tsx` or `app/layout.jsx` and use the Script component to load the tracker:
 
-Open `app/layout.tsx` or `app/layout.jsx` and use the framework's script component or the installation snippet supplied by Trfyx.
+    ```tsx app/layout.tsx
+    import Script from "next/script"
+    
+    export default function RootLayout({ children }) {
+      return (
+        <html lang="en">
+          <body>
+            {children}
+            <Script
+              src="https://app.trfyx.com/script.js"
+              data-website-id="YOUR_TRFYX_PROJECT_ID"
+              data-domain="yourdomain.com"
+              strategy="afterInteractive"
+            />
+          </body>
+        </html>
+      )
+    }
+    ```
 
-```tsx
-import Script from "next/script"
+    <Warning>
+      Replace `YOUR_TRFYX_PROJECT_ID` with the Website ID from your Trfyx project and `yourdomain.com` with the domain you want to track. Keep the script URL as `https://app.trfyx.com/script.js`.
+    </Warning>
 
-export default function RootLayout({ children }) {
-  return (
-    <html lang="en">
-      <body>
-        {children}
-        <Script
-          src="https://app.trfyx.com/script.js"
-          data-website-id="YOUR_TRFYX_PROJECT_ID"
-          data-domain="yourdomain.com"
-          strategy="afterInteractive"
-        />
-      </body>
-    </html>
-  )
-}
-```
+    <Tip>
+      Keep the tracker in the root layout so it loads once across your application. Do not add the same tracker to individual pages or nested layouts.
+    </Tip>
 
-<Warning>
-  Replace `YOUR_TRFYX_PROJECT_ID` with the Website ID from your Trfyx project and `yourdomain.com` with the domain you want to track. Keep the script URL as `https://app.trfyx.com/script.js`.
-</Warning>
+    <Note>
+      Do not paste server-side secrets into this component. Anything included in client-side HTML or JavaScript can be visible to visitors. Use only the public project configuration intended for browser tracking.
+    </Note>
+  </Step>
+  <Step title="Deploy the application">
+    Build and deploy the application to the environment you want to measure. Avoid counting preview traffic as production traffic if your project has separate environments.
+  </Step>
+  <Step title="Verify installation">
+    Visit the deployed application and navigate between routes. Check Trfyx for the visit and page activity.
 
-<Tip>
-  Keep the tracker in the root layout so it loads once across your application. Do not add the same tracker to individual pages or nested layouts.
-</Tip>
+    **Common issues:**
 
-<Note>
-  Do not paste server-side secrets into this component. Anything included in client-side HTML or JavaScript can be visible to visitors. Use only the public project configuration intended for browser tracking.
-</Note>
+    - The script is rendered more than once through nested layouts or another integration.
+    - A Content Security Policy blocks the script or collection request.
+    - The wrong Trfyx project or hostname is configured.
+    - You are checking preview traffic while viewing production analytics.
 
-## Deploy
+    If your app uses a custom navigation architecture, verify route changes as well as full page loads.
+  </Step>
+</Steps>
 
-Build and deploy the application to the environment you want to measure. Avoid counting preview traffic as production traffic if your project has separate environments.
+## Related topics
 
-## Verify
+- [Next.js Proxy](/nextjs-proxy)
+- [Vercel v0](/vercel-v0)
+- [Lovable](/lovable)
+- [Proxy setup guide](/proxy-guide)
 
-Visit the deployed application and navigate between routes. Check Trfyx for the visit and page activity.
+## Next steps
 
-### Common issues
+<CardGroup cols={2}>
+  <Card title="Analytics overview" icon="chart-line" href="/analytics/overview">
+    Review your Trfyx traffic and behavior reports.
+  </Card>
 
-- The script is rendered more than once through nested layouts or another integration.
-- CSP blocks the script or collection request.
-- The wrong Trfyx project or hostname is configured.
-- You are checking preview traffic while viewing production analytics.
+  <Card title="Goals" icon="bullseye" href="/goals">
+    Define the actions that matter to your business.
+  </Card>
 
-If your app uses a custom navigation architecture, verify route changes as well as full page loads.
+  <Card title="Funnels" icon="filter" href="/funnels">
+    Measure where users convert or drop off.
+  </Card>
+
+  <Card title="Session replay" icon="film" href="/session-replay">
+    Watch how visitors interact with your pages.
+  </Card>
+</CardGroup>

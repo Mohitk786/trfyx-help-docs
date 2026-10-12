@@ -3,9 +3,9 @@
   "theme": "maple",
   "name": "Trfyx Documentation",
   "colors": {
-    "primary": "#6E56CF",
-    "light": "#8B7AE8",
-    "dark": "#A78BFA"
+    "primary": "#c4471f",
+    "light": "#d86c48",
+    "dark": "#c4471f"
   },
   "navigation": {
     "pages": [
@@ -21,7 +21,7 @@
       },
       {
         "group": "Analytics & Insights",
-        "icon": "chart-no-axes-combined",
+        "icon": "chart-line",
         "pages": [
           "analytics/overview"
         ],
@@ -29,7 +29,7 @@
       },
       {
         "group": "Behavior Analytics",
-        "icon": "mouse-pointer-click",
+        "icon": "arrow-pointer",
         "pages": [
           "session-replay",
           "user-journeys"
@@ -40,52 +40,53 @@
         "group": "Installation Guide",
         "icon": "download",
         "pages": [
-          "shopify",
           "google-tag-manager",
           "nextjs-app-router",
-          "webflow",
-          "django",
           "react-router",
           "vuejs",
-          "ghost-cms",
-          "framer",
+          "astro",
+          "django",
           "laravel",
+          "shopify",
+          "webflow",
+          "framer",
+          "wix",
+          "squarespace",
+          "ghost-cms",
           "bubble",
           "podia",
           "kajabi",
-          "wix",
-          "squarespace",
           "lovable",
           "bolt",
           "vercel-v0",
           "replit",
-          "astro"
+          {
+            "group": "Proxy setup",
+            "icon": "shield-halved",
+            "expanded": false,
+            "pages": [
+              "proxy-guide",
+              "managed-proxy",
+              "nextjs-proxy",
+              "express-proxy",
+              "php-proxy",
+              "fastapi-proxy",
+              "flask-proxy",
+              "vuejs-proxy",
+              "nginx-proxy",
+              "caddy-proxy",
+              "astro-proxy",
+              "firebase-proxy",
+              "laravel-proxy",
+              "digitalocean-proxy"
+            ]
+          }
         ],
         "expanded": false
       },
       {
-        "group": "Proxy Guide",
-        "icon": "shield-check",
-        "pages": [
-          "proxy-guide",
-          "managed-proxy",
-          "nextjs-proxy",
-          "express-proxy",
-          "php-proxy",
-          "fastapi-proxy",
-          "flask-proxy",
-          "vuejs-proxy",
-          "nginx-proxy",
-          "caddy-proxy",
-          "astro-proxy",
-          "firebase-proxy",
-          "laravel-proxy",
-          "digitalocean-proxy"
-        ]
-      },
-      {
         "group": "Goals & Attribution",
-        "icon": "target",
+        "icon": "bullseye",
         "pages": [
           "goals",
           "funnels",
@@ -104,7 +105,7 @@
       },
       {
         "group": "Troubleshooting",
-        "icon": "life-buoy",
+        "icon": "life-ring",
         "pages": [
           "troubleshooting"
         ],
@@ -137,11 +138,19 @@
     "dark": "/images/trfyx-dark.svg"
   },
   "fonts": {
-    "family": "DM Sans"
+    "heading": {
+      "family": "IBM Plex Sans",
+      "weight": 600
+    },
+    "body": {
+      "family": "Inter",
+      "weight": 400
+    }
   },
   "styling": {
     "eyebrows": "breadcrumbs",
-    "latex": true
+    "latex": true,
+    "codeblocks": "dark"
   },
   "favicon": {
     "light": "/images/trfyx-icon.png",
@@ -161,5 +170,15 @@
   },
   "variables": {
     "SCRIPT_PATH": "https://app.trfyx.com/script.js"
+  },
+  "appearance": {
+    "default": "dark",
+    "strict": false
+  },
+  "background": {
+    "color": {
+      "light": "#fbfaf8",
+      "dark": "#181818"
+    }
   }
 }

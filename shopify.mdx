@@ -1,18 +1,16 @@
 ---
-title: Shopify
-sidebarTitle: Shopify
-description: Connect Trfyx to your Shopify store to track visitors, events, orders, and revenue attribution.
-icon: shopping-bag
+title: "Add Trfyx to your Shopify store"
+description: "Connect Trfyx to Shopify to track visitors, events, orders, and revenue attribution automatically."
+sidebarTitle: "Shopify"
+icon: "bag-shopping"
 ---
-
-# Add Trfyx to your Shopify store
 
 Connect Trfyx to Shopify without adding tracking code manually. Once connected, Trfyx can automatically track:
 
-- **Visitor analytics** — Pageviews, visitors, referrers, devices, countries, and more.
-- **Custom events** — `add_to_cart` and `initiate_checkout` events for conversion funnels.
-- **Revenue from orders** — Completed orders from your Shopify store.
-- **Revenue attribution** — Connect revenue to traffic sources such as referrers, countries, and devices.
+- **Visitor analytics**: Pageviews, visitors, referrers, devices, countries, and more.
+- **Custom events**: `add_to_cart` and `initiate_checkout` events for conversion funnels.
+- **Revenue from orders**: Completed orders from your Shopify store.
+- **Revenue attribution**: Connect revenue to traffic sources such as referrers, countries, and devices.
 
 <Note>
 If you've previously installed the Trfyx tracking script manually on your Shopify store, remove it before connecting the Shopify integration. The integration installs the tracker automatically, and having both can cause duplicate tracking.
@@ -22,58 +20,79 @@ If you've previously installed the Trfyx tracking script manually on your Shopif
   Keep the Shopify integration as the single source of storefront tracking. If you also use a tag manager or manual script, verify that the same pageview and purchase events are not being collected twice.
 </Tip>
 
-## Step 1: Create a Shopify app
+<Steps>
+  <Step title="Create a Shopify app">
+    To connect Trfyx to Shopify, first create a Shopify app and generate API credentials.
 
-To connect Trfyx to Shopify, first create a Shopify app and generate API credentials.
+    1. Go to the [Shopify Dev Dashboard](https://dev.shopify.com/) and create an account if you don't have one.
+    2. Click **Create app** in the top-right corner.
+    3. Name your app, for example `Trfyx Integration`, and click **Create**.
+    4. Make sure the **Webhooks API Version** is set to `2025-10`.
+    5. Scroll to **Access > Scopes** and enable the required scopes:
+       - `read_orders` — Track revenue from orders.
+       - `read_products` — Track product views.
+       - `read_customers` — Attribute revenue to customers.
+       - `write_script_tags` — Install the Trfyx tracking script.
+    6. Scroll to the bottom and click **Release**.
+    7. In the confirmation modal, leave the fields empty and click **Release** again.
+  </Step>
+  <Step title="Install the Shopify app">
+    1. In the [Shopify Dev Dashboard](https://dev.shopify.com/), click **Home** in the left sidebar.
+    2. Click **Install app** in the top-right corner.
+    3. Select the Shopify store you want to connect to Trfyx.
+    4. Shopify will redirect you to your store's admin. Click **Install**.
+  </Step>
+  <Step title="Connect Shopify to Trfyx">
+    <Warning>
+      Treat the Shopify Client Secret as sensitive. Store it only in the Trfyx connection form or another secure server-side secret store. Never commit it to source control or expose it in browser code.
+    </Warning>
 
-1. Go to the [Shopify Dev Dashboard](https://dev.shopify.com/) and create an account if you don't have one.
-2. Click **Create app** in the top-right corner.
-3. Name your app, for example `Trfyx Integration`, and click **Create**.
-4. Make sure the **Webhooks API Version** is set to `2025-10`.
-5. Scroll to **Access > Scopes** and enable the required scopes:
-   - `read_orders` — Track revenue from orders.
-   - `read_products` — Track product views.
-   - `read_customers` — Attribute revenue to customers.
-   - `write_script_tags` — Install the Trfyx tracking script.
-6. Scroll to the bottom and click **Release**.
-7. In the confirmation modal, leave the fields empty and click **Release** again.
+    1. In the [Shopify Dev Dashboard](https://dev.shopify.com/), select your app and open **Settings**.
+    2. In the **Credentials** section, copy your **Client ID** and **Client Secret**.
+    3. Open your Trfyx dashboard and select the website you want to connect.
+    4. Enter your Shopify store details:
+       - **Shopify store domain** — Your Shopify domain containing `*.myshopify.com`, not your custom domain.
+       - **Client ID** — The Client ID from your Shopify app.
+       - **Client Secret** — The Secret from your Shopify app.
+    5. Click **Connect Shopify**.
 
-## Step 2: Install the Shopify app
+    <Note>
+      You can find the Shopify connection form in your website's settings or during the onboarding flow when creating a new website.
+    </Note>
 
-1. In the [Shopify Dev Dashboard](https://dev.shopify.com/), click **Home** in the left sidebar.
-2. Click **Install app** in the top-right corner.
-3. Select the Shopify store you want to connect to Trfyx.
-4. Shopify will redirect you to your store's admin. Click **Install**.
+    Your Shopify store is now connected to Trfyx.
+  </Step>
+  <Step title="Verify installation">
+    After connecting Shopify, verify that everything is working correctly:
 
-## Step 3: Connect Shopify to Trfyx
+    1. Visit your Shopify store.
+    2. Open your Trfyx dashboard and confirm that pageviews start appearing within a few minutes.
+    3. Make a test purchase, or check an existing order, and confirm that revenue appears in your analytics.
+  </Step>
+</Steps>
 
-<Warning>
-  Treat the Shopify Client Secret as sensitive. Store it only in the Trfyx connection form or another secure server-side secret store. Never commit it to source control or expose it in browser code.
-</Warning>
-
-1. In the [Shopify Dev Dashboard](https://dev.shopify.com/), select your app and open **Settings**.
-2. In the **Credentials** section, copy your **Client ID** and **Client Secret**.
-3. Open your Trfyx dashboard and select the website you want to connect.
-4. Enter your Shopify store details:
-   - **Shopify store domain** — Your Shopify domain containing `*.myshopify.com`, not your custom domain.
-   - **Client ID** — The Client ID from your Shopify app.
-   - **Client Secret** — The Secret from your Shopify app.
-5. Click **Connect Shopify**.
-
-<Note>
-You can find the Shopify connection form in your website's settings or during the onboarding flow when creating a new website.
-</Note>
-
-Your Shopify store is now connected to Trfyx.
-
-## Verify the installation
-
-After connecting Shopify, verify that everything is working correctly:
-
-1. Visit your Shopify store.
-2. Open your Trfyx dashboard and confirm that pageviews start appearing within a few minutes.
-3. Make a test purchase, or check an existing order, and confirm that revenue appears in your analytics.
+## Troubleshooting
 
 ### Duplicate pageviews
 
 If you see duplicate pageviews, check whether the Trfyx tracking script is also installed manually on your Shopify store. Remove the manually installed `<script>` tag and let the Shopify integration handle the installation.
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Goals" icon="bullseye" href="/goals">
+    Define important user actions and conversions.
+  </Card>
+
+  <Card title="Funnels" icon="filter" href="/funnels">
+    Understand where users convert or drop off.
+  </Card>
+
+  <Card title="Revenue attribution" icon="sack-dollar" href="/revenue-attribution">
+    Connect revenue to traffic sources and campaigns.
+  </Card>
+
+  <Card title="Troubleshooting" icon="life-ring" href="/troubleshooting">
+    Diagnose missing or unexpected data.
+  </Card>
+</CardGroup>

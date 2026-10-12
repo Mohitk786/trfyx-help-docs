@@ -1,47 +1,94 @@
 ---
-title: "React Router"
-description: "Install Trfyx in a React Router application."
+title: "Install Trfyx in React Router"
+description: "Learn how to add the Trfyx tracker once at your React Router application root so it tracks page views across client-side routes without duplicate collection."
 sidebarTitle: "React Router"
 icon: "route"
 ---
 
-# Install Trfyx in React Router
-
 Add the Trfyx tracker once at the application's root so it is available across routes.
 
-## Add the tracker
+<Steps>
+  <Step title="Add the tracker">
+    Open your root component (commonly `App.jsx`, `App.tsx`, or your application entry point) and load the Trfyx tracker once:
 
-Open your root component, commonly `App.jsx`, `App.tsx`, or your application entry point, and load the Trfyx tracker once.
+    ```tsx App.tsx
+    import { useEffect } from "react"
+    
+    export default function App() {
+      useEffect(() => {
+        const script = document.createElement("script")
+        script.defer = true
+        script.src = "https://app.trfyx.com/script.js"
+        script.setAttribute("data-website-id", "YOUR_TRFYX_PROJECT_ID")
+        script.setAttribute("data-domain", "yourdomain.com")
+        document.head.appendChild(script)
+    
+        return () => script.remove()
+      }, [])
+    
+      return <YourApp />
+    }
+    ```
 
-```tsx
-import { useEffect } from "react"
+    <Warning>
+      Replace `YOUR_TRFYX_PROJECT_ID` with the Website ID from your Trfyx project and `yourdomain.com` with the domain you want to track. Keep the script URL as `https://app.trfyx.com/script.js`.
+    </Warning>
 
-export default function App() {
-  useEffect(() => {
-    const script = document.createElement("script")
-    script.defer = true
-    script.src = "https://app.trfyx.com/script.js"
-    script.setAttribute("data-website-id", "YOUR_TRFYX_PROJECT_ID")
-    script.setAttribute("data-domain", "yourdomain.com")
-    document.head.appendChild(script)
+    <Tip>
+      Add the tracker once at the application root. Do not add it inside individual route components, or you may collect duplicate pageviews.
+    </Tip>
+  </Step>
+  <Step title="Verify installation">
+    Deploy the app, visit the live site, and navigate through several React Router routes. Confirm that Trfyx receives the expected activity.
 
-    return () => script.remove()
-  }, [])
+    Do not mount the tracker separately inside every route component. That can create duplicate scripts and duplicate collection.
+  </Step>
+</Steps>
 
-  return <YourApp />
-}
-```
+## Next stepNext steps
 
-<Warning>
-  Replace `YOUR_TRFYX_PROJECT_ID` with the Website ID from your Trfyx project and `yourdomain.com` with the domain you want to track. Keep the script URL as `https://app.trfyx.com/script.js`.
-</Warning>
+<CardGroup cols={2}>
+  <Card title="Goals" icon="bullseye" href="/goals">
+    Define the actions that matter to your business.
+  </Card>
 
-<Tip>
-  Add the tracker once at the application root. Do not add it inside individual route components, or you may collect duplicate pageviews.
-</Tip>
+  <Card title="Funnels" icon="filter" href="/funnels">
+    Measure where users convert or drop off.
+  </Card>
 
-## Verify route tracking
+  <Card title="User journeys" icon="route" href="/user-journeys">
+    See how visitors move through your site.
+  </Card>
 
-Deploy the app, visit the live site, and navigate through several React Router routes. Confirm that Trfyx receives the expected activity.
+  <Card title="Troubleshooting" icon="life-ring" href="/troubleshooting">
+    Diagnose missing or unexpected data.
+  </Card>
+</CardGroup>
 
-Do not mount the tracker separately inside every route component. That can create duplicate scripts and duplicate collection.
+<CardGroup cols={2}>
+  <Card title="Goals" icon="bullseye" href="/goals">
+    Define the actions that matter to your business.
+  </Card>
+
+  <Card title="Funnels" icon="filter" href="/funnels">
+    Measure where users convert or drop off.
+  </Card>
+
+  <Card title="User journeys" icon="route" href="/user-journeys">
+    See how visitors move through your site.
+  </Card>
+
+  <Card title="Troubleshooting" icon="life-ring" href="/troubleshooting">
+    Diagnose missing or unexpected data.
+  </Card>
+</CardGroup>
+
+## Related topicRelated topics
+
+- [Next.js](/nextjs-app-router)
+- [Vercel v0](/vercel-v0)
+- [Lovable](/lovable)
+
+- [Next.js](/nextjs-app-router)
+- [Vercel v0](/vercel-v0)
+- [Lovable](/lovable)

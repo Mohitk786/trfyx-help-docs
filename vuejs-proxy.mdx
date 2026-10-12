@@ -1,40 +1,60 @@
 ---
-title: "Vue.js Proxy"
+title: "Proxy Trfyx through Vue.js"
 sidebarTitle: "Vue.js"
-description: "Proxy Trfyx analytics through a Vue.js application's server or hosting layer."
+description: "Proxy Trfyx analytics through the server or hosting layer that serves your Vue application."
 icon: "code"
 ---
 
-# Proxy Trfyx with Vue.js
-
 Vue.js itself runs in the browser, so the proxy must be configured by the server, edge platform, or reverse proxy serving your Vue application.
 
-## Use same-origin paths
+<Steps>
+  <Step title="Use same-origin paths">
+    Configure your hosting layer to forward:
 
-Configure your hosting layer to forward:
+    ```text Request flow
+    /script.js   -> https://app.trfyx.com/script.js
+    /api/events  -> https://app.trfyx.com/api/events
+    ```
 
-```text
-/script.js   → https://app.trfyx.com/script.js
-/api/events  → https://app.trfyx.com/api/events
-```
+    The exact configuration depends on your hosting provider.
+  </Step>
+  <Step title="Update your tracker">
+    Replace the default Trfyx script with the proxied path:
 
-The exact configuration depends on your hosting provider.
-
-## Update your tracker
-
-```html
-<script
-  defer
-  data-website-id="YOUR_TRFYX_PROJECT_ID"
-  data-domain="yourdomain.com"
-  src="/script.js"
-></script>
-```
-
-## Verify
-
-Open the production Vue application and check Network requests. Both the script and events should use your website hostname.
+    ```html index.html
+    <script
+      defer
+      data-website-id="YOUR_TRFYX_PROJECT_ID"
+      data-domain="yourdomain.com"
+      src="/script.js"
+    ></script>
+    ```
+  </Step>
+  <Step title="Verify installation">
+    Open the production Vue application and check the Network requests. Both the script and events should use your website hostname.
+  </Step>
+</Steps>
 
 <Note>
   If your Vue site is static and you do not have a server or edge layer, use [Managed Proxy](/managed-proxy) instead of trying to implement the proxy inside Vue.
 </Note>
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Proxy setup" icon="signs-post" href="/proxy-guide">
+    Read the full proxy setup guide
+  </Card>
+
+  <Card title="Managed Proxy" icon="shield-halved" href="/managed-proxy">
+    Let Trfyx manage the proxy for you
+  </Card>
+
+  <Card title="Goals" icon="bullseye" href="/goals">
+    Start tracking goals with Trfyx
+  </Card>
+
+  <Card title="Troubleshooting" icon="life-ring" href="/troubleshooting">
+    Fix common proxy issues
+  </Card>
+</CardGroup>

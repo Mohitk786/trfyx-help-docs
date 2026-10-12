@@ -1,41 +1,54 @@
 ---
-title: "Squarespace"
-description: "Install Trfyx analytics on a Squarespace site."
+title: "Add Trfyx to your Squarespace site"
+description: "Install Trfyx analytics on a Squarespace site using Code Injection."
 sidebarTitle: "Squarespace"
 icon: "square"
 ---
 
-# Add Trfyx to your Squarespace site
-
 Squarespace supports custom JavaScript through Code Injection. The cleanest setup is to add the Trfyx tracker to the site-wide header.
 
-## Add the tracking script
+<Steps>
+  <Step title="Open Code Injection">
+    Log in to Squarespace and open **Settings → Advanced → Code Injection**.
+  </Step>
+  <Step title="Paste the Trfyx script">
+    Paste the Trfyx tracking script into the **Header** field:
 
-1. Log in to Squarespace.
-2. Open **Settings → Advanced → Code Injection**.
-3. Paste the Trfyx tracking script into the **Header** field.
-4. Replace the placeholders with your Trfyx project values.
-5. Save the changes and publish the site.
+    ```html squarespace-header.html
+    <script
+      defer
+      data-website-id="YOUR_TRFYX_PROJECT_ID"
+      data-domain="yourdomain.com"
+      src="https://app.trfyx.com/script.js"
+    ></script>
+    ```
 
-```html
-<script
-  defer
-  data-website-id="YOUR_TRFYX_PROJECT_ID"
-  data-domain="yourdomain.com"
-  src="https://app.trfyx.com/script.js"
-></script>
-```
-
-<Warning>
-  Replace `YOUR_TRFYX_PROJECT_ID` with the Website ID from your Trfyx project and `yourdomain.com` with the domain you want to track. Keep the script URL as `https://app.trfyx.com/script.js`. Do not copy another project's Website ID.
-</Warning>
-
-## Verify installation
-
-Visit the live Squarespace site, navigate through a few pages, and check your Trfyx dashboard for incoming traffic.
-
-If your Squarespace plan restricts Code Injection, confirm that your plan supports the feature before troubleshooting the script.
+    <Warning>
+      Replace `YOUR_TRFYX_PROJECT_ID` with the Website ID from your Trfyx project and `yourdomain.com` with the domain you want to track. Keep the script URL as `https://app.trfyx.com/script.js`. Do not copy another project's Website ID.
+    </Warning>
+  </Step>
+  <Step title="Save and publish">
+    Replace the placeholders with your Trfyx project values, save the changes, and publish the site.
+  </Step>
+  <Step title="Verify installation">
+    Visit the live Squarespace site, navigate through a few pages, and check your Trfyx dashboard for incoming traffic.
+  </Step>
+</Steps>
 
 ## Troubleshooting
 
 Make sure the script is in the site-wide Header rather than a single page, the changes are published, and the Website ID and domain correspond to the Trfyx project you are checking.
+
+If your Squarespace plan restricts Code Injection, confirm that your plan supports the feature before troubleshooting the script.
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Goals" icon="bullseye" href="/goals">
+    Set up conversion goals to track what matters.
+  </Card>
+
+  <Card title="Funnels" icon="filter" href="/funnels">
+    Build funnels to analyze user drop-off.
+  </Card>
+</CardGroup>

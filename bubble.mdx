@@ -1,42 +1,62 @@
 ---
-title: "Bubble"
-description: "Install Trfyx analytics in a Bubble.io application."
+title: "Add Trfyx to your Bubble app"
+description: "Install Trfyx analytics in a Bubble.io application using SEO and metadata settings."
 sidebarTitle: "Bubble"
-icon: "puzzle"
+icon: "puzzle-piece"
 ---
-
-# Add Trfyx to your Bubble app
 
 Bubble supports custom code through its SEO and metadata settings. Add the tracker globally so it can load across your application.
 
-## Add the tracking script
+<Steps>
+  <Step title="Open SEO settings">
+    Open your Bubble app editor and go to **Settings → SEO / Metatags**.
+  </Step>
+  <Step title="Paste the Trfyx script">
+    Find the field for scripts or meta tags in the page header and paste the Trfyx tracking script:
 
-1. Open your Bubble app editor.
-2. Go to **Settings → SEO / Metatags**.
-3. Find the field for scripts or meta tags in the page header.
-4. Paste the Trfyx tracking script.
-5. Replace the placeholders with the values from your Trfyx project.
-6. Save and deploy the application.
+    ```html bubble-header.html
+    <script
+      defer
+      data-website-id="YOUR_TRFYX_PROJECT_ID"
+      data-domain="your_domain.com"
+      src="https://app.trfyx.com/script.js"
+    ></script>
+    ```
 
-```html
-<script
-  defer
-  data-website-id="YOUR_TRFYX_PROJECT_ID"
-  data-domain="your_domain.com"
-  src="https://app.trfyx.com/script.js"
-></script>
-```
-
-<Warning>
-  Replace `YOUR_TRFYX_PROJECT_ID` with the Website ID from your Trfyx project and `your_domain.com` with the domain you want to track. Keep the script URL as `https://app.trfyx.com/script.js`. Do not copy another project's Website ID.
-</Warning>
-
-## Verify installation
-
-Open the deployed Bubble application, visit a few pages, and check your Trfyx dashboard for incoming traffic.
-
-If your Bubble plan or configuration restricts custom code, confirm that the feature is available before troubleshooting the tracker itself.
+    <Warning>
+      Replace `YOUR_TRFYX_PROJECT_ID` with the Website ID from your Trfyx project and `your_domain.com` with the domain you want to track. Keep the script URL as `https://app.trfyx.com/script.js`. Do not copy another project's Website ID.
+    </Warning>
+  </Step>
+  <Step title="Save and deploy">
+    Replace the placeholders with the values from your Trfyx project, then save and deploy the application.
+  </Step>
+  <Step title="Verify installation">
+    Open the deployed Bubble application, visit a few pages, and check your Trfyx dashboard for incoming traffic.
+  </Step>
+</Steps>
 
 ## Troubleshooting
 
 Check that the script is in the global header rather than only one page, the app has been deployed after the change, and browser developer tools show the tracker loading without errors.
+
+If your Bubble plan or configuration restricts custom code, confirm that the feature is available before troubleshooting the tracker itself.
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Goals" icon="bullseye" href="/goals">
+    Set up conversion goals to track what matters.
+  </Card>
+
+  <Card title="Funnels" icon="filter" href="/funnels">
+    Build funnels to analyze user drop-off.
+  </Card>
+
+  <Card title="Session replay" icon="film" href="/session-replay">
+    Watch real user sessions to understand behavior.
+  </Card>
+
+  <Card title="Troubleshooting" icon="life-ring" href="/troubleshooting">
+    Fix common tracking issues.
+  </Card>
+</CardGroup>

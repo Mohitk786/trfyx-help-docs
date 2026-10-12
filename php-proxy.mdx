@@ -1,44 +1,60 @@
 ---
-title: "PHP Proxy"
+title: "Proxy Trfyx through PHP"
 sidebarTitle: "PHP"
 description: "Proxy Trfyx analytics through a PHP application."
 icon: "code"
 ---
 
-# Proxy Trfyx with PHP
-
 A PHP proxy can forward the tracker and event requests through your own domain.
 
-## 1. Create a proxy endpoint
+<Steps>
+  <Step title="Create a proxy endpoint">
+    Create a route for `/script.js` that fetches and returns the Trfyx script:
 
-Create a route for `/script.js` that fetches and returns the Trfyx script:
+    ```php script-proxy.php
+    <?php
+    header('Content-Type: application/javascript');
+    header('Cache-Control: public, max-age=31536000');
+    echo file_get_contents('https://app.trfyx.com/script.js');
+    ```
 
-```php
-<?php
-header('Content-Type: application/javascript');
-header('Cache-Control: public, max-age=31536000');
-echo file_get_contents('https://app.trfyx.com/script.js');
-```
+    For events, forward the request body and relevant request headers to `https://app.trfyx.com/api/events`, then return Trfyx's response to the browser.
 
-For events, forward the request body and relevant request headers to `https://app.trfyx.com/api/events`, then return Trfyx's response to the browser.
+    <Warning>
+      Your event endpoint must forward the original visitor IP. Do not replace it with only the IP of your PHP server.
+    </Warning>
+  </Step>
+  <Step title="Update the tracker">
+    ```html index.html
+    <script
+      defer
+      data-website-id="YOUR_TRFYX_PROJECT_ID"
+      data-domain="yourdomain.com"
+      src="/script.js"
+    ></script>
+    ```
+  </Step>
+  <Step title="Verify installation">
+    Open Developer Tools → Network and confirm the script and event requests use your domain. Then verify a new visit in Trfyx.
+  </Step>
+</Steps>
 
-<Warning>
-  Your event endpoint must forward the original visitor IP. Do not replace it with only the IP of your PHP server.
-</Warning>
+<Note>
+  For most PHP sites, <a href="/managed-proxy">Managed Proxy</a> is simpler because it removes the proxy code and maintenance burden.
+</Note>
 
-## 2. Update the tracker
+## Next steps
 
-```html
-<script
-  defer
-  data-website-id="YOUR_TRFYX_PROJECT_ID"
-  data-domain="yourdomain.com"
-  src="/script.js"
-></script>
-```
+<CardGroup cols={2}>
+  <Card title="Goals" icon="bullseye" href="/goals">
+  </Card>
 
-## 3. Verify
+  <Card title="Funnels" icon="filter" href="/funnels">
+  </Card>
 
-Open Developer Tools → Network and confirm the script and event requests use your domain. Then verify a new visit in Trfyx.
+  <Card title="Managed Proxy" icon="shield-halved" href="/managed-proxy">
+  </Card>
 
-For most PHP sites, [Managed Proxy](/managed-proxy) is simpler because it removes the proxy code and maintenance burden.
+  <Card title="Troubleshooting" icon="life-ring" href="/troubleshooting">
+  </Card>
+</CardGroup>

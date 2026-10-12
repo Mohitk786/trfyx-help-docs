@@ -1,65 +1,78 @@
 ---
-title: "FastAPI Proxy"
+title: "Proxy Trfyx through FastAPI"
 sidebarTitle: "FastAPI"
 description: "Proxy Trfyx analytics through FastAPI."
-icon: "zap"
+icon: "bolt"
 ---
-
-# Proxy Trfyx with FastAPI
 
 Use FastAPI to forward the Trfyx script and event requests through your application.
 
-## 1. Install dependencies
+<Steps>
+  <Step title="Install dependencies">
+    ```bash Terminal
+    pip install fastapi uvicorn httpx
+    ```
+  </Step>
+  <Step title="Add proxy routes">
+    ```python main.py
+    from fastapi import FastAPI, Request, Response
+    import httpx
+    
+    app = FastAPI()
+    
+    @app.get("/script.js")
+    async def script():
+        async with httpx.AsyncClient() as client:
+            r = await client.get("https://app.trfyx.com/script.js")
+        return Response(r.content, media_type="application/javascript")
+    
+    @app.post("/api/events")
+    async def events(request: Request):
+        body = await request.body()
+        headers = dict(request.headers)
+        headers["x-forwarded-for"] = request.headers.get("x-forwarded-for", request.client.host)
+    
+        async with httpx.AsyncClient() as client:
+            r = await client.post(
+                "https://app.trfyx.com/api/events",
+                content=body,
+                headers=headers,
+            )
+    
+        return Response(r.content, status_code=r.status_code, media_type=r.headers.get("content-type"))
+    ```
+  </Step>
+  <Step title="Update your tracker">
+    ```html index.html
+    <script
+      defer
+      data-website-id="YOUR_TRFYX_PROJECT_ID"
+      data-domain="yourdomain.com"
+      src="/script.js"
+    ></script>
+    ```
+  </Step>
+  <Step title="Verify installation">
+    Deploy the API, load your site, and check that `/script.js` and `/api/events` resolve on your domain. Verify incoming activity in Trfyx.
 
-```bash
-pip install fastapi uvicorn httpx
-```
+    <Warning>
+      If your application is behind another load balancer, configure trusted proxy handling there too. Incorrect forwarding can make every visitor appear to come from the same server.
+    </Warning>
+  </Step>
+</Steps>
 
-## 2. Add proxy routes
+## Next steps
 
-```python
-from fastapi import FastAPI, Request, Response
-import httpx
+<CardGroup cols={2}>
+  <Card title="Goals" icon="bullseye" href="/goals">
+  </Card>
 
-app = FastAPI()
+  <Card title="Funnels" icon="filter" href="/funnels">
+  </Card>
 
-@app.get("/script.js")
-async def script():
-    async with httpx.AsyncClient() as client:
-        r = await client.get("https://app.trfyx.com/script.js")
-    return Response(r.content, media_type="application/javascript")
+  <Card title="Managed Proxy" icon="shield-halved" href="/managed-proxy">
+  </Card>
 
-@app.post("/api/events")
-async def events(request: Request):
-    body = await request.body()
-    headers = dict(request.headers)
-    headers["x-forwarded-for"] = request.headers.get("x-forwarded-for", request.client.host)
-
-    async with httpx.AsyncClient() as client:
-        r = await client.post(
-            "https://app.trfyx.com/api/events",
-            content=body,
-            headers=headers,
-        )
-
-    return Response(r.content, status_code=r.status_code, media_type=r.headers.get("content-type"))
-```
-
-## 3. Update your tracker
-
-```html
-<script
-  defer
-  data-website-id="YOUR_TRFYX_PROJECT_ID"
-  data-domain="yourdomain.com"
-  src="/script.js"
-></script>
-```
-
-## Verify
-
-Deploy the API, load your site, and check that `/script.js` and `/api/events` resolve on your domain. Verify incoming activity in Trfyx.
-
-<Warning>
-  If your application is behind another load balancer, configure trusted proxy handling there too. Incorrect forwarding can make every visitor appear to come from the same server.
-</Warning>
+  <Card title="Troubleshooting" icon="life-ring" href="/troubleshooting">
+  </Card>
+</CardGroup>

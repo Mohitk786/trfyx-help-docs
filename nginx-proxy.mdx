@@ -1,61 +1,86 @@
 ---
-title: "Nginx Proxy"
+title: "Proxy Trfyx through Nginx"
 sidebarTitle: "Nginx"
-description: "Proxy Trfyx analytics through Nginx."
-icon: "server"
+description: "Proxy Trfyx analytics through Nginx by adding two reverse-proxy locations."
+icon: "network-wired"
 ---
 
-# Proxy Trfyx with Nginx
+You can proxy the Trfyx tracker and event endpoint through Nginx so requests stay on your domain.
 
-Add two Nginx locations: one for the tracker and one for event collection.
+<Steps>
+  <Step title="Add Nginx configuration">
+    Add two locations to your server block: one for the tracker and one for event collection.
 
-## Configuration
+    ```nginx nginx.conf
+    location = /script.js {
+        proxy_pass https://app.trfyx.com/script.js;
+        proxy_set_header Host app.trfyx.com;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    
+        proxy_cache_valid 200 1y;
+        add_header Cache-Control "public, max-age=31536000";
+    }
+    
+    location = /api/events {
+        proxy_pass https://app.trfyx.com/api/events;
+        proxy_set_header Host app.trfyx.com;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    
+        proxy_pass_request_body on;
+    }
+    ```
 
-```nginx
-location = /script.js {
-    proxy_pass https://app.trfyx.com/script.js;
-    proxy_set_header Host app.trfyx.com;
-    proxy_set_header X-Real-IP $remote_addr;
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    proxy_set_header X-Forwarded-Proto $scheme;
+    If `/api/events` is already used by your application, choose another public path and configure `data-api-url` accordingly.
+  </Step>
+  <Step title="Update the tracker">
+    Update the tracker snippet to use the proxied path:
 
-    proxy_cache_valid 200 1y;
-    add_header Cache-Control "public, max-age=31536000";
-}
+    ```html index.html
+    <script
+      defer
+      data-website-id="YOUR_TRFYX_PROJECT_ID"
+      data-domain="yourdomain.com"
+      src="/script.js"
+    ></script>
+    ```
+  </Step>
+  <Step title="Test and reload">
+    Validate the configuration and reload Nginx:
 
-location = /api/events {
-    proxy_pass https://app.trfyx.com/api/events;
-    proxy_set_header Host app.trfyx.com;
-    proxy_set_header X-Real-IP $remote_addr;
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    proxy_set_header X-Forwarded-Proto $scheme;
-
-    proxy_pass_request_body on;
-}
-```
-
-If `/api/events` is already used by your application, choose another public path and configure `data-api-url` accordingly.
-
-## Update the tracker
-
-```html
-<script
-  defer
-  data-website-id="YOUR_TRFYX_PROJECT_ID"
-  data-domain="yourdomain.com"
-  src="/script.js"
-></script>
-```
-
-## Test and reload
-
-```bash
-sudo nginx -t
-sudo systemctl reload nginx
-```
-
-Then verify requests in your browser Network panel and confirm activity in Trfyx.
+    ```bash Terminal
+    sudo nginx -t
+    sudo systemctl reload nginx
+    ```
+  </Step>
+  <Step title="Verify installation">
+    Open your production site and verify requests in your browser Network panel. Confirm both `script.js` and `/api/events` use your domain, then check that activity shows in Trfyx.
+  </Step>
+</Steps>
 
 <Warning>
   Correct `X-Real-IP` and `X-Forwarded-For` handling is important for visitor location accuracy. If your site is behind another CDN or load balancer, configure the complete trusted proxy chain.
 </Warning>
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Proxy setup" icon="signs-post" href="/proxy-guide">
+    Read the full proxy setup guide
+  </Card>
+
+  <Card title="Managed Proxy" icon="shield-halved" href="/managed-proxy">
+    Let Trfyx manage the proxy for you
+  </Card>
+
+  <Card title="Goals" icon="bullseye" href="/goals">
+    Start tracking goals with Trfyx
+  </Card>
+
+  <Card title="Troubleshooting" icon="life-ring" href="/troubleshooting">
+    Fix common proxy issues
+  </Card>
+</CardGroup>

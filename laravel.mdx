@@ -1,75 +1,98 @@
 ---
-title: "Laravel"
-description: "Install Trfyx analytics in a Laravel application."
+title: "Add Trfyx to your Laravel project"
+description: "Install Trfyx in a Laravel application by adding the tracker to your shared Blade layout."
 sidebarTitle: "Laravel"
-icon: "server"
+icon: "cube"
 ---
-
-# Add Trfyx to your Laravel project
 
 The recommended approach is to add the tracker to the shared Blade layout so it loads on every page.
 
-## Add the tracker to your layout
+<Steps>
+  <Step title="Add the tracker to your layout">
+    Open your main layout, commonly `resources/views/layouts/app.blade.php`, and add the tracker inside `<head>`:
 
-Open your main layout, commonly `resources/views/layouts/app.blade.php`, and add the tracker inside `<head>`:
+    ```blade app.blade.php
+    <script
+      defer
+      data-website-id="YOUR_TRFYX_PROJECT_ID"
+      data-domain="yourdomain.com"
+      src="https://app.trfyx.com/script.js"
+    ></script>
+    ```
 
-```html
-<script
-  defer
-  data-website-id="YOUR_TRFYX_PROJECT_ID"
-  data-domain="yourdomain.com"
-  src="https://app.trfyx.com/script.js"
-></script>
-```
+    <Warning>
+      Replace `YOUR_TRFYX_PROJECT_ID` with the Website ID from your Trfyx project and `yourdomain.com` with the domain you want to track. Keep the script URL as `https://app.trfyx.com/script.js`. Do not copy another project's Website ID.
+    </Warning>
 
-<Warning>
-  Replace `YOUR_TRFYX_PROJECT_ID` with the Website ID from your Trfyx project and `yourdomain.com` with the domain you want to track. Keep the script URL as `https://app.trfyx.com/script.js`. Do not copy another project's Website ID.
-</Warning>
+    The Website ID and domain are public browser-tracking configuration. Never place private API keys or server-side secrets in a Blade template.
+  </Step>
+  <Step title="Optional: use environment configuration">
+    If staging and production use different Trfyx projects, you can keep each environment's public tracking values in `.env` and expose them through Laravel configuration.
 
-The Website ID and domain are public browser-tracking configuration. Never place private API keys or server-side secrets in a Blade template.
+    Add the values to your environment file:
 
-## Optional: use environment configuration
+    ```dotenv .env
+    TRFYX_WEBSITE_ID=YOUR_TRFYX_PROJECT_ID
+    TRFYX_DOMAIN=yourdomain.com
+    ```
 
-If staging and production use different Trfyx projects, you can keep each environment's public tracking values in `.env` and expose them through Laravel configuration.
+    Create or update `config/trfyx.php`:
 
-Add the values to your environment file:
+    ```php config/trfyx.php
+    <?php
+    
+    return [
+        'website_id' => env('TRFYX_WEBSITE_ID'),
+        'domain' => env('TRFYX_DOMAIN'),
+    ];
+    ```
 
-```dotenv
-TRFYX_WEBSITE_ID=YOUR_TRFYX_PROJECT_ID
-TRFYX_DOMAIN=yourdomain.com
-```
+    Then use those values in your Blade layout while keeping the real tracker URL visible:
 
-Create or update `config/trfyx.php`:
+    ```blade app.blade.php
+    <script
+      defer
+      data-website-id="{{ config('trfyx.website_id') }}"
+      data-domain="{{ config('trfyx.domain') }}"
+      src="https://app.trfyx.com/script.js"
+    ></script>
+    ```
 
-```php
-<?php
-
-return [
-    'website_id' => env('TRFYX_WEBSITE_ID'),
-    'domain' => env('TRFYX_DOMAIN'),
-];
-```
-
-Then use those values in your Blade layout while keeping the real tracker URL visible:
-
-```blade
-<script
-  defer
-  data-website-id="{{ config('trfyx.website_id') }}"
-  data-domain="{{ config('trfyx.domain') }}"
-  src="https://app.trfyx.com/script.js"
-></script>
-```
-
-Replace the environment placeholders with the values from your Trfyx project. Never put secret API credentials in `.env` values that are exposed to the browser.
-
-## Verify installation
-
-1. Deploy the Laravel application.
-2. Open the production URL.
-3. Navigate through multiple pages.
-4. Check the Trfyx dashboard for the incoming visit.
+    Replace the environment placeholders with the values from your Trfyx project. Never put secret API credentials in `.env` values that are exposed to the browser.
+  </Step>
+  <Step title="Verify installation">
+    1. Deploy the Laravel application.
+    2. Open the production URL.
+    3. Navigate through multiple pages.
+    4. Check the Trfyx dashboard for the incoming visit.
+  </Step>
+</Steps>
 
 ## Troubleshooting
 
 If tracking is missing, verify the layout is actually used by all pages, inspect the browser network panel for blocked requests, check the Website ID and hostname, and make sure your production deployment contains the latest configuration.
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Goals" icon="bullseye" href="/goals">
+    Define important user actions and conversions.
+  </Card>
+
+  <Card title="Funnels" icon="filter" href="/funnels">
+    Understand where users convert or drop off.
+  </Card>
+
+  <Card title="Troubleshooting" icon="life-ring" href="/troubleshooting">
+    Fix common tracking and installation issues.
+  </Card>
+
+  <Card title="Session replay" icon="film" href="/session-replay">
+    Watch how users interact with your site.
+  </Card>
+</CardGroup>
+
+## Related topics
+
+- [Laravel Proxy](/laravel-proxy)
+- [Proxy setup guide](/proxy-guide)

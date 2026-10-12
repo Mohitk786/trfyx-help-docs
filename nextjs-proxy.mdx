@@ -1,59 +1,73 @@
 ---
-title: "Next.js Proxy"
+title: "Proxy Trfyx through Next.js"
 sidebarTitle: "Next.js"
-description: "Proxy Trfyx analytics through Next.js rewrites."
-icon: "triangle"
+description: "Proxy Trfyx analytics through Next.js rewrites so requests stay on your domain."
+icon: "layer-group"
 ---
-
-# Proxy Trfyx with Next.js
 
 Use Next.js rewrites to route the Trfyx script and event endpoint through your own domain.
 
-## 1. Add rewrites
+<Steps>
+  <Step title="Add rewrites">
+    In `next.config.js`:
 
-In `next.config.js`:
-
-```js
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  async rewrites() {
-    return [
-      {
-        source: "/script.js",
-        destination: "https://app.trfyx.com/script.js",
+    ```js next.config.js
+    /** @type {import('next').NextConfig} */
+    const nextConfig = {
+      async rewrites() {
+        return [
+          {
+            source: "/script.js",
+            destination: "https://app.trfyx.com/script.js",
+          },
+          {
+            source: "/api/events",
+            destination: "https://app.trfyx.com/api/events",
+          },
+        ];
       },
-      {
-        source: "/api/events",
-        destination: "https://app.trfyx.com/api/events",
-      },
-    ];
-  },
-};
+    };
+    
+    module.exports = nextConfig;
+    ```
 
-module.exports = nextConfig;
-```
+    If your app already uses `/api/events`, choose another path such as `/trfyx-events` and set `data-api-url` to that path.
+  </Step>
+  <Step title="Update the tracker">
+    ```tsx pages/_app.tsx
+    import Script from "next/script";
+    
+    <Script
+      strategy="afterInteractive"
+      data-website-id="YOUR_TRFYX_PROJECT_ID"
+      data-domain="yourdomain.com"
+      src="/script.js"
+    />
+    ```
 
-If your app already uses `/api/events`, choose another path such as `/trfyx-events` and set `data-api-url` to that path.
+    When `src` is same-origin, Trfyx sends events to `/api/events` by default.
+  </Step>
+  <Step title="Verify installation">
+    Deploy your application, open the browser **Network** panel, and confirm both `script.js` and `/api/events` are requested from your domain. Then check that the activity appears in Trfyx.
 
-## 2. Update the tracker
+    <Warning>
+      Make sure your hosting layer preserves the original client IP. If all visitors appear from your server location, review your forwarding headers or use <a href="/managed-proxy">Managed Proxy</a>.
+    </Warning>
+  </Step>
+</Steps>
 
-```tsx
-import Script from "next/script";
+## Next steps
 
-<Script
-  strategy="afterInteractive"
-  data-website-id="YOUR_TRFYX_PROJECT_ID"
-  data-domain="yourdomain.com"
-  src="/script.js"
-/>
-```
+<CardGroup cols={2}>
+  <Card title="Goals" icon="bullseye" href="/goals">
+  </Card>
 
-When `src` is same-origin, Trfyx sends events to `/api/events` by default.
+  <Card title="Funnels" icon="filter" href="/funnels">
+  </Card>
 
-## 3. Deploy and verify
+  <Card title="Managed Proxy" icon="shield-halved" href="/managed-proxy">
+  </Card>
 
-Deploy your application, open the browser Network panel, and confirm both `script.js` and `/api/events` are requested from your domain.
-
-<Warning>
-  Make sure your hosting layer preserves the original client IP. If all visitors appear from your server location, review your forwarding headers or use [Managed Proxy](/managed-proxy).
-</Warning>
+  <Card title="Troubleshooting" icon="life-ring" href="/troubleshooting">
+  </Card>
+</CardGroup>

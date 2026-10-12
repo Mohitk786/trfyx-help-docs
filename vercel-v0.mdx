@@ -1,58 +1,75 @@
 ---
-title: "Vercel v0"
-description: "Add Trfyx analytics to a Vercel v0 project."
-icon: "sparkles"
+title: "Add Trfyx to your Vercel v0 project"
+description: "Install Trfyx in a Vercel v0 project by prompting the AI to add the tracker to your root layout."
 sidebarTitle: "Vercel v0"
+icon: "wand-magic-sparkles"
 ---
-
-# Add Trfyx to your Vercel v0 project
 
 Vercel v0 can generate React and Next.js applications. Ask v0 to add Trfyx to the root layout and then review the generated code before deploying.
 
-## 1. Set up the tracking snippet
+<Steps>
+  <Step title="Set up the tracking snippet">
+    Use the Trfyx Website ID and domain for the site you want to measure. The script URL is `https://app.trfyx.com/script.js`.
 
-Use the Trfyx Website ID and domain for the site you want to measure. The script URL is `https://app.trfyx.com/script.js`.
+    ```html shared-tracker.html
+    <script
+      defer
+      data-website-id="YOUR_TRFYX_PROJECT_ID"
+      data-domain="yourdomain.com"
+      src="https://app.trfyx.com/script.js"
+    ></script>
+    ```
 
-```html
-<script
-  defer
-  data-website-id="YOUR_TRFYX_PROJECT_ID"
-  data-domain="yourdomain.com"
-  src="https://app.trfyx.com/script.js"
-></script>
-```
+    <Warning>
+      Replace `YOUR_TRFYX_PROJECT_ID` with your Trfyx Website ID and `yourdomain.com` with your website's domain. Keep the script URL exactly as shown: do not use a DataFast URL or another project's identifier.
+    </Warning>
+  </Step>
+  <Step title="Ask v0 to add tracking">
+    Open your project in v0 and use a prompt similar to this:
 
-<Warning>
-  Replace `YOUR_TRFYX_PROJECT_ID` with your Trfyx Website ID and `yourdomain.com` with your website's domain. Keep the script URL exactly as shown; do not use a DataFast URL or another project's identifier.
-</Warning>
+    ```text Prompt
+    Add Trfyx analytics to my application.
+    
+    Use https://app.trfyx.com/script.js as the script URL, data-website-id="YOUR_TRFYX_PROJECT_ID", and data-domain="yourdomain.com". I will provide the actual Website ID and domain values.
+    
+    Integrate the tracker into the root layout (for example, app/layout.tsx for a Next.js App Router project) using the framework's recommended script mechanism. It must load across the entire application and must not be added separately to individual pages.
+    
+    Keep the tracker installed once. Show me which file you changed and explain how to verify the script and network requests.
+    ```
+  </Step>
+  <Step title="Review and deploy">
+    Before deploying, confirm that the generated code includes `https://app.trfyx.com/script.js`, the correct Website ID, and the correct domain. Make sure another copy of the tracker is not already installed.
 
-## 2. Ask v0 to add tracking
-
-Open your project in v0 and use a prompt similar to this:
-
-```text
-Add Trfyx analytics to my application.
-
-Use https://app.trfyx.com/script.js as the script URL, data-website-id="YOUR_TRFYX_PROJECT_ID", and data-domain="yourdomain.com". I will provide the actual Website ID and domain values.
-
-Integrate the tracker into the root layout (for example, app/layout.tsx for a Next.js App Router project) using the framework's recommended script mechanism. It must load across the entire application and must not be added separately to individual pages.
-
-Keep the tracker installed once. Show me which file you changed and explain how to verify the script and network requests.
-```
-
-## 3. Review and deploy
-
-Before deploying, confirm that the generated code includes `https://app.trfyx.com/script.js`, the correct Website ID, and the correct domain. Make sure another copy of the tracker is not already installed.
-
-Deploy the application through your normal Vercel workflow and open the live URL.
-
-## 4. Verify tracking
-
-1. Visit the live website.
-2. Open browser Developer Tools and check the **Network** tab for the Trfyx script and tracking requests.
-3. Navigate between several routes.
-4. Check [app.trfyx.com](https://app.trfyx.com/) for activity in the matching project.
+    Deploy the application through your normal Vercel workflow and open the live URL.
+  </Step>
+  <Step title="Verify installation">
+    1. Visit the live website.
+    2. Open browser Developer Tools and check the **Network** tab for the Trfyx script and tracking requests.
+    3. Navigate between several routes.
+    4. Check [app.trfyx.com](https://app.trfyx.com/) for activity in the matching project.
+  </Step>
+</Steps>
 
 ## Troubleshooting
 
 If no data appears, verify the tracker is in the root layout, the project ID and domain are correct, and Content Security Policy (CSP) is not blocking the script or requests. Confirm you are checking the deployed environment associated with the Trfyx project.
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Goals" icon="bullseye" href="/goals">
+    Set up goals to measure conversions and key actions.
+  </Card>
+
+  <Card title="Funnels" icon="filter" href="/funnels">
+    Build funnels to understand your user journey.
+  </Card>
+
+  <Card title="Session replay" icon="film" href="/session-replay">
+    Watch real user sessions to understand behavior.
+  </Card>
+
+  <Card title="Troubleshooting" icon="life-ring" href="/troubleshooting">
+    Fix common tracking issues.
+  </Card>
+</CardGroup>

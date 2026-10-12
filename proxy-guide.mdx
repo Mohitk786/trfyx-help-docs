@@ -1,11 +1,9 @@
 ---
-title: "Proxy setup guide"
+title: "Proxy Trfyx through your domain"
 sidebarTitle: "Overview"
-description: "Choose between Trfyx Managed Proxy and self-hosted proxy setups."
-icon: "route"
+description: "Choose between Trfyx Managed Proxy and self-hosted proxy setups to route analytics through a domain you control."
+icon: "signs-post"
 ---
-
-# Proxy Trfyx through your domain
 
 A proxy routes Trfyx tracking requests through a domain you control instead of sending them directly to `app.trfyx.com`.
 
@@ -26,9 +24,15 @@ This can improve collection reliability when browser extensions, network filters
 
 Use Managed Proxy when you want the simplest setup. Trfyx provides the proxy routing and SSL; you configure a subdomain and one DNS record, then point your tracker at that hostname.
 
-**Recommended for most sites.**
+<Tip>
+  Managed Proxy is recommended for most sites.
+</Tip>
 
-→ [Set up Managed Proxy](/managed-proxy)
+<CardGroup cols={2}>
+  <Card title="Set up Managed Proxy" icon="shield-halved" href="/managed-proxy">
+    Route Trfyx through your own subdomain without running proxy code.
+  </Card>
+</CardGroup>
 
 ### Self-hosted proxy
 
@@ -36,18 +40,43 @@ Use a self-hosted proxy when your application already has a reverse proxy, serve
 
 Choose the guide that matches your stack:
 
-- [Next.js](/nextjs-proxy)
-- [Express](/express-proxy)
-- [PHP](/php-proxy)
-- [FastAPI](/fastapi-proxy)
-- [Flask](/flask-proxy)
-- [Vue.js](/vuejs-proxy)
-- [Nginx](/nginx-proxy)
-- [Caddy](/caddy-proxy)
-- [Astro](/astro-proxy)
-- [Firebase Hosting](/firebase-proxy)
-- [Laravel](/laravel-proxy)
-- [DigitalOcean](/digitalocean-proxy)
+<CardGroup cols={3}>
+  <Card title="Next.js" icon="layer-group" href="/nextjs-proxy">
+  </Card>
+
+  <Card title="Express" icon="server" href="/express-proxy">
+  </Card>
+
+  <Card title="PHP" icon="code" href="/php-proxy">
+  </Card>
+
+  <Card title="FastAPI" icon="bolt" href="/fastapi-proxy">
+  </Card>
+
+  <Card title="Flask" icon="flask" href="/flask-proxy">
+  </Card>
+
+  <Card title="Vue.js" icon="code" href="/vuejs-proxy">
+  </Card>
+
+  <Card title="Astro" icon="star" href="/astro-proxy">
+  </Card>
+
+  <Card title="Laravel" icon="cube" href="/laravel-proxy">
+  </Card>
+
+  <Card title="Nginx" icon="network-wired" href="/nginx-proxy">
+  </Card>
+
+  <Card title="Caddy" icon="lock" href="/caddy-proxy">
+  </Card>
+
+  <Card title="Firebase Hosting" icon="fire" href="/firebase-proxy">
+  </Card>
+
+  <Card title="DigitalOcean" icon="cloud" href="/digitalocean-proxy">
+  </Card>
+</CardGroup>
 
 ## What should be proxied?
 
@@ -58,18 +87,38 @@ A working proxy needs to forward both:
 
 For self-hosted setups, preserve the visitor's original IP information when forwarding requests. If every visitor appears to come from your server or proxy location, the proxy is not forwarding the client IP correctly.
 
-## Verify your proxy
+## Verify installation
 
-After deployment:
-
-1. Open your production website.
-2. Open **Developer Tools → Network**.
-3. Reload the page.
-4. Confirm the tracker loads from your domain rather than `app.trfyx.com`.
-5. Trigger a pageview or tracked event.
-6. Confirm the event request also goes through your proxy.
-7. Check Trfyx for the new activity.
+<Steps>
+  <Step title="Open your production website">
+    Load a live page on your site.
+  </Step>
+  <Step title="Check the network panel">
+    Open **Developer Tools → Network** and reload the page.
+  </Step>
+  <Step title="Confirm the script loads through your domain">
+    Check that `script.js` is requested from your domain rather than `app.trfyx.com`.
+  </Step>
+  <Step title="Trigger and confirm an event">
+    Fire a pageview or tracked event and confirm the request also goes through your proxy.
+  </Step>
+  <Step title="Check Trfyx for the activity">
+    Verify the new visit or event appears in your Trfyx dashboard.
+  </Step>
+</Steps>
 
 <Warning>
   Do not use a proxy just because you can. A broken proxy is worse than no proxy: it can silently drop events or replace every visitor's IP with the server's IP. Verify collection and visitor location after deployment.
 </Warning>
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Goals" icon="bullseye" href="/goals">
+    Define the actions that matter to your business.
+  </Card>
+
+  <Card title="Troubleshooting" icon="life-ring" href="/troubleshooting">
+    Diagnose missing or unexpected data.
+  </Card>
+</CardGroup>

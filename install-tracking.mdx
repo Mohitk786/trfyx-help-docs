@@ -1,11 +1,9 @@
 ---
-title: "Install tracking"
+title: "Install Trfyx tracking"
 description: "Install the Trfyx tracker safely and verify that your site is sending data."
 sidebarTitle: "Install tracking"
 icon: "code"
 ---
-
-# Install Trfyx tracking
 
 Trfyx needs to receive website or product activity before its analytics reports can be useful. This guide covers the implementation checks that apply across common web stacks.
 
@@ -17,7 +15,7 @@ Trfyx needs to receive website or product activity before its analytics reports 
 
 For a traditional HTML site, add this snippet inside the shared `<head>` section:
 
-```html
+```html index.html
 <script
   defer
   data-website-id="YOUR_TRFYX_PROJECT_ID"
@@ -50,14 +48,14 @@ For a traditional HTML site, add this snippet inside the shared `<head>` section
 </Steps>
 
 <Tip>
-  **Best practice:** install the tracker in the highest shared layout that covers the pages you want to measure. This keeps the implementation consistent and makes future maintenance easier.
+  Install the tracker in the highest shared layout that covers the pages you want to measure. This keeps the implementation consistent and makes future maintenance easier.
 </Tip>
 
 ## Implementation checks
 
 ### Load coverage
 
-Ensure the tracker is included on all pages that should be measured—not only the homepage. If your app uses client-side navigation, test transitions between routes and confirm they appear as expected in Trfyx.
+Ensure the tracker is included on all pages that should be measured, not only the homepage. If your app uses client-side navigation, test transitions between routes and confirm they appear as expected in Trfyx.
 
 ### Avoid duplicate collection
 
@@ -75,24 +73,46 @@ Review your privacy notice, consent behavior, and applicable obligations before 
 
 Use only the project-specific configuration supplied for your site. Never expose secret credentials or server-side API tokens in client-side code. If the installation instructions include a public site identifier, distinguish it from any secret token your workspace may also use.
 
-## Verify the installation
+## Verify installation
 
-After deployment, confirm each of the following:
+<Steps>
+  <Step title="Verify installation">
+    After deployment, confirm each of the following:
 
-- [ ] The tracker is present on the intended domain.
-- [ ] It loads without script errors.
-- [ ] Browser developer tools do not show blocked collection requests.
-- [ ] Page navigation is represented as expected.
-- [ ] A test goal or event is recorded when the intended action completes.
-- [ ] The project, hostname, environment, and reporting date range are correct.
-- [ ] Test traffic is not being mistaken for production user activity.
+    - [ ] The tracker is present on the intended domain.
+    - [ ] It loads without script errors.
+    - [ ] Browser developer tools do not show blocked collection requests.
+    - [ ] Page navigation is represented as expected.
+    - [ ] A test goal or event is recorded when the intended action completes.
+    - [ ] The project, hostname, environment, and reporting date range are correct.
+    - [ ] Test traffic is not being mistaken for production user activity.
 
-<Note>
-  **Important:** analytics data is only as reliable as the collection and event definitions behind it. Validate tracking before using a report to make product, marketing, or revenue decisions.
-</Note>
+    <Note>
+      Analytics data is only as reliable as the collection and event definitions behind it. Validate tracking before using a report to make product, marketing, or revenue decisions.
+    </Note>
+  </Step>
+</Steps>
 
 ## If data is missing
 
 Start with the browser console and network panel, then check for duplicate installation, content security policy restrictions, consent configuration, ad blockers, hostname mismatches, and report filters. Follow [Troubleshooting](/troubleshooting) for a step-by-step diagnostic checklist.
 
-After tracking works, continue with the [Quickstart](/quickstart), then define your first [goal](/goals) or [funnel](/funnels).
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="rocket" href="/quickstart">
+    Set up your first Trfyx project and start exploring your analytics.
+  </Card>
+
+  <Card title="Goals" icon="bullseye" href="/goals">
+    Define the user actions that matter most to your business.
+  </Card>
+
+  <Card title="Funnels" icon="filter" href="/funnels">
+    Measure conversion through multi-step flows.
+  </Card>
+
+  <Card title="Troubleshooting" icon="life-ring" href="/troubleshooting">
+    Diagnose missing or unexpected tracking data.
+  </Card>
+</CardGroup>

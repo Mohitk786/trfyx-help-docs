@@ -1,62 +1,75 @@
 ---
-title: "Express Proxy"
+title: "Proxy Trfyx through Express"
 sidebarTitle: "Express"
 description: "Proxy Trfyx analytics through an Express server."
 icon: "server"
 ---
 
-# Proxy Trfyx with Express
-
 Use Express middleware to forward the Trfyx script and event requests through your application.
 
-## 1. Install a proxy package
+<Steps>
+  <Step title="Install a proxy package">
+    ```bash Terminal
+    npm install express-http-proxy
+    ```
+  </Step>
+  <Step title="Add the proxy routes">
+    ```js server.js
+    const express = require("express");
+    const proxy = require("express-http-proxy");
+    
+    const app = express();
+    
+    app.set("trust proxy", true);
+    
+    app.use(
+      "/script.js",
+      proxy("https://app.trfyx.com", {
+        proxyReqPathResolver: () => "/script.js",
+      }),
+    );
+    
+    app.use(
+      "/api/events",
+      proxy("https://app.trfyx.com", {
+        proxyReqPathResolver: () => "/api/events",
+      }),
+    );
+    ```
 
-```bash
-npm install express-http-proxy
-```
+    Mount these routes before a catch-all route that would otherwise consume them.
+  </Step>
+  <Step title="Update your tracker">
+    ```html index.html
+    <script
+      defer
+      data-website-id="YOUR_TRFYX_PROJECT_ID"
+      data-domain="yourdomain.com"
+      src="/script.js"
+    ></script>
+    ```
+  </Step>
+  <Step title="Verify installation">
+    Deploy the server and confirm the browser requests your own `/script.js` and `/api/events` paths. Check Trfyx for the resulting activity.
 
-## 2. Add the proxy routes
+    <Warning>
+      Preserve the visitor's original IP through your reverse proxy. If all locations are identical, check `X-Forwarded-For` handling or switch to <a href="/managed-proxy">Managed Proxy</a>.
+    </Warning>
+  </Step>
+</Steps>
 
-```js
-const express = require("express");
-const proxy = require("express-http-proxy");
+## Next steps
 
-const app = express();
+<CardGroup cols={2}>
+  <Card title="Goals" icon="bullseye" href="/goals">
+  </Card>
 
-app.set("trust proxy", true);
+  <Card title="Funnels" icon="filter" href="/funnels">
+  </Card>
 
-app.use(
-  "/script.js",
-  proxy("https://app.trfyx.com", {
-    proxyReqPathResolver: () => "/script.js",
-  }),
-);
+  <Card title="Managed Proxy" icon="shield-halved" href="/managed-proxy">
+  </Card>
 
-app.use(
-  "/api/events",
-  proxy("https://app.trfyx.com", {
-    proxyReqPathResolver: () => "/api/events",
-  }),
-);
-```
-
-Mount these routes before a catch-all route that would otherwise consume them.
-
-## 3. Update your tracker
-
-```html
-<script
-  defer
-  data-website-id="YOUR_TRFYX_PROJECT_ID"
-  data-domain="yourdomain.com"
-  src="/script.js"
-></script>
-```
-
-## 4. Verify
-
-Deploy the server and confirm the browser requests your own `/script.js` and `/api/events` paths. Check Trfyx for the resulting activity.
-
-<Warning>
-  Preserve the visitor's original IP through your reverse proxy. If all locations are identical, check `X-Forwarded-For` handling or switch to [Managed Proxy](/managed-proxy).
-</Warning>
+  <Card title="Troubleshooting" icon="life-ring" href="/troubleshooting">
+  </Card>
+</CardGroup>

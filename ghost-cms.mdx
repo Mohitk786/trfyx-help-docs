@@ -1,15 +1,11 @@
 ---
-title: "Ghost CMS"
-description: "Install Trfyx on a Ghost CMS site using Code Injection."
+title: "Install Trfyx on Ghost CMS"
+description: "Install Trfyx analytics on a Ghost CMS site using Code Injection or a custom theme."
 sidebarTitle: "Ghost CMS"
 icon: "ghost"
 ---
 
-# Install Trfyx on Ghost CMS
-
 Ghost provides a built-in Code Injection feature that makes adding the Trfyx tracker straightforward.
-
-## Add the tracker with Code Injection
 
 <Steps>
   <Step title="Open Ghost settings">
@@ -18,7 +14,7 @@ Ghost provides a built-in Code Injection feature that makes adding the Trfyx tra
   <Step title="Add the tracker to Site Header">
     Paste this snippet into the **Site Header** section:
 
-    ```html
+    ```html ghost-header.html
     <script
       defer
       data-website-id="YOUR_TRFYX_PROJECT_ID"
@@ -32,7 +28,10 @@ Ghost provides a built-in Code Injection feature that makes adding the Trfyx tra
     </Warning>
   </Step>
   <Step title="Save the changes">
-    Save the Code Injection settings and open your published site.
+    Save the Code Injection settings.
+  </Step>
+  <Step title="Verify installation">
+    Open your published site and check Trfyx for incoming activity. Ghost code changes are reflected on the published site, so verify against the live site rather than relying only on the editor preview.
   </Step>
 </Steps>
 
@@ -40,8 +39,18 @@ Ghost provides a built-in Code Injection feature that makes adding the Trfyx tra
 
 If you maintain a custom Ghost theme, you can add the Trfyx snippet directly to the theme's `default.hbs` file before the closing `</head>` tag.
 
-## Verify installation
-
-Visit the published site and check Trfyx for incoming activity. Ghost code changes are reflected on the published site, so verify against the live site rather than relying only on the editor preview.
+## Troubleshooting
 
 If data is missing, check the browser console, CSP rules, hostname configuration, consent settings, and whether the tracker has been installed more than once.
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Goals" icon="bullseye" href="/goals">
+    Set up conversion goals to track what matters.
+  </Card>
+
+  <Card title="Funnels" icon="filter" href="/funnels">
+    Build funnels to analyze user drop-off.
+  </Card>
+</CardGroup>

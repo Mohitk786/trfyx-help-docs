@@ -1,60 +1,80 @@
 ---
-title: "Laravel Proxy"
+title: "Proxy Trfyx with Laravel"
 sidebarTitle: "Laravel"
 description: "Proxy Trfyx analytics through Laravel routes."
-icon: "server"
+icon: "cube"
 ---
-
-# Proxy Trfyx with Laravel
 
 Laravel can expose same-origin routes that forward the Trfyx script and events.
 
-## 1. Add routes
+<Steps>
+  <Step title="Add routes">
+    In `routes/web.php`:
 
-In `routes/web.php`:
+    ```php routes/web.php
+    use Illuminate\Support\Facades\Http;
+    use Illuminate\Http\Request;
+    
+    Route::get('/script.js', function () {
+        $response = Http::get('https://app.trfyx.com/script.js');
+    
+        return response($response->body(), $response->status())
+            ->header('Content-Type', 'application/javascript');
+    });
+    
+    Route::post('/api/events', function (Request $request) {
+        $headers = [
+            'Content-Type' => $request->header('Content-Type', 'application/json'),
+            'Origin' => $request->getSchemeAndHttpHost(),
+            'X-Forwarded-For' => $request->header('X-Forwarded-For', $request->ip()),
+        ];
+    
+        $response = Http::withHeaders($headers)
+            ->withBody($request->getContent(), $request->header('Content-Type', 'application/json'))
+            ->post('https://app.trfyx.com/api/events');
+    
+        return response($response->body(), $response->status())
+            ->header('Content-Type', $response->header('Content-Type', 'application/json'));
+    });
+    ```
+  </Step>
+  <Step title="Update the tracker">
+    Replace the default Trfyx script with the proxied path:
 
-```php
-use Illuminate\Support\Facades\Http;
-use Illuminate\Http\Request;
-
-Route::get('/script.js', function () {
-    $response = Http::get('https://app.trfyx.com/script.js');
-
-    return response($response->body(), $response->status())
-        ->header('Content-Type', 'application/javascript');
-});
-
-Route::post('/api/events', function (Request $request) {
-    $headers = [
-        'Content-Type' => $request->header('Content-Type', 'application/json'),
-        'Origin' => $request->getSchemeAndHttpHost(),
-        'X-Forwarded-For' => $request->header('X-Forwarded-For', $request->ip()),
-    ];
-
-    $response = Http::withHeaders($headers)
-        ->withBody($request->getContent(), $request->header('Content-Type', 'application/json'))
-        ->post('https://app.trfyx.com/api/events');
-
-    return response($response->body(), $response->status())
-        ->header('Content-Type', $response->header('Content-Type', 'application/json'));
-});
-```
-
-## 2. Update the tracker
-
-```html
-<script
-  defer
-  data-website-id="YOUR_TRFYX_PROJECT_ID"
-  data-domain="yourdomain.com"
-  src="/script.js"
-></script>
-```
-
-## 3. Verify
-
-Deploy, reload your production site, and confirm both requests use your domain. Then verify the visit in Trfyx.
+    ```html index.html
+    <script
+      defer
+      data-website-id="YOUR_TRFYX_PROJECT_ID"
+      data-domain="yourdomain.com"
+      src="/script.js"
+    ></script>
+    ```
+  </Step>
+  <Step title="Verify installation">
+    Deploy, reload your production site, and confirm both requests use your domain. Then verify the visit in Trfyx.
+  </Step>
+</Steps>
 
 <Note>
   If your Laravel application already has `/api/events`, choose a different route and set `data-api-url` to that path.
 </Note>
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Proxy setup" icon="signs-post" href="/proxy-guide">
+    Read the full proxy setup guide
+  </Card>
+
+  <Card title="Managed Proxy" icon="shield-halved" href="/managed-proxy">
+    Let Trfyx manage the proxy for you
+  </Card>
+
+  <Card title="Goals" icon="bullseye" href="/goals">
+    Start tracking goals with Trfyx
+  </Card>
+
+  <Card title="Troubleshooting" icon="life-ring" href="/troubleshooting">
+    Fix common proxy issues
+  </Card>
+</CardGroup>

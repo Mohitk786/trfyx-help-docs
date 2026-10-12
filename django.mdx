@@ -1,48 +1,47 @@
 ---
-title: "Django"
-description: "Install Trfyx in a Django application using a shared base template."
+title: "Install Trfyx on Django"
+description: "Add the Trfyx tracker to your shared Django base template so it loads across all pages."
 sidebarTitle: "Django"
 icon: "server"
 ---
 
-# Install Trfyx in Django
-
 Add the Trfyx tracker to your shared Django base template so it loads across the pages that extend that template.
 
 <Note>
-  **Before you start:** Identify the base template used by your site (commonly `templates/base.html`) and have the Trfyx Website ID for the domain you want to track.
+  Identify the base template used by your site (commonly `templates/base.html`) and have the Trfyx Website ID for the domain you want to track.
 </Note>
 
-## Add the tracker to your base template
+<Steps>
+  <Step title="Add the tracker to your base template">
+    Open your shared base template and add the following snippet inside the existing `<head>` element:
 
-Open your shared base template and add the following snippet inside the existing `<head>` element:
+    ```html base.html
+    <head>
+      <!-- Keep your existing head content -->
+      <script
+        defer
+        data-website-id="YOUR_TRFYX_PROJECT_ID"
+        data-domain="yourdomain.com"
+        src="https://app.trfyx.com/script.js"
+      ></script>
+    </head>
+    ```
 
-```html
-<head>
-  <!-- Keep your existing head content -->
-  <script
-    defer
-    data-website-id="YOUR_TRFYX_PROJECT_ID"
-    data-domain="yourdomain.com"
-    src="https://app.trfyx.com/script.js"
-  ></script>
-</head>
-```
+    <Warning>
+      Replace `YOUR_TRFYX_PROJECT_ID` with the Website ID from your Trfyx project and `yourdomain.com` with the domain you want to track. Keep the script URL as `https://app.trfyx.com/script.js`. These are public browser-tracking settings, not secret API credentials.
+    </Warning>
 
-<Warning>
-  Replace `YOUR_TRFYX_PROJECT_ID` with the Website ID from your Trfyx project and `yourdomain.com` with the domain you want to track. Keep the script URL as `https://app.trfyx.com/script.js`. These are public browser-tracking settings, not secret API credentials.
-</Warning>
-
-<Tip>
-  Put the snippet in the shared base template once, not in individual child templates. Pages that extend the base template will then use the same tracker installation.
-</Tip>
-
-## Verify installation
-
-1. Deploy the Django application.
-2. Open the live site and visit a few pages.
-3. Open [app.trfyx.com](https://app.trfyx.com/) and check the matching Trfyx project for activity.
-4. If no activity appears, inspect the browser's **Console** and **Network** tabs for failed or blocked requests.
+    <Tip>
+      Put the snippet in the shared base template once, not in individual child templates. Pages that extend the base template will then use the same tracker installation.
+    </Tip>
+  </Step>
+  <Step title="Verify installation">
+    1. Deploy the Django application.
+    2. Open the live site and visit a few pages.
+    3. Open [app.trfyx.com](https://app.trfyx.com/) and check the matching Trfyx project for activity.
+    4. If no activity appears, inspect the browser's **Console** and **Network** tabs for failed or blocked requests.
+  </Step>
+</Steps>
 
 ## Troubleshooting
 
@@ -50,3 +49,23 @@ Open your shared base template and add the following snippet inside the existing
 - **Only some pages are tracked:** Confirm those pages extend the base template containing the snippet.
 - **The script is blocked:** Check Content Security Policy (CSP), consent settings, and browser extensions.
 - **Duplicate pageviews appear:** Search your templates and tag manager for another Trfyx installation and remove the duplicate.
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Goals" icon="bullseye" href="/goals">
+    Define important user actions and conversions.
+  </Card>
+
+  <Card title="Funnels" icon="filter" href="/funnels">
+    Understand where users convert or drop off.
+  </Card>
+
+  <Card title="Troubleshooting" icon="life-ring" href="/troubleshooting">
+    Fix common tracking and installation issues.
+  </Card>
+
+  <Card title="Session replay" icon="film" href="/session-replay">
+    Watch how users interact with your site.
+  </Card>
+</CardGroup>

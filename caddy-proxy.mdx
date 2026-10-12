@@ -1,55 +1,79 @@
 ---
-title: "Caddy Proxy"
+title: "Proxy Trfyx with Caddy"
 sidebarTitle: "Caddy"
 description: "Proxy Trfyx analytics through Caddy."
-icon: "server"
+icon: "lock"
 ---
-
-# Proxy Trfyx with Caddy
 
 Caddy can reverse-proxy the Trfyx script and event endpoint through your website.
 
-## Configuration
+<Steps>
+  <Step title="Add Caddy configuration">
+    Add `handle` blocks for the Trfyx paths to your Caddyfile:
 
-```caddyfile
-yourdomain.com {
-    handle /script.js {
-        reverse_proxy https://app.trfyx.com {
-            header_up Host app.trfyx.com
-            header_up X-Real-IP {remote_host}
-            header_up X-Forwarded-For {remote_host}
-            header_up X-Forwarded-Proto {scheme}
+    ```caddyfile Caddyfile
+    yourdomain.com {
+        handle /script.js {
+            reverse_proxy https://app.trfyx.com {
+                header_up Host app.trfyx.com
+                header_up X-Real-IP {remote_host}
+                header_up X-Forwarded-For {remote_host}
+                header_up X-Forwarded-Proto {scheme}
+            }
         }
-    }
-
-    handle /api/events {
-        reverse_proxy https://app.trfyx.com {
-            header_up Host app.trfyx.com
-            header_up X-Real-IP {remote_host}
-            header_up X-Forwarded-For {remote_host}
-            header_up X-Forwarded-Proto {scheme}
+    
+        handle /api/events {
+            reverse_proxy https://app.trfyx.com {
+                header_up Host app.trfyx.com
+                header_up X-Real-IP {remote_host}
+                header_up X-Forwarded-For {remote_host}
+                header_up X-Forwarded-Proto {scheme}
+            }
         }
+    
+        # Your other site configuration...
     }
+    ```
 
-    # Your other site configuration...
-}
-```
+    If `/api/events` is already used by your application, choose another path and set `data-api-url` to that path.
+  </Step>
+  <Step title="Update the tracker">
+    Replace the default Trfyx script with the proxied path:
 
-If `/api/events` is already used by your application, choose another path and set `data-api-url` to that path.
-
-## Update the tracker
-
-```html
-<script
-  defer
-  data-website-id="YOUR_TRFYX_PROJECT_ID"
-  data-domain="yourdomain.com"
-  src="/script.js"
-></script>
-```
-
-Reload Caddy, open your production site, and verify both requests in the browser Network panel.
+    ```html index.html
+    <script
+      defer
+      data-website-id="YOUR_TRFYX_PROJECT_ID"
+      data-domain="yourdomain.com"
+      src="/script.js"
+    ></script>
+    ```
+  </Step>
+  <Step title="Verify installation">
+    Reload Caddy, open your production site, and verify both requests in the browser Network panel. Confirm the visit appears in Trfyx.
+  </Step>
+</Steps>
 
 <Warning>
   Make sure the visitor IP is preserved through any CDN or load balancer in front of Caddy.
 </Warning>
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Proxy setup" icon="signs-post" href="/proxy-guide">
+    Read the full proxy setup guide
+  </Card>
+
+  <Card title="Managed Proxy" icon="shield-halved" href="/managed-proxy">
+    Let Trfyx manage the proxy for you
+  </Card>
+
+  <Card title="Goals" icon="bullseye" href="/goals">
+    Start tracking goals with Trfyx
+  </Card>
+
+  <Card title="Troubleshooting" icon="life-ring" href="/troubleshooting">
+    Fix common proxy issues
+  </Card>
+</CardGroup>

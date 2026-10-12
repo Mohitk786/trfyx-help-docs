@@ -1,73 +1,93 @@
 ---
-title: "Firebase Hosting Proxy"
+title: "Proxy Trfyx with Firebase Hosting"
 sidebarTitle: "Firebase Hosting"
 description: "Proxy Trfyx analytics from Firebase Hosting with a Cloud Function."
-icon: "flame"
+icon: "fire"
 ---
-
-# Proxy Trfyx with Firebase Hosting
 
 Firebase Hosting does not directly reverse-proxy arbitrary external destinations. Use a Cloud Function as the proxy and route your hosting paths to it.
 
-## 1. Initialize Functions
+<Steps>
+  <Step title="Initialize Functions">
+    ```bash Terminal
+    firebase init functions
+    cd functions
+    npm install express express-http-proxy
+    ```
+  </Step>
+  <Step title="Create the proxy">
+    ```js functions/index.js
+    const { onRequest } = require("firebase-functions/v2/https");
+    const express = require("express");
+    const proxy = require("express-http-proxy");
+    
+    const app = express();
+    app.set("trust proxy", true);
+    
+    app.use(
+      "/script.js",
+      proxy("https://app.trfyx.com", {
+        proxyReqPathResolver: () => "/script.js",
+      }),
+    );
+    
+    app.use(
+      "/api/events",
+      proxy("https://app.trfyx.com", {
+        proxyReqPathResolver: () => "/api/events",
+      }),
+    );
+    
+    exports.trfyxProxy = onRequest(app);
+    ```
+  </Step>
+  <Step title="Configure Hosting rewrites">
+    Point `/script.js` and `/api/events` to the deployed function in `firebase.json`:
 
-```bash
-firebase init functions
-cd functions
-npm install express express-http-proxy
-```
+    ```json firebase.json
+    {
+      "hosting": {
+        "rewrites": [
+          { "source": "/script.js", "function": "trfyxProxy" },
+          { "source": "/api/events", "function": "trfyxProxy" }
+        ]
+      }
+    }
+    ```
+  </Step>
+  <Step title="Update the tracker">
+    Replace the default Trfyx script with the proxied path:
 
-## 2. Create the proxy
+    ```html index.html
+    <script
+      defer
+      data-website-id="YOUR_TRFYX_PROJECT_ID"
+      data-domain="yourdomain.com"
+      src="/script.js"
+    ></script>
+    ```
+  </Step>
+  <Step title="Verify installation">
+    Deploy and verify the two requests in your browser Network panel. Confirm the visit appears in Trfyx.
+  </Step>
+</Steps>
 
-```js
-const { onRequest } = require("firebase-functions/v2/https");
-const express = require("express");
-const proxy = require("express-http-proxy");
+## Next steps
 
-const app = express();
-app.set("trust proxy", true);
+<CardGroup cols={2}>
+  <Card title="Proxy setup" icon="signs-post" href="/proxy-guide">
+    Read the full proxy setup guide
+  </Card>
 
-app.use(
-  "/script.js",
-  proxy("https://app.trfyx.com", {
-    proxyReqPathResolver: () => "/script.js",
-  }),
-);
+  <Card title="Managed Proxy" icon="shield-halved" href="/managed-proxy">
+    Let Trfyx manage the proxy for you
+  </Card>
 
-app.use(
-  "/api/events",
-  proxy("https://app.trfyx.com", {
-    proxyReqPathResolver: () => "/api/events",
-  }),
-);
+  <Card title="Goals" icon="bullseye" href="/goals">
+    Start tracking goals with Trfyx
+  </Card>
 
-exports.trfyxProxy = onRequest(app);
-```
-
-## 3. Configure Hosting rewrites
-
-Point `/script.js` and `/api/events` to the deployed function in `firebase.json`.
-
-```json
-{
-  "hosting": {
-    "rewrites": [
-      { "source": "/script.js", "function": "trfyxProxy" },
-      { "source": "/api/events", "function": "trfyxProxy" }
-    ]
-  }
-}
-```
-
-## 4. Update the tracker
-
-```html
-<script
-  defer
-  data-website-id="YOUR_TRFYX_PROJECT_ID"
-  data-domain="yourdomain.com"
-  src="/script.js"
-></script>
-```
-
-Deploy and verify the two requests in your browser Network panel.
+  <Card title="Troubleshooting" icon="life-ring" href="/troubleshooting">
+    Fix common proxy issues
+  </Card>
+</CardGroup>
