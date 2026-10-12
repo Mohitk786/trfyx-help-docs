@@ -1,0 +1,60 @@
+---
+title: "DigitalOcean Proxy"
+sidebarTitle: "DigitalOcean"
+description: "Proxy Trfyx analytics with a DigitalOcean Droplet and Nginx."
+icon: "cloud"
+---
+
+# Proxy Trfyx with DigitalOcean
+
+If your application runs on a DigitalOcean Droplet, the simplest self-hosted setup is Nginx.
+
+## 1. Configure Nginx
+
+Use the [Nginx proxy configuration](/nginx-proxy) on your Droplet and make sure your domain points to the Droplet.
+
+```nginx
+location = /script.js {
+    proxy_pass https://app.trfyx.com/script.js;
+    proxy_set_header Host app.trfyx.com;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+}
+
+location = /api/events {
+    proxy_pass https://app.trfyx.com/api/events;
+    proxy_set_header Host app.trfyx.com;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+}
+```
+
+## 2. Optional script caching
+
+The script can be cached at the edge or by Nginx to reduce repeated upstream requests. Keep event requests uncached.
+
+## 3. Update the tracker
+
+```html
+<script
+  defer
+  data-website-id="YOUR_TRFYX_PROJECT_ID"
+  data-domain="yourdomain.com"
+  src="/script.js"
+></script>
+```
+
+## 4. Test
+
+```bash
+sudo nginx -t
+sudo systemctl reload nginx
+```
+
+Open your website and confirm `script.js` and `/api/events` use your own hostname. Check Trfyx for incoming activity.
+
+<Note>
+  If you do not need to manage a server, use [Managed Proxy](/managed-proxy) instead. It is less operational work and avoids maintaining proxy code.
+</Note>

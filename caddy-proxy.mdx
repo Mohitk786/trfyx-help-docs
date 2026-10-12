@@ -1,0 +1,55 @@
+---
+title: "Caddy Proxy"
+sidebarTitle: "Caddy"
+description: "Proxy Trfyx analytics through Caddy."
+icon: "server"
+---
+
+# Proxy Trfyx with Caddy
+
+Caddy can reverse-proxy the Trfyx script and event endpoint through your website.
+
+## Configuration
+
+```caddyfile
+yourdomain.com {
+    handle /script.js {
+        reverse_proxy https://app.trfyx.com {
+            header_up Host app.trfyx.com
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+        }
+    }
+
+    handle /api/events {
+        reverse_proxy https://app.trfyx.com {
+            header_up Host app.trfyx.com
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+        }
+    }
+
+    # Your other site configuration...
+}
+```
+
+If `/api/events` is already used by your application, choose another path and set `data-api-url` to that path.
+
+## Update the tracker
+
+```html
+<script
+  defer
+  data-website-id="YOUR_TRFYX_PROJECT_ID"
+  data-domain="yourdomain.com"
+  src="/script.js"
+></script>
+```
+
+Reload Caddy, open your production site, and verify both requests in the browser Network panel.
+
+<Warning>
+  Make sure the visitor IP is preserved through any CDN or load balancer in front of Caddy.
+</Warning>

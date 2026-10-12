@@ -1,0 +1,174 @@
+---
+title: "Managed Proxy"
+sidebarTitle: "Managed Proxy"
+description: "Route Trfyx analytics through a subdomain you control without running proxy code."
+icon: "shield-check"
+---
+
+# Managed Proxy
+
+Managed Proxy routes Trfyx analytics through a subdomain you control without requiring you to run proxy code.
+
+Trfyx handles the proxy routing and SSL. You only need to choose a subdomain, add the DNS record shown in your Trfyx settings, and update your tracking script.
+
+<Note>
+  Managed Proxy is the recommended option for most production websites. Use a self-hosted proxy only when you already need to control the proxy layer yourself.
+</Note>
+
+## Why use a proxy?
+
+Browsers, extensions, corporate networks, and ad blockers can block requests to known analytics domains. A first-party subdomain makes your collection path look like part of your own website.
+
+Without a proxy:
+
+```text
+yourdomain.com → app.trfyx.com
+```
+
+With Managed Proxy:
+
+```text
+yourdomain.com → analytics.yourdomain.com → Trfyx
+```
+
+Your analytics still go to Trfyx. The proxy only changes how the browser reaches the collection service.
+
+## 1. Enable Managed Proxy
+
+<Steps>
+  <Step title="Open your website settings">
+    In Trfyx, open the website you want to configure and go to its proxy or tracking settings.
+  </Step>
+  <Step title="Choose a subdomain">
+    Enter a dedicated subdomain that belongs to your website, such as `a.yourdomain.com` or `cdn.yourdomain.com`.
+
+    Prefer a short, neutral hostname. Avoid obvious names such as `analytics`, `tracking`, or `metrics` if your goal is to reduce filtering by simplistic blocklists.
+  </Step>
+  <Step title="Enable the proxy">
+    Enable Managed Proxy. Trfyx will show the DNS record required for your chosen hostname.
+  </Step>
+</Steps>
+
+## 2. Add the DNS record
+
+Open your DNS provider and create the record shown in Trfyx.
+
+For a typical setup, this is a CNAME:
+
+| Field | Value |
+| --- | --- |
+| Type | `CNAME` |
+| Name / Host | Your chosen subdomain, for example `a` |
+| Target / Value | The target shown in Trfyx Managed Proxy settings |
+
+<Warning>
+  Do not guess the target value. Copy the exact target displayed in your Trfyx dashboard because it can change between environments or deployments.
+</Warning>
+
+If Trfyx asks you to add a TXT verification record, add that record as well. Once the hostname is verified and the proxy becomes active, you can remove a temporary verification record if Trfyx explicitly says it is no longer required.
+
+DNS changes can take a few minutes to propagate.
+
+## 3. Update your tracking script
+
+Change the tracker so both the script and event requests use your managed proxy hostname.
+
+```html
+<script
+  defer
+  data-website-id="YOUR_TRFYX_PROJECT_ID"
+  data-domain="yourdomain.com"
+  data-api-url="https://a.yourdomain.com/api/events"
+  src="https://a.yourdomain.com/script.js"
+></script>
+```
+
+The important details are:
+
+- `data-domain` remains your **real website domain**.
+- `src` points to the script on your proxy hostname.
+- `data-api-url` points to the event endpoint on the same proxy hostname.
+- Use the same proxy hostname for both URLs.
+
+<Warning>
+  Do not make `data-api-url` relative when using Managed Proxy. A value such as `/api/events` resolves against the page's hostname, not the proxy hostname. Use the complete `https://...` URL instead.
+</Warning>
+
+### Local development
+
+If you need to test tracking locally, enable localhost tracking in your tracker configuration and keep the event URL pointed at the live managed proxy.
+
+```html
+<script
+  defer
+  data-website-id="YOUR_TRFYX_PROJECT_ID"
+  data-domain="yourdomain.com"
+  data-allow-localhost="true"
+  data-api-url="https://a.yourdomain.com/api/events"
+  src="https://a.yourdomain.com/script.js"
+></script>
+```
+
+## 4. Verify the proxy
+
+<Steps>
+  <Step title="Open the production site">
+    Visit your real website. Do not use the proxy hostname as the page you browse.
+  </Step>
+  <Step title="Check the script request">
+    Open **Developer Tools → Network** and reload the page. Confirm `script.js` is loaded from your proxy hostname.
+  </Step>
+  <Step title="Check event collection">
+    Trigger a pageview or tracked event and confirm the request goes to your proxy hostname's `/api/events` endpoint.
+  </Step>
+  <Step title="Check Trfyx">
+    Confirm the new visit or event appears in your Trfyx dashboard.
+  </Step>
+</Steps>
+
+## Troubleshooting
+
+### Proxy status stays pending
+
+- Confirm the CNAME exactly matches the record shown in Trfyx.
+- Make sure you created a DNS record, not a URL redirect or forwarding rule.
+- Check that the DNS record is in the correct zone for your domain.
+- Wait for DNS propagation, then refresh the proxy status.
+
+### Proxy status shows an error
+
+Re-check the record type, hostname, target, and any TXT verification record shown in Trfyx. Do not add additional DNS records unless Trfyx asks for them.
+
+### Events are still sent to Trfyx directly
+
+Inspect the tracker in the deployed page source and Network panel. Both `src` and `data-api-url` should use your managed proxy hostname.
+
+### All visitors have the same location
+
+This usually means the original visitor IP is not reaching Trfyx correctly. Managed Proxy is designed to handle visitor IP forwarding automatically. If the problem persists, verify that the request is actually going through the Managed Proxy and contact Trfyx support with the affected hostname.
+
+### Analytics are still blocked
+
+- Use a neutral proxy hostname.
+- Confirm the deployed script does not reference `app.trfyx.com`.
+- Check your Content Security Policy and allow the proxy hostname in `script-src` and `connect-src` where required.
+- Test in a clean browser session without extensions to separate implementation problems from browser filtering.
+
+## Remove Managed Proxy
+
+If you no longer want to use the proxy:
+
+1. Disable or remove Managed Proxy in your Trfyx website settings.
+2. Remove the DNS records created for the proxy.
+3. Change the tracker back to the standard Trfyx script:
+
+```html
+<script
+  defer
+  data-website-id="YOUR_TRFYX_PROJECT_ID"
+  data-domain="yourdomain.com"
+  src="https://app.trfyx.com/script.js"
+></script>
+```
+
+Your existing analytics data is not removed just because you stop using the proxy.

@@ -1,0 +1,59 @@
+---
+title: "Next.js Proxy"
+sidebarTitle: "Next.js"
+description: "Proxy Trfyx analytics through Next.js rewrites."
+icon: "triangle"
+---
+
+# Proxy Trfyx with Next.js
+
+Use Next.js rewrites to route the Trfyx script and event endpoint through your own domain.
+
+## 1. Add rewrites
+
+In `next.config.js`:
+
+```js
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  async rewrites() {
+    return [
+      {
+        source: "/script.js",
+        destination: "https://app.trfyx.com/script.js",
+      },
+      {
+        source: "/api/events",
+        destination: "https://app.trfyx.com/api/events",
+      },
+    ];
+  },
+};
+
+module.exports = nextConfig;
+```
+
+If your app already uses `/api/events`, choose another path such as `/trfyx-events` and set `data-api-url` to that path.
+
+## 2. Update the tracker
+
+```tsx
+import Script from "next/script";
+
+<Script
+  strategy="afterInteractive"
+  data-website-id="YOUR_TRFYX_PROJECT_ID"
+  data-domain="yourdomain.com"
+  src="/script.js"
+/>
+```
+
+When `src` is same-origin, Trfyx sends events to `/api/events` by default.
+
+## 3. Deploy and verify
+
+Deploy your application, open the browser Network panel, and confirm both `script.js` and `/api/events` are requested from your domain.
+
+<Warning>
+  Make sure your hosting layer preserves the original client IP. If all visitors appear from your server location, review your forwarding headers or use [Managed Proxy](/managed-proxy).
+</Warning>

@@ -1,0 +1,61 @@
+---
+title: "Nginx Proxy"
+sidebarTitle: "Nginx"
+description: "Proxy Trfyx analytics through Nginx."
+icon: "server"
+---
+
+# Proxy Trfyx with Nginx
+
+Add two Nginx locations: one for the tracker and one for event collection.
+
+## Configuration
+
+```nginx
+location = /script.js {
+    proxy_pass https://app.trfyx.com/script.js;
+    proxy_set_header Host app.trfyx.com;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+
+    proxy_cache_valid 200 1y;
+    add_header Cache-Control "public, max-age=31536000";
+}
+
+location = /api/events {
+    proxy_pass https://app.trfyx.com/api/events;
+    proxy_set_header Host app.trfyx.com;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+
+    proxy_pass_request_body on;
+}
+```
+
+If `/api/events` is already used by your application, choose another public path and configure `data-api-url` accordingly.
+
+## Update the tracker
+
+```html
+<script
+  defer
+  data-website-id="YOUR_TRFYX_PROJECT_ID"
+  data-domain="yourdomain.com"
+  src="/script.js"
+></script>
+```
+
+## Test and reload
+
+```bash
+sudo nginx -t
+sudo systemctl reload nginx
+```
+
+Then verify requests in your browser Network panel and confirm activity in Trfyx.
+
+<Warning>
+  Correct `X-Real-IP` and `X-Forwarded-For` handling is important for visitor location accuracy. If your site is behind another CDN or load balancer, configure the complete trusted proxy chain.
+</Warning>

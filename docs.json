@@ -54,7 +54,20 @@
             "group": "Proxy",
             "icon": "shield-check",
             "pages": [
-              "proxy-guide"
+              "proxy-guide",
+              "managed-proxy",
+              "nextjs-proxy",
+              "express-proxy",
+              "php-proxy",
+              "fastapi-proxy",
+              "flask-proxy",
+              "vuejs-proxy",
+              "nginx-proxy",
+              "caddy-proxy",
+              "astro-proxy",
+              "firebase-proxy",
+              "laravel-proxy",
+              "digitalocean-proxy"
             ]
           },
           "bubble",

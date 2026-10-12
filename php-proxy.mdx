@@ -1,0 +1,44 @@
+---
+title: "PHP Proxy"
+sidebarTitle: "PHP"
+description: "Proxy Trfyx analytics through a PHP application."
+icon: "code"
+---
+
+# Proxy Trfyx with PHP
+
+A PHP proxy can forward the tracker and event requests through your own domain.
+
+## 1. Create a proxy endpoint
+
+Create a route for `/script.js` that fetches and returns the Trfyx script:
+
+```php
+<?php
+header('Content-Type: application/javascript');
+header('Cache-Control: public, max-age=31536000');
+echo file_get_contents('https://app.trfyx.com/script.js');
+```
+
+For events, forward the request body and relevant request headers to `https://app.trfyx.com/api/events`, then return Trfyx's response to the browser.
+
+<Warning>
+  Your event endpoint must forward the original visitor IP. Do not replace it with only the IP of your PHP server.
+</Warning>
+
+## 2. Update the tracker
+
+```html
+<script
+  defer
+  data-website-id="YOUR_TRFYX_PROJECT_ID"
+  data-domain="yourdomain.com"
+  src="/script.js"
+></script>
+```
+
+## 3. Verify
+
+Open Developer Tools → Network and confirm the script and event requests use your domain. Then verify a new visit in Trfyx.
+
+For most PHP sites, [Managed Proxy](/managed-proxy) is simpler because it removes the proxy code and maintenance burden.

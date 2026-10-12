@@ -1,0 +1,62 @@
+---
+title: "Express Proxy"
+sidebarTitle: "Express"
+description: "Proxy Trfyx analytics through an Express server."
+icon: "server"
+---
+
+# Proxy Trfyx with Express
+
+Use Express middleware to forward the Trfyx script and event requests through your application.
+
+## 1. Install a proxy package
+
+```bash
+npm install express-http-proxy
+```
+
+## 2. Add the proxy routes
+
+```js
+const express = require("express");
+const proxy = require("express-http-proxy");
+
+const app = express();
+
+app.set("trust proxy", true);
+
+app.use(
+  "/script.js",
+  proxy("https://app.trfyx.com", {
+    proxyReqPathResolver: () => "/script.js",
+  }),
+);
+
+app.use(
+  "/api/events",
+  proxy("https://app.trfyx.com", {
+    proxyReqPathResolver: () => "/api/events",
+  }),
+);
+```
+
+Mount these routes before a catch-all route that would otherwise consume them.
+
+## 3. Update your tracker
+
+```html
+<script
+  defer
+  data-website-id="YOUR_TRFYX_PROJECT_ID"
+  data-domain="yourdomain.com"
+  src="/script.js"
+></script>
+```
+
+## 4. Verify
+
+Deploy the server and confirm the browser requests your own `/script.js` and `/api/events` paths. Check Trfyx for the resulting activity.
+
+<Warning>
+  Preserve the visitor's original IP through your reverse proxy. If all locations are identical, check `X-Forwarded-For` handling or switch to [Managed Proxy](/managed-proxy).
+</Warning>
