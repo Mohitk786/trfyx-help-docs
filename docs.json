@@ -8,36 +8,33 @@
     "dark": "#c4471f"
   },
   "navigation": {
-    "pages": [
+    "dropdowns": [
       {
-        "group": "Getting Started",
+        "dropdown": "Getting Started",
+        "icon": "book-open",
         "pages": [
           "index",
           "quickstart",
           "install-tracking"
-        ],
-        "expanded": false,
-        "icon": "book-open"
+        ]
       },
       {
-        "group": "Analytics & Insights",
+        "dropdown": "Analytics & Insights",
         "icon": "chart-line",
         "pages": [
           "analytics/overview"
-        ],
-        "expanded": false
+        ]
       },
       {
-        "group": "Behavior Analytics",
+        "dropdown": "Behavior Analytics",
         "icon": "arrow-pointer",
         "pages": [
           "session-replay",
           "user-journeys"
-        ],
-        "expanded": false
+        ]
       },
       {
-        "group": "Installation Guide",
+        "dropdown": "Installation Guide",
         "icon": "download",
         "pages": [
           "google-tag-manager",
@@ -59,57 +56,52 @@
           "lovable",
           "bolt",
           "vercel-v0",
-          "replit",
-          {
-            "group": "Proxy setup",
-            "icon": "shield-halved",
-            "expanded": false,
-            "pages": [
-              "proxy-guide",
-              "managed-proxy",
-              "nextjs-proxy",
-              "express-proxy",
-              "php-proxy",
-              "fastapi-proxy",
-              "flask-proxy",
-              "vuejs-proxy",
-              "nginx-proxy",
-              "caddy-proxy",
-              "astro-proxy",
-              "firebase-proxy",
-              "laravel-proxy",
-              "digitalocean-proxy"
-            ]
-          }
-        ],
-        "expanded": false
+          "replit"
+        ]
       },
       {
-        "group": "Goals & Attribution",
+        "dropdown": "Proxy setup",
+        "icon": "shield-halved",
+        "pages": [
+          "proxy-guide",
+          "managed-proxy",
+          "nextjs-proxy",
+          "express-proxy",
+          "php-proxy",
+          "fastapi-proxy",
+          "flask-proxy",
+          "vuejs-proxy",
+          "nginx-proxy",
+          "caddy-proxy",
+          "astro-proxy",
+          "firebase-proxy",
+          "laravel-proxy",
+          "digitalocean-proxy"
+        ]
+      },
+      {
+        "dropdown": "Goals & Attribution",
         "icon": "bullseye",
         "pages": [
           "goals",
           "funnels",
           "revenue-attribution"
-        ],
-        "expanded": false
+        ]
       },
       {
-        "group": "Data & Sharing",
+        "dropdown": "Data & Sharing",
         "icon": "database",
         "pages": [
           "import-analytics-data",
           "embedded-dashboards"
-        ],
-        "expanded": false
+        ]
       },
       {
-        "group": "Troubleshooting",
+        "dropdown": "Troubleshooting",
         "icon": "life-ring",
         "pages": [
           "troubleshooting"
-        ],
-        "expanded": false
+        ]
       }
     ]
   },
