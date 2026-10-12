@@ -53,7 +53,9 @@
           {
             "group": "Proxy",
             "icon": "shield-check",
-            "pages": []
+            "pages": [
+              "proxy-guide"
+            ]
           },
           "bubble",
           "podia",
