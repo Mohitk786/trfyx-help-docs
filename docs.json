@@ -8,10 +8,11 @@
     "dark": "#c4471f"
   },
   "navigation": {
-    "dropdowns": [
+    "groups": [
       {
-        "dropdown": "Getting Started",
+        "group": "Getting Started",
         "icon": "book-open",
+        "expanded": true,
         "pages": [
           "index",
           "quickstart",
@@ -19,23 +20,26 @@
         ]
       },
       {
-        "dropdown": "Analytics & Insights",
+        "group": "Analytics & Insights",
         "icon": "chart-line",
+        "expanded": false,
         "pages": [
           "analytics/overview"
         ]
       },
       {
-        "dropdown": "Behavior Analytics",
+        "group": "Behavior Analytics",
         "icon": "arrow-pointer",
+        "expanded": false,
         "pages": [
           "session-replay",
           "user-journeys"
         ]
       },
       {
-        "dropdown": "Installation Guide",
+        "group": "Installation Guide",
         "icon": "download",
+        "expanded": false,
         "pages": [
           "google-tag-manager",
           "nextjs-app-router",
@@ -60,8 +64,9 @@
         ]
       },
       {
-        "dropdown": "Proxy setup",
+        "group": "Proxy setup",
         "icon": "shield-halved",
+        "expanded": false,
         "pages": [
           "proxy-guide",
           "managed-proxy",
@@ -80,8 +85,9 @@
         ]
       },
       {
-        "dropdown": "Goals & Attribution",
+        "group": "Goals & Attribution",
         "icon": "bullseye",
+        "expanded": false,
         "pages": [
           "goals",
           "funnels",
@@ -89,16 +95,18 @@
         ]
       },
       {
-        "dropdown": "Data & Sharing",
+        "group": "Data & Sharing",
         "icon": "database",
+        "expanded": false,
         "pages": [
           "import-analytics-data",
           "embedded-dashboards"
         ]
       },
       {
-        "dropdown": "Troubleshooting",
+        "group": "Troubleshooting",
         "icon": "life-ring",
+        "expanded": false,
         "pages": [
           "troubleshooting"
         ]
