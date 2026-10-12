@@ -1,0 +1,73 @@
+---
+title: "Firebase Hosting Proxy"
+sidebarTitle: "Firebase Hosting"
+description: "Proxy Trfyx analytics from Firebase Hosting with a Cloud Function."
+icon: "flame"
+---
+
+# Proxy Trfyx with Firebase Hosting
+
+Firebase Hosting does not directly reverse-proxy arbitrary external destinations. Use a Cloud Function as the proxy and route your hosting paths to it.
+
+## 1. Initialize Functions
+
+```bash
+firebase init functions
+cd functions
+npm install express express-http-proxy
+```
+
+## 2. Create the proxy
+
+```js
+const { onRequest } = require("firebase-functions/v2/https");
+const express = require("express");
+const proxy = require("express-http-proxy");
+
+const app = express();
+app.set("trust proxy", true);
+
+app.use(
+  "/script.js",
+  proxy("https://app.trfyx.com", {
+    proxyReqPathResolver: () => "/script.js",
+  }),
+);
+
+app.use(
+  "/api/events",
+  proxy("https://app.trfyx.com", {
+    proxyReqPathResolver: () => "/api/events",
+  }),
+);
+
+exports.trfyxProxy = onRequest(app);
+```
+
+## 3. Configure Hosting rewrites
+
+Point `/script.js` and `/api/events` to the deployed function in `firebase.json`.
+
+```json
+{
+  "hosting": {
+    "rewrites": [
+      { "source": "/script.js", "function": "trfyxProxy" },
+      { "source": "/api/events", "function": "trfyxProxy" }
+    ]
+  }
+}
+```
+
+## 4. Update the tracker
+
+```html
+<script
+  defer
+  data-website-id="YOUR_TRFYX_PROJECT_ID"
+  data-domain="yourdomain.com"
+  src="/script.js"
+></script>
+```
+
+Deploy and verify the two requests in your browser Network panel.

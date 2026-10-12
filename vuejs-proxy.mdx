@@ -1,0 +1,40 @@
+---
+title: "Vue.js Proxy"
+sidebarTitle: "Vue.js"
+description: "Proxy Trfyx analytics through a Vue.js application's server or hosting layer."
+icon: "code"
+---
+
+# Proxy Trfyx with Vue.js
+
+Vue.js itself runs in the browser, so the proxy must be configured by the server, edge platform, or reverse proxy serving your Vue application.
+
+## Use same-origin paths
+
+Configure your hosting layer to forward:
+
+```text
+/script.js   → https://app.trfyx.com/script.js
+/api/events  → https://app.trfyx.com/api/events
+```
+
+The exact configuration depends on your hosting provider.
+
+## Update your tracker
+
+```html
+<script
+  defer
+  data-website-id="YOUR_TRFYX_PROJECT_ID"
+  data-domain="yourdomain.com"
+  src="/script.js"
+></script>
+```
+
+## Verify
+
+Open the production Vue application and check Network requests. Both the script and events should use your website hostname.
+
+<Note>
+  If your Vue site is static and you do not have a server or edge layer, use [Managed Proxy](/managed-proxy) instead of trying to implement the proxy inside Vue.
+</Note>

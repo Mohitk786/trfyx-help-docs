@@ -1,0 +1,75 @@
+---
+title: "Proxy setup guide"
+sidebarTitle: "Proxy setup guide"
+description: "Choose between Trfyx Managed Proxy and a self-hosted reverse proxy to route analytics through your own domain."
+icon: "route"
+---
+
+# Proxy Trfyx through your domain
+
+A proxy routes Trfyx tracking requests through a domain you control instead of sending them directly to `app.trfyx.com`.
+
+This can improve collection reliability when browser extensions, network filters, or ad blockers block known analytics domains.
+
+<Note>
+  A proxy is optional. Install the standard Trfyx tracker first, then add a proxy when you are ready for production traffic or want a first-party collection path.
+</Note>
+
+## Choose your setup
+
+| Option | Best for | Code | DNS | Maintenance |
+| --- | --- | --- | --- | --- |
+| **Managed Proxy** | Most websites | None | Yes | Trfyx |
+| **Self-hosted proxy** | Teams that already control a server, framework, or edge layer | Yes | Usually no | You |
+
+### Managed Proxy
+
+Use Managed Proxy when you want the simplest setup. Trfyx provides the proxy routing and SSL; you configure a subdomain and one DNS record, then point your tracker at that hostname.
+
+**Recommended for most sites.**
+
+→ [Set up Managed Proxy](/managed-proxy)
+
+### Self-hosted proxy
+
+Use a self-hosted proxy when your application already has a reverse proxy, server middleware, or edge configuration that can forward Trfyx requests.
+
+Choose the guide that matches your stack:
+
+- [Next.js](/nextjs-proxy)
+- [Express](/express-proxy)
+- [PHP](/php-proxy)
+- [FastAPI](/fastapi-proxy)
+- [Flask](/flask-proxy)
+- [Vue.js](/vuejs-proxy)
+- [Nginx](/nginx-proxy)
+- [Caddy](/caddy-proxy)
+- [Astro](/astro-proxy)
+- [Firebase Hosting](/firebase-proxy)
+- [Laravel](/laravel-proxy)
+- [DigitalOcean](/digitalocean-proxy)
+
+## What should be proxied?
+
+A working proxy needs to forward both:
+
+1. The Trfyx browser script.
+2. The event collection endpoint.
+
+For self-hosted setups, preserve the visitor's original IP information when forwarding requests. If every visitor appears to come from your server or proxy location, the proxy is not forwarding the client IP correctly.
+
+## Verify your proxy
+
+After deployment:
+
+1. Open your production website.
+2. Open **Developer Tools → Network**.
+3. Reload the page.
+4. Confirm the tracker loads from your domain rather than `app.trfyx.com`.
+5. Trigger a pageview or tracked event.
+6. Confirm the event request also goes through your proxy.
+7. Check Trfyx for the new activity.
+
+<Warning>
+  Do not use a proxy just because you can. A broken proxy is worse than no proxy: it can silently drop events or replace every visitor's IP with the server's IP. Verify collection and visitor location after deployment.
+</Warning>
