@@ -10,119 +10,132 @@
   "navigation": {
     "groups": [
       {
-        "group": "Getting Started",
+        "group": "Docs",
         "pages": [
-          "index",
-          "quickstart",
-          "install-tracking"
-        ]
-      },
-      {
-        "group": "Analytics & Insights",
-        "pages": [
-          "analytics/overview"
-        ]
-      },
-      {
-        "group": "Behavior Analytics",
-        "pages": [
-          "session-replay",
-          "user-journeys"
-        ]
-      },
-      {
-        "group": "Installation Guide",
-        "pages": [
-          "google-tag-manager",
           {
-            "group": "Frameworks",
-            "expanded": false,
+            "group": "Getting Started",
+            "expanded": true,
             "pages": [
-              "nextjs-app-router",
-              "react-router",
-              "vuejs",
-              "astro",
-              "django",
-              "laravel"
+              "index",
+              "quickstart",
+              "install-tracking"
             ]
           },
           {
-            "group": "Website builders & platforms",
+            "group": "Analytics & Insights",
             "expanded": false,
             "pages": [
-              "shopify",
-              "webflow",
-              "framer",
-              "wix",
-              "squarespace",
-              "ghost-cms",
-              "bubble",
-              "podia",
-              "kajabi"
+              "analytics/overview"
             ]
           },
           {
-            "group": "AI app builders",
+            "group": "Behavior Analytics",
             "expanded": false,
             "pages": [
-              "lovable",
-              "bolt",
-              "vercel-v0",
-              "replit"
+              "session-replay",
+              "user-journeys"
+            ]
+          },
+          {
+            "group": "Installation Guide",
+            "expanded": false,
+            "pages": [
+              "google-tag-manager",
+              {
+                "group": "Frameworks",
+                "expanded": false,
+                "pages": [
+                  "nextjs-app-router",
+                  "react-router",
+                  "vuejs",
+                  "astro",
+                  "django",
+                  "laravel"
+                ]
+              },
+              {
+                "group": "Website builders & platforms",
+                "expanded": false,
+                "pages": [
+                  "shopify",
+                  "webflow",
+                  "framer",
+                  "wix",
+                  "squarespace",
+                  "ghost-cms",
+                  "bubble",
+                  "podia",
+                  "kajabi"
+                ]
+              },
+              {
+                "group": "AI app builders",
+                "expanded": false,
+                "pages": [
+                  "lovable",
+                  "bolt",
+                  "vercel-v0",
+                  "replit"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Proxy Setup",
+            "expanded": false,
+            "pages": [
+              "proxy-guide",
+              "managed-proxy",
+              {
+                "group": "Frameworks",
+                "expanded": false,
+                "pages": [
+                  "nextjs-proxy",
+                  "express-proxy",
+                  "php-proxy",
+                  "fastapi-proxy",
+                  "flask-proxy",
+                  "vuejs-proxy",
+                  "astro-proxy",
+                  "laravel-proxy"
+                ]
+              },
+              {
+                "group": "Servers & hosting",
+                "expanded": false,
+                "pages": [
+                  "nginx-proxy",
+                  "caddy-proxy",
+                  "firebase-proxy",
+                  "digitalocean-proxy"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Goals & Attribution",
+            "expanded": false,
+            "pages": [
+              "goals",
+              "funnels",
+              "revenue-attribution"
+            ]
+          },
+          {
+            "group": "Data & Sharing",
+            "expanded": false,
+            "pages": [
+              "import-analytics-data",
+              "embedded-dashboards"
+            ]
+          },
+          {
+            "group": "Troubleshooting",
+            "expanded": false,
+            "pages": [
+              "troubleshooting"
             ]
           }
-        ]
-      },
-      {
-        "group": "Proxy Setup",
-        "pages": [
-          "proxy-guide",
-          "managed-proxy",
-          {
-            "group": "Frameworks",
-            "expanded": false,
-            "pages": [
-              "nextjs-proxy",
-              "express-proxy",
-              "php-proxy",
-              "fastapi-proxy",
-              "flask-proxy",
-              "vuejs-proxy",
-              "astro-proxy",
-              "laravel-proxy"
-            ]
-          },
-          {
-            "group": "Servers & hosting",
-            "expanded": false,
-            "pages": [
-              "nginx-proxy",
-              "caddy-proxy",
-              "firebase-proxy",
-              "digitalocean-proxy"
-            ]
-          }
-        ]
-      },
-      {
-        "group": "Goals & Attribution",
-        "pages": [
-          "goals",
-          "funnels",
-          "revenue-attribution"
-        ]
-      },
-      {
-        "group": "Data & Sharing",
-        "pages": [
-          "import-analytics-data",
-          "embedded-dashboards"
-        ]
-      },
-      {
-        "group": "Troubleshooting",
-        "pages": [
-          "troubleshooting"
         ]
       }
     ]
