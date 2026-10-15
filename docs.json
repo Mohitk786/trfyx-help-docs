@@ -3,15 +3,14 @@
   "theme": "aspen",
   "name": "Trfyx Documentation",
   "colors": {
-    "primary": "#c4471f",
-    "light": "#f7f8f8",
-    "dark": "#c4471f"
+    "primary": "#FF4B00",
+    "light": "#FF4B00",
+    "dark": "#FF4B00"
   },
   "navigation": {
     "groups": [
       {
         "group": "Getting Started",
-        "expanded": true,
         "pages": [
           "index",
           "quickstart",
@@ -20,14 +19,12 @@
       },
       {
         "group": "Analytics & Insights",
-        "expanded": false,
         "pages": [
           "analytics/overview"
         ]
       },
       {
         "group": "Behavior Analytics",
-        "expanded": false,
         "pages": [
           "session-replay",
           "user-journeys"
@@ -35,53 +32,80 @@
       },
       {
         "group": "Installation Guide",
-        "expanded": false,
         "pages": [
           "google-tag-manager",
-          "nextjs-app-router",
-          "react-router",
-          "vuejs",
-          "astro",
-          "django",
-          "laravel",
-          "shopify",
-          "webflow",
-          "framer",
-          "wix",
-          "squarespace",
-          "ghost-cms",
-          "bubble",
-          "podia",
-          "kajabi",
-          "lovable",
-          "bolt",
-          "vercel-v0",
-          "replit"
+          {
+            "group": "Frameworks",
+            "expanded": false,
+            "pages": [
+              "nextjs-app-router",
+              "react-router",
+              "vuejs",
+              "astro",
+              "django",
+              "laravel"
+            ]
+          },
+          {
+            "group": "Website builders & platforms",
+            "expanded": false,
+            "pages": [
+              "shopify",
+              "webflow",
+              "framer",
+              "wix",
+              "squarespace",
+              "ghost-cms",
+              "bubble",
+              "podia",
+              "kajabi"
+            ]
+          },
+          {
+            "group": "AI app builders",
+            "expanded": false,
+            "pages": [
+              "lovable",
+              "bolt",
+              "vercel-v0",
+              "replit"
+            ]
+          }
         ]
       },
       {
         "group": "Proxy Setup",
-        "expanded": false,
         "pages": [
           "proxy-guide",
           "managed-proxy",
-          "nextjs-proxy",
-          "express-proxy",
-          "php-proxy",
-          "fastapi-proxy",
-          "flask-proxy",
-          "vuejs-proxy",
-          "nginx-proxy",
-          "caddy-proxy",
-          "astro-proxy",
-          "firebase-proxy",
-          "laravel-proxy",
-          "digitalocean-proxy"
+          {
+            "group": "Frameworks",
+            "expanded": false,
+            "pages": [
+              "nextjs-proxy",
+              "express-proxy",
+              "php-proxy",
+              "fastapi-proxy",
+              "flask-proxy",
+              "vuejs-proxy",
+              "astro-proxy",
+              "laravel-proxy"
+            ]
+          },
+          {
+            "group": "Servers & hosting",
+            "expanded": false,
+            "pages": [
+              "nginx-proxy",
+              "caddy-proxy",
+              "firebase-proxy",
+              "digitalocean-proxy"
+            ]
+          }
         ]
       },
       {
         "group": "Goals & Attribution",
-        "expanded": false,
         "pages": [
           "goals",
           "funnels",
@@ -90,7 +114,6 @@
       },
       {
         "group": "Data & Sharing",
-        "expanded": false,
         "pages": [
           "import-analytics-data",
           "embedded-dashboards"
@@ -98,7 +121,6 @@
       },
       {
         "group": "Troubleshooting",
-        "expanded": false,
         "pages": [
           "troubleshooting"
         ]
@@ -125,7 +147,7 @@
   "fonts": {
     "heading": {
       "family": "Inter",
-      "weight": 600
+      "weight": 500
     },
     "body": {
       "family": "Inter",
@@ -133,16 +155,16 @@
     }
   },
   "styling": {
-    "eyebrows": "breadcrumbs",
+    "eyebrows": "section",
     "latex": true,
-    "codeblocks": "dark"
+    "codeblocks": "system"
   },
   "favicon": {
     "light": "/images/trfyx-icon.png",
     "dark": "/images/trfyx-icon.png"
   },
   "metadata": {
-    "timestamp": true
+    "timestamp": false
   },
   "interaction": {
     "drilldown": false
@@ -157,13 +179,23 @@
     "SCRIPT_PATH": "https://app.trfyx.com/script.js"
   },
   "appearance": {
-    "default": "dark",
+    "default": "system",
     "strict": false
   },
   "background": {
     "color": {
-      "light": "#fcfcfd",
-      "dark": "#08090a"
+      "light": "#FFFFFF",
+      "dark": "#191717"
+    }
+  },
+  "icons": {
+    "library": "lucide"
+  },
+  "navbar": {
+    "primary": {
+      "type": "button",
+      "label": "Get Started",
+      "href": "https://app.trfyx.com/signup"
     }
   }
 }
