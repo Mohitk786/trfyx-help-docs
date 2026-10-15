@@ -1,6 +1,6 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "maple",
+  "theme": "aspen",
   "name": "Trfyx Documentation",
   "colors": {
     "primary": "#c4471f",
@@ -103,33 +103,7 @@
           "troubleshooting"
         ]
       }
-    ],
-    "global": {
-      "anchors": [
-        {
-          "anchor": "Docs",
-          "icon": "file-lines",
-          "href": "https://help.trfyx.com"
-        },
-        {
-          "anchor": "Website",
-          "icon": "globe",
-          "href": "https://www.trfyx.com"
-        },
-        {
-          "anchor": "LinkedIn",
-          "icon": "linkedin",
-          "href": "https://www.linkedin.com/company/trfyx"
-        }
-      ]
-    }
-  },
-  "navbar": {
-    "primary": {
-      "type": "button",
-      "label": "Open app",
-      "href": "https://app.trfyx.com"
-    }
+    ]
   },
   "contextual": {
     "options": [

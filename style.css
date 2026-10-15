@@ -52,9 +52,17 @@ body,
 /* ---------- Top bar ---------- */
 #navbar {
   background-color: var(--t-canvas) !important;
-  border-bottom: 1px solid var(--t-line) !important;
+  border-bottom: 0 !important;
   box-shadow: none !important;
   backdrop-filter: none !important;
+}
+
+/* No header nav links or CTA, like Linear */
+#topbar-cta-button,
+.navbar-link,
+.nav-anchors,
+.nav-tabs {
+  display: none !important;
 }
 
 #navbar > div,
@@ -307,23 +315,6 @@ body,
 
 #navigation-items > div {
   margin-top: 0 !important;
-}
-
-/* Global links (Docs, Website, LinkedIn) pinned below the groups with a divider, like Linear */
-#sidebar-content :has(> #navigation-items) {
-  display: flex;
-  flex-direction: column;
-}
-
-#sidebar-content :has(> #navigation-items) > #navigation-items {
-  order: 1;
-}
-
-#sidebar-content :has(> #navigation-items) > :not(#navigation-items) {
-  order: 2;
-  margin-top: 1.25rem;
-  padding-top: 1.25rem;
-  border-top: 1px solid var(--t-line);
 }
 
 /* ---------- Content ---------- */
