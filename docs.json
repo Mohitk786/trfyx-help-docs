@@ -202,7 +202,7 @@
     }
   },
   "icons": {
-    "library": "lucide"
+    "library": "fontawesome"
   },
   "navbar": {
     "primary": {
