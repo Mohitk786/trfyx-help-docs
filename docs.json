@@ -4,14 +4,13 @@
   "name": "Trfyx Documentation",
   "colors": {
     "primary": "#c4471f",
-    "light": "#d86c48",
+    "light": "#f7f8f8",
     "dark": "#c4471f"
   },
   "navigation": {
     "groups": [
       {
         "group": "Getting Started",
-        "icon": "book-open",
         "expanded": true,
         "pages": [
           "index",
@@ -21,7 +20,6 @@
       },
       {
         "group": "Analytics & Insights",
-        "icon": "chart-line",
         "expanded": false,
         "pages": [
           "analytics/overview"
@@ -29,7 +27,6 @@
       },
       {
         "group": "Behavior Analytics",
-        "icon": "arrow-pointer",
         "expanded": false,
         "pages": [
           "session-replay",
@@ -38,7 +35,6 @@
       },
       {
         "group": "Installation Guide",
-        "icon": "download",
         "expanded": false,
         "pages": [
           "google-tag-manager",
@@ -64,8 +60,7 @@
         ]
       },
       {
-        "group": "Proxy setup",
-        "icon": "shield-halved",
+        "group": "Proxy Setup",
         "expanded": false,
         "pages": [
           "proxy-guide",
@@ -86,7 +81,6 @@
       },
       {
         "group": "Goals & Attribution",
-        "icon": "bullseye",
         "expanded": false,
         "pages": [
           "goals",
@@ -96,7 +90,6 @@
       },
       {
         "group": "Data & Sharing",
-        "icon": "database",
         "expanded": false,
         "pages": [
           "import-analytics-data",
@@ -105,19 +98,37 @@
       },
       {
         "group": "Troubleshooting",
-        "icon": "life-ring",
         "expanded": false,
         "pages": [
           "troubleshooting"
         ]
       }
-    ]
+    ],
+    "global": {
+      "anchors": [
+        {
+          "anchor": "Docs",
+          "icon": "file-lines",
+          "href": "https://help.trfyx.com"
+        },
+        {
+          "anchor": "Website",
+          "icon": "globe",
+          "href": "https://www.trfyx.com"
+        },
+        {
+          "anchor": "LinkedIn",
+          "icon": "linkedin",
+          "href": "https://www.linkedin.com/company/trfyx"
+        }
+      ]
+    }
   },
   "navbar": {
     "primary": {
       "type": "button",
-      "label": "Visit Trfyx",
-      "href": "https://trfyx.com"
+      "label": "Open app",
+      "href": "https://app.trfyx.com"
     }
   },
   "contextual": {
@@ -139,7 +150,7 @@
   },
   "fonts": {
     "heading": {
-      "family": "IBM Plex Sans",
+      "family": "Inter",
       "weight": 600
     },
     "body": {
@@ -177,8 +188,8 @@
   },
   "background": {
     "color": {
-      "light": "#fbfaf8",
-      "dark": "#181818"
+      "light": "#fcfcfd",
+      "dark": "#08090a"
     }
   }
 }
