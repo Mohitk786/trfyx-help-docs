@@ -1,0 +1,66 @@
+---
+title: "Connect Paddle"
+description: "Step-by-step guide to connecting Paddle for revenue attribution in Trfyx."
+sidebarTitle: "Paddle"
+icon: "credit-card"
+---
+
+Paddle is a merchant of record that handles payments, tax, and compliance. Connecting it to Trfyx gives you full revenue attribution, subscription lifecycle tracking, and refund monitoring.
+
+## What you'll need
+
+- A Paddle account (Paddle Billing, not Paddle Classic)
+- An **API key** from your Paddle dashboard
+- The Trfyx tracker installed on your website
+
+## Step-by-step setup
+
+<Steps>
+  <Step title="Create an API key in Paddle">
+    Go to your [Paddle Dashboard → Authentication](https://vendors.paddle.com/authentication).
+
+    Create a new API key. Give it a descriptive name like `Trfyx Revenue Attribution`.
+
+    Copy the key (starts with `pdl_`).
+  </Step>
+  <Step title="Connect in Trfyx">
+    In your Trfyx dashboard, go to **Site Settings → Payments**.
+
+    Select **Paddle** and paste your API key. Click **Connect**.
+
+    Trfyx creates a notification destination in Paddle that listens for:
+    - `transaction.completed` — successful payments (one-time and subscription)
+    - `transaction.payment_failed` — failed payment attempts
+    - `subscription.created` — new subscriptions
+    - `subscription.updated` — plan changes, payment method updates
+    - `subscription.canceled` — cancellations
+    - `adjustment.created` — refunds and credits
+  </Step>
+  <Step title="Verify the connection">
+    Make a test transaction through Paddle. It should appear in **Revenue → Overview** within a few seconds.
+  </Step>
+</Steps>
+
+## How Paddle events map to Trfyx
+
+Paddle has a slightly different event model than other providers:
+
+| Paddle event | What Trfyx records |
+|---|---|
+| Transaction completed | Payment + attribution. If the transaction is tied to a subscription, the subscription state is also updated. |
+| Subscription created/updated | Subscription lifecycle state (active, trialing, past_due), plan name, billing interval, MRR |
+| Subscription canceled | Cancellation recorded, MRR drops to zero |
+| Adjustment created (refund) | Refund recorded, original payment marked as refunded |
+| Adjustment created (credit) | Tracked but not counted as a refund |
+
+<Note>
+Paddle's `adjustment.created` event covers both refunds and credits. Trfyx only treats adjustments with `action: "refund"` as refunds.
+</Note>
+
+## Paddle signature verification
+
+Paddle uses an HMAC-SHA256 signature in the `paddle-signature` header. Trfyx automatically verifies this on every webhook to ensure the payload hasn't been tampered with. If verification fails, the webhook is rejected.
+
+## Disconnecting
+
+Go to **Site Settings → Payments** and click **Disconnect**.

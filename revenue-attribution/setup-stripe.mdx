@@ -1,0 +1,111 @@
+---
+title: "Connect Stripe"
+description: "Step-by-step guide to connecting Stripe for revenue attribution in Trfyx."
+sidebarTitle: "Stripe"
+icon: "stripe"
+---
+
+Stripe is the most popular payment provider for SaaS and online businesses. Connecting it to Trfyx takes about 2 minutes and gives you full revenue attribution, subscription tracking, and MRR metrics.
+
+## What you'll need
+
+- A Stripe account with at least one product or price created
+- Admin or developer access to create API keys
+- The Trfyx tracker already installed on your website
+
+## Step-by-step setup
+
+<Steps>
+  <Step title="Create a restricted API key in Stripe">
+    Go to your [Stripe Dashboard → API Keys](https://dashboard.stripe.com/apikeys) and click **Create restricted key**.
+
+    Name it something like `Trfyx` so you can identify it later.
+
+    **Permissions needed:** You only need read access. The pre-filled link in the Trfyx setup form selects the right permissions automatically. If you're creating the key manually, enable:
+    - Checkout Sessions: **Read**
+    - Subscriptions: **Read**
+
+    <Warning>
+    Never use your Stripe secret key (`sk_live_...`). Always create a restricted key with minimal permissions. Trfyx only needs read access to verify webhooks.
+    </Warning>
+  </Step>
+  <Step title="Paste the key in Trfyx">
+    In your Trfyx dashboard, go to **Site Settings → Payments**.
+
+    Select **Stripe** as your provider and paste the restricted API key (it starts with `rk_live_`).
+
+    Click **Connect**.
+  </Step>
+  <Step title="Trfyx creates the webhook automatically">
+    You don't need to set up the webhook manually. When you click Connect, Trfyx uses the Stripe API to create a webhook endpoint pointing to your site's unique webhook URL.
+
+    The webhook listens for these events:
+    - `checkout.session.completed` — one-time purchases and initial subscription sign-ups
+    - `payment_intent.succeeded` — direct payment intents
+    - `invoice.paid` — subscription renewals
+    - `customer.subscription.created` — new subscriptions
+    - `customer.subscription.updated` — plan changes, trial endings
+    - `customer.subscription.deleted` — cancellations
+    - `charge.refunded` — refunds
+    - `charge.dispute.created` — payment disputes opened
+    - `charge.dispute.closed` — disputes resolved
+  </Step>
+  <Step title="Make a test purchase">
+    If you have Stripe test mode enabled, create a test checkout. Within seconds, you should see the payment appear in **Revenue → Overview**.
+
+    Check that:
+    - The amount is correct
+    - The match method shows (e.g., "checkout URL detection" or "email fallback")
+    - The source attribution looks right (if you visited from a campaign link)
+  </Step>
+</Steps>
+
+## Improving Stripe attribution quality
+
+For the best possible attribution, pass the Trfyx visitor ID in your Stripe Checkout session metadata:
+
+```javascript
+const session = await stripe.checkout.sessions.create({
+  // ... your normal checkout config
+  metadata: {
+    trfyx_visitor_id: visitorId // from the Trfyx tracker
+  }
+});
+```
+
+This gives you **Step 1 (explicit session)** matching with high confidence, instead of relying on checkout URL detection or email fallback.
+
+## What Stripe data flows into Trfyx
+
+| Stripe event | What Trfyx records |
+|---|---|
+| Checkout completed | New payment + cascade attribution + customer identity |
+| Invoice paid | Subscription renewal payment + MRR update |
+| Subscription created/updated | Subscription state, plan name, billing interval, trial dates |
+| Subscription deleted | Cancellation with reason, MRR drops to zero |
+| Charge refunded | Refund recorded, original payment marked as refunded |
+| Dispute created/closed | Dispute status tracked (open → won/lost) |
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Payments aren't showing up">
+    1. Check your Stripe webhook logs at **Developers → Webhooks** in the Stripe Dashboard
+    2. Confirm the endpoint URL matches your Trfyx app URL
+    3. Make sure the webhook isn't disabled
+    4. Verify your restricted key hasn't been revoked
+  </Accordion>
+  <Accordion title="All payments show as 'unattributed'">
+    This usually means the Trfyx tracker isn't installed on your checkout success page, or visitors are blocking the tracker. Try:
+    - Confirming the tracker loads on your post-checkout page
+    - Setting up a [proxy](/proxy-guide) to avoid ad blockers
+    - Passing the visitor ID in checkout metadata (see above)
+  </Accordion>
+  <Accordion title="Duplicate payments appearing">
+    Trfyx deduplicates by Stripe event ID. If you're seeing duplicates, you may have two webhook endpoints pointing to the same Trfyx site. Check **Developers → Webhooks** in Stripe and remove any extra endpoints.
+  </Accordion>
+</AccordionGroup>
+
+## Disconnecting Stripe
+
+Go to **Site Settings → Payments** and click **Disconnect**. This removes the webhook from Stripe and deletes the integration record. Historical revenue data is preserved.

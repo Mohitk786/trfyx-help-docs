@@ -1,0 +1,72 @@
+---
+title: "Connect LemonSqueezy"
+description: "Step-by-step guide to connecting LemonSqueezy for revenue attribution in Trfyx."
+sidebarTitle: "LemonSqueezy"
+icon: "lemon"
+---
+
+LemonSqueezy is a merchant of record for digital products and SaaS. Connecting it to Trfyx lets you attribute revenue from one-time purchases, subscriptions, and order refunds back to the marketing channels that drove them.
+
+## What you'll need
+
+- A LemonSqueezy account with at least one store
+- Your **Store ID** (found in store settings)
+- An **API key** (created in developer settings)
+- The Trfyx tracker installed on your website
+
+## Step-by-step setup
+
+<Steps>
+  <Step title="Find your Store ID">
+    Go to [LemonSqueezy → Settings → Stores](https://app.lemonsqueezy.com/settings/stores).
+
+    Your Store ID is the numeric ID shown next to your store name. Copy it.
+  </Step>
+  <Step title="Create an API key">
+    Go to [LemonSqueezy → Settings → API](https://app.lemonsqueezy.com/settings/api).
+
+    Click **Create API Key**, give it a name like `Trfyx`, and copy the key.
+
+    <Warning>
+    The API key is only shown once. If you lose it, you'll need to create a new one.
+    </Warning>
+  </Step>
+  <Step title="Connect in Trfyx">
+    In your Trfyx dashboard, go to **Site Settings → Payments**.
+
+    Select **LemonSqueezy**, paste your Store ID and API Key, then click **Connect**.
+
+    Trfyx creates a webhook on LemonSqueezy automatically. It listens for:
+    - `order_created` — one-time purchases
+    - `order_refunded` — refunds
+    - `subscription_payment_success` — recurring subscription payments
+  </Step>
+  <Step title="Test with a purchase">
+    Create a test purchase through LemonSqueezy. It should appear in your Trfyx Revenue dashboard within seconds.
+  </Step>
+</Steps>
+
+## What LemonSqueezy data flows into Trfyx
+
+| LemonSqueezy event | What Trfyx records |
+|---|---|
+| Order created | New payment + attribution cascade + customer identity |
+| Subscription payment success | Subscription renewal + attribution |
+| Order refunded | Refund recorded, original payment marked |
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="'Failed to create webhook' error">
+    - Double-check your API key is valid and hasn't expired
+    - Verify the Store ID matches your actual store
+    - Make sure your LemonSqueezy account has webhook creation permissions
+  </Accordion>
+  <Accordion title="Payments not appearing">
+    Check LemonSqueezy's webhook delivery logs in **Settings → Webhooks**. Look for failed deliveries and check the response codes.
+  </Accordion>
+</AccordionGroup>
+
+## Disconnecting
+
+Go to **Site Settings → Payments** and click **Disconnect**. The webhook is removed and the integration record is deleted. Historical data is preserved.

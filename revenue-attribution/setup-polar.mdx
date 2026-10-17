@@ -1,0 +1,67 @@
+---
+title: "Connect Polar"
+description: "Step-by-step guide to connecting Polar for revenue attribution in Trfyx."
+sidebarTitle: "Polar"
+icon: "circle-dollar-to-slot"
+---
+
+Polar is a monetization platform for developers and open-source projects. Connecting it to Trfyx lets you see which channels drive your sponsorships, product purchases, and subscriptions.
+
+## What you'll need
+
+- A Polar account with an organization
+- Your **Organization ID** (the "Identifier" in your org settings)
+- An **Access Token** with the right scopes
+- The Trfyx tracker installed on your website
+
+## Step-by-step setup
+
+<Steps>
+  <Step title="Find your Organization ID">
+    Go to your [Polar Dashboard](https://polar.sh/dashboard) → **Settings → General → Profile**.
+
+    Look for the field labeled **Identifier**. This is your Organization ID. Copy it.
+  </Step>
+  <Step title="Create an access token">
+    Go to **Settings → General → Developer → Token**.
+
+    Create a new token with **no expiration** and select only these scopes:
+    - `checkouts:read`
+    - `orders:read`
+    - `organizations:read`
+    - `products:read`
+    - `subscriptions:read`
+    - `webhooks:write`
+
+    Copy the token (starts with `polar_oat_`).
+
+    <Tip>
+    Keep permissions minimal. Trfyx only needs read access to your data and write access to create the webhook.
+    </Tip>
+  </Step>
+  <Step title="Connect in Trfyx">
+    In your Trfyx dashboard, go to **Site Settings → Payments**.
+
+    Select **Polar**, paste your Organization ID and Access Token, then click **Connect**.
+
+    Trfyx creates a webhook that listens for:
+    - `order.created` — purchases
+    - `order.refunded` — refunds
+    - `subscription.created` — new subscriptions
+  </Step>
+  <Step title="Verify with a test transaction">
+    Make a test purchase. Check **Revenue → Overview** for the payment and confirm the attribution looks correct.
+  </Step>
+</Steps>
+
+## What Polar data flows into Trfyx
+
+| Polar event | What Trfyx records |
+|---|---|
+| Order created | Payment + cascade attribution + customer identity |
+| Order refunded | Refund recorded, original payment marked |
+| Subscription created | New subscription record |
+
+## Disconnecting
+
+Go to **Site Settings → Payments** and click **Disconnect**.

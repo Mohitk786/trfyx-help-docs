@@ -1,0 +1,50 @@
+---
+title: "Connect Yolfi"
+description: "Step-by-step guide to connecting Yolfi for revenue attribution in Trfyx."
+sidebarTitle: "Yolfi"
+icon: "wallet"
+---
+
+Yolfi handles payments and subscriptions for online businesses. Connecting it to Trfyx lets you track which channels drive paying customers.
+
+## What you'll need
+
+- A Yolfi account
+- Your **Merchant ID** (from your Yolfi dashboard, starts with `mer_`)
+- An **API key**
+- The Trfyx tracker installed on your website
+
+## Step-by-step setup
+
+<Steps>
+  <Step title="Get your Merchant ID and API key">
+    Log in to your Yolfi dashboard. Find your Merchant ID in account settings and create or copy an API key.
+  </Step>
+  <Step title="Connect in Trfyx">
+    Go to **Site Settings → Payments** in your Trfyx dashboard.
+
+    Select **Yolfi**, paste your Merchant ID and API Key, then click **Connect**.
+
+    Trfyx creates a webhook that listens for:
+    - `payment.succeeded` — successful payments
+    - `payment.refunded` — refunds
+    - `subscription.created` — new subscriptions
+    - `subscription.canceled` — cancellations
+  </Step>
+  <Step title="Test the connection">
+    Make a test payment and verify it appears in **Revenue → Overview**.
+  </Step>
+</Steps>
+
+## What Yolfi data flows into Trfyx
+
+| Yolfi event | What Trfyx records |
+|---|---|
+| Payment succeeded | Payment + cascade attribution + customer identity |
+| Payment refunded | Refund recorded, original payment flagged |
+| Subscription created | New subscription record |
+| Subscription canceled | Cancellation recorded |
+
+## Disconnecting
+
+Go to **Site Settings → Payments** and click **Disconnect**.

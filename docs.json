@@ -118,7 +118,18 @@
             "pages": [
               "goals",
               "funnels",
-              "revenue-attribution"
+              "revenue-attribution",
+              {
+                "group": "Provider setup guides",
+                "pages": [
+                  "revenue-attribution/setup-stripe",
+                  "revenue-attribution/setup-lemonsqueezy",
+                  "revenue-attribution/setup-polar",
+                  "revenue-attribution/setup-paddle",
+                  "revenue-attribution/setup-dodo",
+                  "revenue-attribution/setup-yolfi"
+                ]
+              }
             ]
           },
           {

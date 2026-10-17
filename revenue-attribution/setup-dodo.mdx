@@ -1,0 +1,52 @@
+---
+title: "Connect Dodo Payments"
+description: "Step-by-step guide to connecting Dodo Payments for revenue attribution in Trfyx."
+sidebarTitle: "Dodo Payments"
+icon: "money-bill"
+---
+
+Dodo Payments supports one-time and subscription payments. Connecting it to Trfyx lets you attribute revenue and track subscription lifecycles.
+
+## What you'll need
+
+- A Dodo Payments account with a business set up
+- Your **Business ID** (from your Dodo dashboard)
+- An **API key**
+- The Trfyx tracker installed on your website
+
+## Step-by-step setup
+
+<Steps>
+  <Step title="Get your Business ID and API key">
+    Log in to your Dodo Payments dashboard. Your Business ID is shown in your account settings (starts with `biz_`).
+
+    Create an API key if you don't have one already.
+  </Step>
+  <Step title="Connect in Trfyx">
+    Go to **Site Settings → Payments** in your Trfyx dashboard.
+
+    Select **Dodo Payments**, paste your Business ID and API Key, then click **Connect**.
+
+    Trfyx creates a webhook that listens for:
+    - `payment.completed` — successful one-time payments
+    - `payment.refunded` — refunds
+    - `subscription.active` — subscription payments
+    - `subscription.cancelled` — cancellations
+  </Step>
+  <Step title="Test the connection">
+    Make a test payment. Verify it shows up in **Revenue → Overview**.
+  </Step>
+</Steps>
+
+## What Dodo data flows into Trfyx
+
+| Dodo event | What Trfyx records |
+|---|---|
+| Payment completed | Payment + cascade attribution + customer identity |
+| Payment refunded | Refund recorded, original payment flagged |
+| Subscription active | Subscription payment + attribution |
+| Subscription cancelled | Cancellation recorded |
+
+## Disconnecting
+
+Go to **Site Settings → Payments** and click **Disconnect**.

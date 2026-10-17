@@ -1,83 +1,331 @@
 ---
 title: "Revenue attribution"
-description: "Understand how tracked acquisition sources relate to revenue outcomes in Trfyx."
+description: "Connect your payment provider to Trfyx and see exactly which marketing channels, campaigns, and pages drive real revenue."
 sidebarTitle: "Revenue attribution"
 icon: "sack-dollar"
 ---
 
-Revenue attribution helps connect acquisition context (such as a referral, campaign, or landing page) to revenue outcomes recorded by your analytics setup. It is useful for comparing the performance of marketing activity, but only when both the acquisition context and revenue events are captured consistently.
+Revenue attribution answers the question every founder and marketer asks: **"Where is my revenue actually coming from?"**
 
-Attribution is not automatic proof that a channel caused a purchase. Treat it as a model for assigning credit to recorded touchpoints under defined tracking rules.
+When someone lands on your site from a Google ad, browses three pages, leaves, comes back a week later from an email campaign, and finally buys your product — who gets the credit? Revenue attribution in Trfyx connects the dots between that visitor's journey and the payment that came through your Stripe, Paddle, or any other provider.
 
-## What you need
+<Note>
+  Revenue attribution is available on the **Growth** plan and above. You'll need the Trfyx tracker installed on your site and at least one payment provider connected.
+</Note>
 
-Before interpreting revenue attribution, confirm that:
+## How it works, in plain English
 
-- Website or product tracking is installed and collecting the expected visits.
-- Campaign links use consistent tracking parameters where applicable.
-- Revenue data reaches Trfyx through a supported integration or import.
-- Purchases are represented accurately and are not duplicated.
-- Your team understands which touchpoints and attribution rules are included in the report.
+Here's what happens behind the scenes when a customer pays you:
 
-The available integrations and setup steps can vary by workspace. Use the configuration and connection instructions offered in your Trfyx account.
+1. **Your payment provider sends a webhook** to Trfyx the moment a payment goes through (a checkout, a subscription renewal, a refund — all of it).
+2. **Trfyx figures out which visitor made that payment.** This is the hard part. We use a [6-step cascading match](#how-trfyx-matches-payments-to-visitors) that tries progressively broader methods — from an exact session match all the way down to an email lookup.
+3. **We look up that visitor's acquisition history.** What was the first page they ever visited? What UTM campaign brought them? What was the last thing they did before paying?
+4. **We record both first-touch and last-touch attribution** so you can compare "what channel introduced this customer" vs. "what channel closed the deal."
+5. **If the payment is in a foreign currency**, we automatically convert it to your reporting currency using live exchange rates so your totals make sense.
 
-## Set up a reliable workflow
+The result: every payment in your dashboard shows which source, campaign, medium, and landing page gets credit — with a confidence level so you know how reliable each match is.
+
+---
+
+## Quick setup (5 minutes)
 
 <Steps>
-  <Step title="Verify acquisition tracking">
-    Test that visits from a tagged campaign or known referral appear with the expected source context. Keep naming conventions consistent across your campaigns.
+  <Step title="Install the Trfyx tracker">
+    If you haven't already, add the Trfyx tracking script to your website. This is what captures visitor sessions, UTM parameters, referrers, and landing pages — the raw material for attribution.
+
+    See [Install tracking](/install-tracking) for your framework.
   </Step>
-  <Step title="Connect or import revenue data">
-    Use the payment, revenue, or data-import options available in your workspace. Confirm which transactions and fields are included before using the totals for reporting.
+  <Step title="Connect a payment provider">
+    Go to **Site Settings → Payments** in your dashboard, pick your provider, and paste your API key. Trfyx creates the webhook automatically — you don't need to configure anything on the provider side.
+
+    We support **7 providers**: [Stripe](/revenue-attribution/setup-stripe), [LemonSqueezy](/revenue-attribution/setup-lemonsqueezy), [Polar](/revenue-attribution/setup-polar), [Paddle](/revenue-attribution/setup-paddle), [Dodo Payments](/revenue-attribution/setup-dodo), [Yolfi](/revenue-attribution/setup-yolfi), and [Shopify](/shopify).
   </Step>
-  <Step title="Validate a transaction end to end">
-    Run a test transaction in an appropriate test environment or trace a known transaction safely. Check that the amount, currency, transaction identity, and associated context are represented as expected.
+  <Step title="Set your reporting currency">
+    In **Site Settings → Payments**, choose the currency you want all revenue reported in (e.g. USD, EUR, GBP). Payments in other currencies are automatically converted using live exchange rates.
   </Step>
-  <Step title="Compare sources and outcomes">
-    Review attributed outcomes across equivalent time ranges. Look beyond raw revenue where the report supports it: conversion volume, revenue per visitor, and the quality of acquired users can answer different questions.
+  <Step title="Make a test purchase">
+    Use your provider's test mode to create a payment. Within a few seconds, it should appear in **Revenue → Overview** in your dashboard. Check that the amount, source, and match method look correct.
   </Step>
-  <Step title="Investigate unexpected results">
-    Verify missing campaign parameters, referral changes, duplicate payment events, import delays, and identity mismatches before concluding that a channel performed poorly.
+  <Step title="Tag your campaigns">
+    Use UTM parameters on your marketing links (`utm_source`, `utm_medium`, `utm_campaign`). These are how Trfyx knows which campaign or ad brought a visitor. Without them, traffic shows up as "Direct" or by referrer domain only.
   </Step>
 </Steps>
 
-## Campaign tracking practices
+---
 
-- Use a consistent convention for campaign, source, and medium values.
-- Tag links that you control, and test the destination URL before launch.
-- Avoid changing campaign naming conventions midway through a comparison.
-- Preserve the original landing and acquisition context where your implementation supports it.
-- Document the attribution rules your team uses for reports and business reviews.
+## How Trfyx matches payments to visitors
 
-## Revenue data quality checklist
+This is the core of the attribution engine. When a payment webhook arrives, Trfyx runs through **6 matching steps in order**, stopping at the first one that finds a visitor. Each step has a confidence level:
 
-- [ ] Revenue is recorded only when the intended transaction state is reached.
-- [ ] Retried webhooks or imports do not create duplicate revenue.
-- [ ] Amounts and currencies are interpreted consistently.
-- [ ] Refunds, cancellations, and test transactions are handled according to your reporting needs and the capabilities available.
-- [ ] The imported or integrated date range is complete.
-- [ ] Acquisition context is present where expected.
+<AccordionGroup>
+  <Accordion title="Step 1: Explicit session (High confidence)" icon="bullseye">
+    **What it checks:** Did the payment provider include a visitor or session ID in its metadata?
 
-## How to interpret attribution
+    **When it works:** If you pass a Trfyx visitor ID in your checkout metadata (e.g. Stripe's `metadata` field), this is the most reliable match possible. The payment is directly tied to the session that initiated the checkout.
 
-An attributed revenue report answers "what credit does this tracking model assign to the recorded touchpoints?" It does not necessarily answer "what would have happened if this channel did not exist?" Use experiments, controlled comparisons, and business context when you need stronger causal evidence.
+    **Confidence:** High — there's no guessing involved.
+  </Accordion>
+
+  <Accordion title="Step 2: Checkout URL detection (High confidence)" icon="link">
+    **What it checks:** Did the Trfyx tracker detect the visitor returning to your site from a checkout page?
+
+    **When it works:** Many payment providers redirect the customer back to your site after checkout (like Stripe Checkout's `success_url`). The Trfyx tracker notices these return URLs and records which visitor landed on them. When the webhook arrives, we match it to that detection.
+
+    **Confidence:** High — we saw the same visitor on the checkout return page.
+  </Accordion>
+
+  <Accordion title="Step 3: Subscription history (High confidence)" icon="rotate">
+    **What it checks:** For renewal payments, is there an earlier payment from the same subscription that was already attributed?
+
+    **When it works:** If a customer's first subscription payment was attributed to a visitor, all future renewals for that same subscription automatically inherit that attribution. This means your MRR stays connected to the original acquisition channel.
+
+    **Confidence:** High — the subscription ID is an exact match.
+  </Accordion>
+
+  <Accordion title="Step 4: Customer identity (Medium confidence)" icon="user">
+    **What it checks:** Has this customer (by provider customer ID or email) been linked to a visitor before?
+
+    **When it works:** Trfyx builds a customer identity graph over time. If we've previously linked a Stripe customer `cus_abc123` to visitor `v_xyz`, any new payment from that customer automatically connects to that visitor.
+
+    **Confidence:** Medium — the customer is the same, but they might be using a different device or browser than the one we tracked.
+  </Accordion>
+
+  <Accordion title="Step 5: Provider customer history (Medium confidence)" icon="clock-rotate-left">
+    **What it checks:** Has the same provider customer ID made any previous payment that was attributed?
+
+    **When it works:** Similar to Step 4, but looks directly at previous revenue events rather than the identity graph. Useful as a fallback when the identity system hasn't built a link yet.
+
+    **Confidence:** Medium.
+  </Accordion>
+
+  <Accordion title="Step 6: Email fallback (Low confidence)" icon="envelope">
+    **What it checks:** Has the customer's email address appeared in any tracked events in ClickHouse?
+
+    **When it works:** This is the last resort. If the customer's email (from the payment) matches an email captured in analytics events, we use that visitor. It's better than no match, but emails can be shared across devices or people.
+
+    **Confidence:** Low — an email match is less reliable than a session or customer ID match.
+  </Accordion>
+</AccordionGroup>
+
+If none of the 6 steps find a match, the payment is recorded as **unattributed**. You can see unattributed payments in the [Diagnostics tab](#diagnostics-tab) and investigate why they weren't matched.
+
+---
+
+## Understanding the Revenue dashboard
+
+Once payments start flowing in, your Revenue section has **5 tabs**:
+
+### Overview tab
+
+Your at-a-glance revenue picture. Here's what each number means:
+
+| Metric | What it shows | How it's calculated |
+| --- | --- | --- |
+| **Total Revenue** | All payments received in the selected date range | Sum of all `RevenueEvent` amounts, converted to your reporting currency |
+| **Conversions** | Number of individual payment events | Count of payment webhooks received (checkout completions, subscription payments, etc.) |
+| **Avg Order Value** | Average revenue per conversion | Total revenue ÷ number of conversions |
+| **Attribution Rate** | What percentage of payments were matched to a visitor | Attributed conversions ÷ total conversions × 100 |
+
+Below the KPIs you'll find:
+
+- **Revenue over time** — a daily chart showing total and attributed revenue
+- **Revenue by source** — which traffic sources (Google, Twitter, direct, etc.) drove the most revenue, shown for both first-touch and last-touch
+- **Revenue by campaign** — same breakdown but by UTM campaign
+- **Revenue by landing page** — which pages visitors first landed on before eventually paying
+- **Recent payments** — a live feed of your latest payment events with match method and provider
+
+### Attribution tab
+
+A deep-dive comparison of **first-touch vs. last-touch revenue** across four dimensions:
+
+- **Source** — the traffic source (google, twitter, newsletter, direct)
+- **Campaign** — the UTM campaign name
+- **Landing page** — the first page the visitor saw
+- **Medium** — the traffic medium (organic, paid, email, social)
+
+For each row, you see:
+
+- **First-touch revenue** — revenue credited to the channel that _first introduced_ the customer
+- **Last-touch revenue** — revenue credited to the channel of the visitor's _most recent session_ before paying
+- **Conversions** — how many payments came through this dimension
+- **AOV** — average order value for this dimension
+
+This tab also shows **unattributed payments** — payments that couldn't be matched to any visitor. If you see a lot of these, check the [Diagnostics tab](#diagnostics-tab).
+
+### Customers tab
+
+A list of all identified customers across all your payment providers. Each row shows:
+
+- Customer name and email (from the payment provider)
+- Total lifetime revenue
+- Number of payments
+- First-touch acquisition source
+- Date of last payment
+- Subscription status (if applicable)
+
+Click any customer to see their full detail page: payment history, linked visitor sessions, and how they were matched.
+
+### Subscriptions tab
+
+Tracks your recurring revenue in real time:
+
+| Metric | What it means |
+| --- | --- |
+| **MRR** | Monthly Recurring Revenue — the sum of all active subscriptions normalized to monthly. Annual plans are divided by 12; weekly plans are multiplied by 4.33. |
+| **Active** | Subscriptions currently in `active` status |
+| **Trialing** | Subscriptions in a free trial period |
+| **Churned** | Subscriptions canceled or expired in the selected date range |
+
+Below the KPIs:
+
+- **MRR by plan** — a bar chart showing how much MRR comes from each plan
+- **Active subscriptions** — a table with plan name, billing interval, MRR contribution, and next renewal date
+- **Recent churns** — subscriptions that canceled recently, with the cancel reason if the provider shared one
+
+### Diagnostics tab
+
+Your attribution health dashboard. Use this when something looks off:
+
+- **Attribution rate** — the percentage of payments that were successfully matched to a visitor. A green dot means ≥ 80%, yellow means 50–80%, red means \< 50%.
+- **Match method distribution** — shows how many payments were matched by each of the 6 cascade steps. If most matches are "email_fallback," consider passing visitor IDs in your checkout metadata for higher confidence.
+- **Confidence distribution** — breaks down matches by confidence level (high / medium / low / none).
+- **Re-attribute button** — re-runs the entire cascade engine across all your payments. Useful after you've fixed tracking issues or connected a new identity source.
+
+---
+
+## Currency conversion
+
+Trfyx automatically converts all payment amounts to your chosen **reporting currency** so your totals are consistent, even if customers pay in different currencies.
+
+**How it works:**
+
+- Exchange rates are fetched from a free, open-source currency API
+- Rates are cached for 1 hour, so slight fluctuations within the hour won't cause inconsistencies
+- Both the original amount/currency and the converted amount are stored — you never lose the raw data
+- If a rate isn't available for an exotic currency, the original amount is used as-is
+
+**To set your reporting currency:** Go to **Site Settings → Payments** and choose your currency. This affects all future conversions and the display currency in the Revenue dashboard.
+
+---
+
+## First-touch vs. last-touch: which should you use?
+
+Both are shown side by side because they answer different questions:
+
+| Model | Question it answers | Best for |
+| --- | --- | --- |
+| **First-touch** | "What channel _introduced_ this customer to us?" | Evaluating top-of-funnel: awareness campaigns, SEO, content marketing |
+| **Last-touch** | "What was the last thing the customer interacted with before paying?" | Evaluating bottom-of-funnel: retargeting, email sequences, special offers |
+
+**Example:** A customer first visits from a blog post (organic search), then comes back from a retargeting ad, then converts from an email campaign. First-touch credits organic search. Last-touch credits email. Both are valid — they just measure different things.
+
+<Tip>
+  If first-touch and last-touch show very different numbers for a channel, that channel might be great at introducing customers but poor at closing them (or vice versa). That's a useful insight.
+</Tip>
+
+---
+
+## Confidence levels explained
+
+Every payment match comes with a confidence level. Here's what they mean in practice:
+
+| Level | What it means | Typical match methods |
+| --- | --- | --- |
+| **High** | Near-certain match. The visitor and the payment are directly linked. | Explicit session, checkout URL detection, subscription history |
+| **Medium** | Strong match, but relies on an identity link that could theoretically be wrong (e.g., same customer on a different device). | Customer identity, provider customer history |
+| **Low** | Best-effort match. The link is indirect. | Email fallback |
+| **None** | No match found. The payment is unattributed. | — |
+
+A high attribution rate with mostly "high" confidence matches means your tracking setup is solid. If you see lots of "low" or "none," see [Improving your attribution rate](#improving-your-attribution-rate).
+
+---
+
+## Improving your attribution rate
+
+If your attribution rate is below 80%, here are the most common fixes:
+
+<AccordionGroup>
+  <Accordion title="Pass visitor IDs in checkout metadata" icon="fingerprint">
+    The single most impactful thing you can do. When creating a Stripe Checkout session (or equivalent), include the Trfyx visitor ID in the metadata. This gives you Step 1 (explicit session) matches with high confidence.
+
+    Most payment providers support metadata or custom fields on checkouts. Check your provider's API docs.
+  </Accordion>
+
+  <Accordion title="Make sure the tracker is on your checkout success page" icon="check">
+    After a customer completes a purchase, they usually land on a "thank you" or confirmation page. If the Trfyx tracker is loaded on that page, it automatically detects the checkout return URL and creates a high-confidence match (Step 2).
+
+    If your success page is on a different domain or subdomain, make sure it also has the tracker installed.
+  </Accordion>
+
+  <Accordion title="Use consistent UTM parameters" icon="tags">
+    UTMs don't directly affect _whether_ a payment is attributed, but they determine _what_ it's attributed to. Without UTMs, attributed payments show up under generic sources like "direct" or a referrer domain.
+
+    Use a consistent naming convention: `utm_source=google&utm_medium=cpc&utm_campaign=spring-sale`
+  </Accordion>
+
+  <Accordion title="Check for ad blockers and tracking prevention" icon="shield">
+    Some visitors block the Trfyx tracker, which means there's no session to match against. Consider using a [proxy setup](/proxy-guide) to route tracking through your own domain — this significantly reduces blocking.
+  </Accordion>
+
+  <Accordion title="Ensure webhook delivery" icon="webhook">
+    If payments aren't showing up at all, the webhook might be failing. Check your payment provider's webhook logs for delivery errors. The webhook URL should be `https://your-app-domain/api/webhooks/revenue/YOUR_WEBSITE_ID`.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## What counts as a "conversion"
+
+In the Revenue dashboard, a **conversion** is any payment event received from your provider. This includes:
+
+- **Checkout completions** — one-time purchases
+- **Subscription payments** — initial subscription sign-ups
+- **Subscription renewals** — recurring charges on existing subscriptions
+- **Invoice payments** — invoices marked as paid
+
+It does **not** count:
+
+- Refunds (these are tracked separately and marked on the original payment)
+- Failed payments
+- Disputes (tracked separately with their own status)
+- Test-mode transactions (if your provider is in test mode, these still appear — switch to live mode before going to production)
+
+---
+
+## Refunds, disputes, and cancellations
+
+Trfyx tracks the full lifecycle of a payment, not just the initial charge:
+
+- **Refunds** — when a charge is refunded, the original payment is marked as refunded. Refunded amounts are not subtracted from revenue totals by default (the original payment still shows in attribution reports with a "refunded" badge).
+- **Disputes** — if a customer disputes a charge, Trfyx records the dispute with its status (open, won, lost, withdrawn). Dispute resolution events are also tracked.
+- **Cancellations** — subscription cancellations are recorded with the cancel reason (if the provider shares one). The subscription's MRR contribution drops to zero.
+
+---
 
 ## Related guides
 
 <CardGroup cols={2}>
-  <Card title="Analytics overview" icon="chart-line" href="/analytics/overview">
-    Start with traffic and engagement.
+  <Card title="Setup: Stripe" icon="stripe" href="/revenue-attribution/setup-stripe">
+    Connect Stripe with a restricted API key.
   </Card>
 
-  <Card title="Goals" icon="bullseye" href="/goals">
-    Define meaningful conversion events.
+  <Card title="Setup: LemonSqueezy" icon="lemon" href="/revenue-attribution/setup-lemonsqueezy">
+    Connect LemonSqueezy with your Store ID and API key.
   </Card>
 
-  <Card title="Import analytics data" icon="file-import" href="/import-analytics-data">
-    Bring supported historical data into Trfyx.
+  <Card title="Setup: Paddle" icon="credit-card" href="/revenue-attribution/setup-paddle">
+    Connect Paddle with an API key.
   </Card>
 
-  <Card title="Troubleshooting" icon="life-ring" href="/troubleshooting">
-    Investigate missing or duplicated events.
+  <Card title="Setup: Polar" icon="circle-dollar-to-slot" href="/revenue-attribution/setup-polar">
+    Connect Polar with an organization ID and access token.
+  </Card>
+
+  <Card title="Setup: Dodo Payments" icon="money-bill" href="/revenue-attribution/setup-dodo">
+    Connect Dodo with a Business ID and API key.
+  </Card>
+
+  <Card title="Setup: Yolfi" icon="wallet" href="/revenue-attribution/setup-yolfi">
+    Connect Yolfi with a Merchant ID and API key.
   </Card>
 </CardGroup>
