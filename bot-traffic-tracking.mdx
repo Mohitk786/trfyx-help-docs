@@ -1,0 +1,774 @@
+---
+title: "Bot Traffic Tracking"
+sidebarTitle: "Bot Traffic Tracking"
+description: "Track AI assistants, search-engine crawlers, and model-training bots that request pages on your website."
+keywords:
+  - "bot traffic"
+  - "AI crawlers"
+  - "GPTBot"
+  - "ClaudeBot"
+  - "ChatGPT"
+  - "crawler tracking"
+  - "AI traffic"
+  - "bot analytics"
+---
+
+# Bot traffic tracking
+
+Track AI assistants, search engines, and model-training crawlers that request pages on your website.
+
+Bot traffic tracking is separate from normal Trfyx web analytics. Your browser tracking script measures human visitors after JavaScript runs. Bot tracking runs on your server because many crawlers request HTML directly and never execute browser JavaScript.
+
+## What you can learn
+
+Bot traffic can tell you which parts of your website are being discovered and requested by AI systems and search engines. For example, you may see crawlers requesting your pricing page, documentation, product pages, or a URL that does not exist yet.
+
+Trfyx groups crawler activity into three main categories:
+
+| Category | Examples | What it tells you |
+| --- | --- | --- |
+| AI answers | ChatGPT-User, Claude-User, Perplexity-User | Pages fetched so an AI assistant can answer a person's question |
+| Indexing | Googlebot, Bingbot, PerplexityBot, OAI-SearchBot | Pages being refreshed for search or AI indexes |
+| Training | GPTBot, ClaudeBot, Applebot, Bytespider, CCBot | Public pages being collected for training or datasets |
+
+The exact crawler classification is performed by Trfyx. Your application should send the original request information rather than trying to decide which company or category a crawler belongs to.
+
+## What Trfyx records
+
+Trfyx can record crawler requests to normal HTML pages as well as files that are commonly used for discovery:
+
+- `/robots.txt`
+- `/llms.txt`
+- `/llms-full.txt`
+- `/sitemap.xml` and other sitemap XML files
+- Markdown content such as `/docs/setup.md`
+- Normal HTML pages
+- URLs that do not exist, including their HTTP status when your backend can provide it
+
+Missing URLs are useful signals. If crawlers repeatedly request a page that does not exist, the request can indicate that a page is expected to exist or that your public content structure could be improved.
+
+Human pageviews, sessions, conversions, and the normal Trfyx browser script are not changed by enabling bot tracking.
+
+## How bot tracking works
+
+Bot tracking happens on the server, not in frontend JavaScript.
+
+The flow is simple:
+
+1. Install `@trfyx/bot` on your server, or send events directly to the Trfyx Bot Tracking API.
+2. The package inspects incoming requests locally.
+3. Obvious browsers, static assets, API routes, and framework internals are ignored.
+4. When a request looks like crawler traffic, Trfyx receives a small background event.
+5. Trfyx classifies the crawler, verifies its IP against published ranges where possible, and stores the event.
+6. The request continues without waiting for the tracking request to finish.
+
+Do not classify crawlers yourself. Do not send a guessed provider, crawler name, category, or verification result. Trfyx derives those values from the original request.
+
+<Note>
+Bot tracking is best-effort. A tracking failure must never break or noticeably slow down your website.
+</Note>
+
+## Before you start
+
+You need:
+
+1. A Trfyx website.
+2. The website's **website ID**. You can copy it from your normal tracking snippet (`data-website-id`) or from the Bots tab.
+3. A configured domain in Trfyx that matches the public hostname crawlers request. Subdomains of the registered domain are allowed.
+4. Node.js 18+ if you use the npm package.
+5. Any backend capable of making an HTTPS POST request if you use the direct API.
+
+The hosted Trfyx endpoint is:
+
+```text
+https://app.trfyx.com/api/bot-crawls
+```
+
+For a self-hosted Trfyx installation, pass your own endpoint:
+
+```ts
+apiUrl: "https://YOUR_TRFYX_ORIGIN/api/bot-crawls"
+```
+
+## Install the package
+
+Install the server-side package:
+
+```bash
+npm install @trfyx/bot
+```
+
+Then add one tracking call to the server layer of your application. Choose the example for your framework below.
+
+## Next.js / Vercel
+
+For Next.js 16, use `proxy.ts`. On older Next.js versions, the equivalent convention is `middleware.ts` or `middleware.js`.
+
+Create `proxy.ts` in your project root, or inside `src/` next to your application code:
+
+```ts
+import {
+  NextResponse,
+  type NextFetchEvent,
+  type NextRequest,
+} from "next/server";
+import { trackBotRequest } from "@trfyx/bot";
+
+export function proxy(request: NextRequest, event: NextFetchEvent) {
+  trackBotRequest(request, event, {
+    websiteId: "YOUR_WEBSITE_ID",
+  });
+
+  return NextResponse.next();
+}
+
+export const config = {
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+};
+```
+
+### Important Next.js rules
+
+- **Do not await `trackBotRequest`.**
+- Pass the Next.js `event` so Trfyx can use `waitUntil` and finish the request in the background.
+- Keep `robots.txt`, `llms.txt`, `llms-full.txt`, sitemap files, and HTML pages inside the matcher.
+- Do not exclude crawler-facing files if you want their requests to appear in Trfyx.
+- Because Next.js Proxy runs before the final response, the HTTP status may be unavailable. In the dashboard this can appear as `0`.
+
+### Self-hosted Next.js
+
+If you run your own Trfyx instance, provide the API endpoint:
+
+```ts
+trackBotRequest(request, event, {
+  websiteId: "YOUR_WEBSITE_ID",
+  apiUrl: "https://YOUR_TRFYX_ORIGIN/api/bot-crawls",
+});
+```
+
+## Cloudflare Pages
+
+Create `functions/_middleware.ts`:
+
+```ts
+import { trackBotRequest } from "@trfyx/bot";
+
+export async function onRequest(context) {
+  trackBotRequest(context.request, context, {
+    websiteId: "YOUR_WEBSITE_ID",
+  });
+
+  return context.next();
+}
+```
+
+Cloudflare Pages provides `context.waitUntil`. Call `trackBotRequest`, then immediately return `context.next()`.
+
+### Avoid unnecessary function invocations
+
+If your Cloudflare Pages setup invokes Functions for static assets, add `_routes.json` to the build output:
+
+```json
+{
+  "version": 1,
+  "include": ["/*"],
+  "exclude": [
+    "/assets/*",
+    "/static/*",
+    "/_next/*",
+    "/favicon.ico",
+    "/*.css",
+    "/*.js",
+    "/*.png",
+    "/*.jpg",
+    "/*.svg",
+    "/*.ico",
+    "/*.woff2"
+  ]
+}
+```
+
+Do **not** exclude these crawler-facing files if you want to track them:
+
+- `/robots.txt`
+- `/llms.txt`
+- `/llms-full.txt`
+- `/sitemap.xml`
+
+The package also performs its own filtering, so the route configuration is mainly useful for avoiding unnecessary Cloudflare Function invocations.
+
+## Cloudflare Workers
+
+If you run your application on Cloudflare Workers, wrap the Worker `fetch` handler:
+
+```ts
+import { withBotTracking } from "@trfyx/bot";
+
+export default {
+  fetch: withBotTracking(
+    async (request, env, ctx) => {
+      return fetch(request);
+    },
+    {
+      websiteId: "YOUR_WEBSITE_ID",
+    },
+  ),
+};
+```
+
+The wrapper can see the final response and therefore can record the HTTP status code. When Cloudflare provides an execution context, Trfyx uses `ctx.waitUntil` so tracking remains in the background.
+
+## Express
+
+For Express applications, use the middleware:
+
+```ts
+import express from "express";
+import { createExpressBotTrackingMiddleware } from "@trfyx/bot";
+
+const app = express();
+
+app.use(
+  createExpressBotTrackingMiddleware({
+    websiteId: "YOUR_WEBSITE_ID",
+  }),
+);
+```
+
+Mount the middleware early, before routes that return HTML.
+
+The middleware calls `next()` immediately. It listens for the response `finish` event and sends the bot event after your response has already been sent to the crawler. This means the Trfyx request does not block your application response.
+
+The middleware already ignores `/api` prefixes and common static file extensions.
+
+## Hono
+
+For Hono applications, track after the application has produced its response:
+
+```ts
+import { Hono } from "hono";
+import { trackBotResponse } from "@trfyx/bot";
+
+const app = new Hono();
+
+app.use("*", async (c, next) => {
+  await next();
+
+  trackBotResponse(c.req.raw, c.res, c.executionCtx, {
+    websiteId: "YOUR_WEBSITE_ID",
+  });
+});
+```
+
+Do not await `trackBotResponse`. The response should continue to the crawler without waiting for Trfyx.
+
+## Generic Node.js / fetch handler
+
+If your backend gives you both a standard `Request` and the final `Response`, use response-aware tracking:
+
+```ts
+import { trackBotResponse } from "@trfyx/bot";
+
+export async function handleRequest(request, context) {
+  const response = await yourAppHandler(request);
+
+  trackBotResponse(request, response, context, {
+    websiteId: "YOUR_WEBSITE_ID",
+  });
+
+  return response;
+}
+```
+
+If your middleware runs before a response exists, use request-only tracking:
+
+```ts
+import { trackBotRequest } from "@trfyx/bot";
+
+export function middleware(request, context) {
+  trackBotRequest(request, context, {
+    websiteId: "YOUR_WEBSITE_ID",
+  });
+
+  return next();
+}
+```
+
+Request-only tracking is enough to record which URL a crawler requested. Response-aware tracking adds the HTTP status code when it is available.
+
+## Docker, Cloud Run, and reverse proxies
+
+Behind Docker, Cloud Run, or a reverse proxy, your application may see an internal hostname such as `localhost` or `0.0.0.0` instead of the public website hostname.
+
+In that situation, set `publicOrigin`:
+
+```ts
+trackBotRequest(request, context, {
+  websiteId: "YOUR_WEBSITE_ID",
+  publicOrigin: "https://example.com",
+});
+```
+
+Trfyx still validates the resulting hostname against the domain configured for the website.
+
+<Warning>
+Do not use `publicOrigin` to report a hostname that is unrelated to the Trfyx website. The public hostname should be the real URL crawlers use to access your content.
+</Warning>
+
+## Direct API
+
+You do not need Node.js to use bot tracking. Any backend that can send an HTTPS POST request can report crawler requests directly.
+
+### Endpoint
+
+```http
+POST https://app.trfyx.com/api/bot-crawls
+Content-Type: application/json
+```
+
+An optional Bot Tracking token can be sent as:
+
+```http
+Authorization: Bearer trfyxbot_********
+```
+
+### Request body
+
+```json
+{
+  "websiteId": "YOUR_WEBSITE_ID",
+  "domain": "example.com",
+  "href": "https://example.com/docs/get-started",
+  "bot": {
+    "userAgent": "Mozilla/5.0 ... GPTBot/1.0",
+    "ip": "203.0.113.10",
+    "statusCode": 200,
+    "source": "server_middleware"
+  }
+}
+```
+
+### Request fields
+
+| Field | Required | What to send |
+| --- | --- | --- |
+| `websiteId` | Yes | The public Trfyx website ID from your tracking snippet |
+| `domain` | Yes | The hostname that received the crawler request, such as `example.com` |
+| `href` | Yes | The absolute public URL requested by the crawler. Its hostname must belong to this Trfyx website. |
+| `bot.userAgent` | Yes | The complete original `User-Agent` header |
+| `bot.source` | Yes | Use `server_middleware` |
+| `bot.ip` | Recommended | The crawler IP observed by your server or a trusted proxy |
+| `bot.statusCode` | Optional | The HTTP response status, from `100` to `599`, when available |
+
+Do **not** send:
+
+- `provider`
+- `agent`
+- `category`
+- an IP verification result
+
+Trfyx derives those values itself. This prevents incorrect client-side classifications from entering your analytics.
+
+### API limits and behavior
+
+- Keep the JSON body below 16 KB.
+- Prefer URLs without query parameters. Trfyx strips query strings and URL hashes before storage.
+- Use a short timeout, around 1 second.
+- Ignore network errors.
+- Never fail or delay your page response because Trfyx is unavailable.
+- A tracked or safely ignored request returns `200` with `{"success":true}`.
+- Invalid payloads return a `4xx` response.
+
+## PHP
+
+You can use the API directly from PHP without installing the npm package.
+
+Run the tracking call from your server after the application has decided what response to return. The local user-agent check is only a bandwidth optimization. Trfyx performs the actual crawler classification.
+
+```php
+<?php
+
+function trackTrfyxCrawler(string $websiteId, ?string $authToken = null): void
+{
+    $method = strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET');
+    if (!in_array($method, ['GET', 'HEAD'], true)) {
+        return;
+    }
+
+    $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
+    $hints = [
+        'bot', 'crawler', 'spider', 'chatgpt', 'gptbot', 'claude',
+        'perplexity', 'bing', 'google', 'applebot', 'bytespider', 'ccbot',
+    ];
+
+    $normalized = strtolower($userAgent);
+    $looksLikeCrawler = false;
+
+    foreach ($hints as $hint) {
+        if (strpos($normalized, $hint) !== false) {
+            $looksLikeCrawler = true;
+            break;
+        }
+    }
+
+    if (!$looksLikeCrawler) {
+        return;
+    }
+
+    $host = strtolower($_SERVER['HTTP_HOST'] ?? '');
+    $host = preg_replace('/:\d+$/', '', $host);
+
+    if (!$host) {
+        return;
+    }
+
+    $https = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
+    $scheme = $https ? 'https' : 'http';
+    $path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
+
+    $payload = [
+        'websiteId' => $websiteId,
+        'domain' => $host,
+        'href' => $scheme . '://' . $host . $path,
+        'bot' => [
+            'userAgent' => $userAgent,
+            'ip' => $_SERVER['REMOTE_ADDR'] ?? null,
+            'statusCode' => http_response_code(),
+            'source' => 'server_middleware',
+        ],
+    ];
+
+    $headers = ['Content-Type: application/json'];
+
+    if ($authToken) {
+        $headers[] = 'Authorization: Bearer ' . $authToken;
+    }
+
+    $request = curl_init('https://app.trfyx.com/api/bot-crawls');
+
+    curl_setopt_array($request, [
+        CURLOPT_POST => true,
+        CURLOPT_HTTPHEADER => $headers,
+        CURLOPT_POSTFIELDS => json_encode($payload, JSON_UNESCAPED_SLASHES),
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_CONNECTTIMEOUT_MS => 300,
+        CURLOPT_TIMEOUT_MS => 1000,
+    ]);
+
+    curl_exec($request);
+    curl_close($request);
+}
+
+trackTrfyxCrawler('YOUR_WEBSITE_ID', getenv('TRFYX_BOT_TOKEN') ?: null);
+```
+
+### Important PHP IP note
+
+Use `REMOTE_ADDR` when PHP receives traffic directly.
+
+If PHP is behind Cloudflare, a load balancer, or another reverse proxy, the direct remote address may belong to the proxy instead of the crawler. Only read `CF-Connecting-IP`, `X-Forwarded-For`, or similar headers when your infrastructure exclusively accepts traffic from a trusted proxy and removes client-supplied copies of those headers.
+
+Otherwise, a malicious client could spoof the crawler IP.
+
+## Configuration
+
+All npm adapters use the same options object.
+
+| Option | Default | Purpose |
+| --- | --- | --- |
+| `websiteId` | Required | Your Trfyx website ID |
+| `apiUrl` | `https://app.trfyx.com/api/bot-crawls` | Ingest URL, mainly useful for self-hosted Trfyx |
+| `domain` | Request hostname | Override the hostname when the request host is incorrect |
+| `publicOrigin` | Unset | Rebuild public URLs behind Docker, Cloud Run, or localhost |
+| `authToken` | Unset | Optional `trfyxbot_...` server token |
+| `enabled` | `true` | Disable tracking without removing the integration |
+| `disableAnswerFetch` | `false` | Skip AI assistant fetches such as ChatGPT-User |
+| `disableSearchCrawlers` | `false` | Skip search/indexing crawlers such as Googlebot and Bingbot |
+| `disableTrainingCrawlers` | `false` | Skip training crawlers such as GPTBot and ClaudeBot |
+| `disableOtherCrawlers` | `false` | Skip uncategorized AI crawlers |
+| `methods` | `['GET', 'HEAD']` | HTTP methods considered for crawler tracking |
+| `timeoutMs` | `1500` | Timeout for the background tracking request |
+| `debug` | `false` | Log tracking failures to the console |
+| `ignoredPathPrefixes` | API/framework defaults | Replace the default path skip list |
+| `additionalIgnoredPathPrefixes` | `[]` | Add more ignored path prefixes without replacing defaults |
+| `ignoredExtensions` | CSS, JS, images, fonts, etc. | Replace the default extension skip list |
+| `additionalIgnoredExtensions` | `[]` | Add more ignored extensions |
+| `shouldTrackPath` | Unset | Return `false` to skip a path after the normal checks |
+| `getIp` | Standard forwarded headers | Customize IP extraction |
+
+### Example: disable a crawler category
+
+Most websites should keep all categories enabled and filter the results in Trfyx. If you have a specific reason to skip a category, you can configure it:
+
+```ts
+trackBotRequest(request, event, {
+  websiteId: "YOUR_WEBSITE_ID",
+  disableTrainingCrawlers: true,
+});
+```
+
+You can disable answer-fetching crawlers, search crawlers, training crawlers, or other crawlers individually.
+
+## Optional Bot Tracking token
+
+Authentication is optional. If you want to authenticate server-to-server tracking requests, configure a website-specific Bot Tracking token and pass it to the package:
+
+```ts
+trackBotRequest(request, event, {
+  websiteId: "YOUR_WEBSITE_ID",
+  authToken: process.env.TRFYX_BOT_TOKEN,
+});
+```
+
+Keep the token in a server-side environment variable.
+
+<Warning>
+Never put the Bot Tracking token in frontend JavaScript, a public repository, logs, or a URL.
+</Warning>
+
+Token enforcement can be enabled without changing your integration. Rotating a token invalidates the previous token immediately.
+
+## What the package ignores
+
+The package filters requests locally before sending anything to Trfyx. This keeps normal traffic and static assets out of the Bot Tracking pipeline.
+
+By default, it ignores:
+
+- Normal human browsers
+- `POST`, `PUT`, and `DELETE` requests unless you change `methods`
+- `/api`
+- `/_next`
+- `/_nuxt`
+- `/static`
+- `/assets`
+- CSS
+- JavaScript
+- Images
+- Fonts
+- Source maps
+- Media
+- ZIP files
+- PDF files
+- Generic `.txt` and `.xml` files
+
+Some crawler-facing files are intentionally treated differently when a known crawler requests them:
+
+- `/robots.txt`
+- `/llms.txt`
+- `/llms-full.txt`
+- Sitemap XML files
+- Markdown files such as `*.md`
+
+This distinction matters because a crawler requesting `robots.txt` or `llms.txt` is often performing discovery rather than requesting an ordinary static asset.
+
+## Privacy and security
+
+Bot tracking is designed to send only the information needed to identify and analyze crawler requests.
+
+The package and API send:
+
+- Website ID
+- Domain
+- URL path, with query string stripped
+- User-Agent
+- IP address for geo/crawler verification purposes
+- HTTP status code when available
+- `server_middleware` as the event source
+
+Never forward:
+
+- Cookies
+- Crawler `Authorization` headers
+- Request bodies
+- Unrelated request headers
+- Server environment variables
+- Application secrets
+
+### Protecting IP information
+
+Only trust `X-Forwarded-For`, `CF-Connecting-IP`, or similar forwarded-IP headers when the request came through a proxy you control and trust.
+
+If clients can send those headers directly, they can spoof the IP address and potentially make crawler verification inaccurate.
+
+### Query parameters
+
+Prefer sending the URL without query parameters. Query strings can contain sensitive information such as:
+
+- Email addresses
+- Tokens
+- Search terms
+- Customer IDs
+- Session identifiers
+- Other personal data
+
+Trfyx strips query strings and URL hashes before storage, but integrations should still avoid forwarding unnecessary sensitive URL data.
+
+## Where to find bot traffic
+
+After deploying the integration, open the website in Trfyx and go to **Bots**.
+
+You can filter crawler activity by:
+
+- Crawler
+- Company
+- Purpose: answers, indexing, or training
+- Page
+
+IP verification is stored separately from the crawler name match, so a recognized user-agent does not automatically mean that the request's source IP was verified.
+
+<Note>
+Human visitors do not appear in the Bots view. A human browsing your website through a normal browser is still handled by the standard Trfyx web analytics script.
+</Note>
+
+## Understanding the data
+
+A bot request can answer several useful questions:
+
+### Which pages are AI systems requesting?
+
+Look at the requested page or URL. If AI assistants repeatedly request your pricing, docs, comparison, or feature pages, those pages may be important to how your product is represented in AI-generated answers.
+
+### Which crawlers are discovering your site?
+
+The crawler and company filters show which known systems are requesting your content.
+
+### Are your discovery files being requested?
+
+Requests to `/robots.txt`, `/llms.txt`, `/llms-full.txt`, and sitemaps can show that crawlers are reaching the files you publish for discovery and indexing.
+
+### Are crawlers looking for pages you do not have?
+
+Repeated requests for missing URLs can be a useful content signal. For example, if crawlers repeatedly request `/docs/get-started` but the route returns `404`, you may have a broken link, an outdated reference, or content that crawlers expect to find.
+
+## Troubleshooting
+
+### Bots tab is empty
+
+Work through these checks in order:
+
+1. Confirm `@trfyx/bot` is installed on the **server**, not inside your browser tracking code.
+2. Confirm `websiteId` belongs to the Trfyx website where you are looking for the data.
+3. Confirm the public hostname matches the domain configured for that Trfyx website.
+4. If your application sees `localhost`, `0.0.0.0`, or another internal hostname, configure `publicOrigin`.
+5. Confirm your Next.js matcher, Cloudflare routes, or other framework routing still includes HTML pages and crawler-facing files.
+6. Make sure you did not exclude `/robots.txt`, `/llms.txt`, `/llms-full.txt`, or sitemap files if you want to track those requests.
+7. Wait for an actual crawler request. Human pageviews do not create Bot Tracking events.
+8. If you are self-hosting Trfyx, verify that `apiUrl` points to your Trfyx origin and that the `bot_crawls` ClickHouse table exists.
+
+### Tracking slows down my website
+
+It should not.
+
+Check that you are not awaiting the tracking call in middleware or a request hook:
+
+```ts
+// Correct
+trackBotRequest(request, event, {
+  websiteId: "YOUR_WEBSITE_ID",
+});
+
+return NextResponse.next();
+```
+
+Avoid:
+
+```ts
+// Do not do this
+await trackBotRequest(request, event, {
+  websiteId: "YOUR_WEBSITE_ID",
+});
+```
+
+Pass the runtime context so Trfyx can use the platform's background execution mechanism when available.
+
+### Status code is missing
+
+If you track a request before the final response exists, Trfyx cannot know the eventual status code. This is normal for request-only middleware.
+
+If your framework gives you the final `Response`, use `trackBotResponse` or the corresponding response-aware adapter. Response-aware tracking can include the final HTTP status.
+
+### My public URL is wrong
+
+If the backend sees an internal hostname, set `publicOrigin`:
+
+```ts
+trackBotRequest(request, context, {
+  websiteId: "YOUR_WEBSITE_ID",
+  publicOrigin: "https://example.com",
+});
+```
+
+Make sure the origin matches the public domain configured in Trfyx.
+
+### I see normal browser traffic
+
+The package performs local filtering before sending events. Check whether you changed the default `methods`, ignored path prefixes, ignored extensions, or custom `shouldTrackPath` behavior.
+
+Also make sure you are looking at Bot Tracking data rather than standard web analytics.
+
+### A crawler is not showing up
+
+Not every request is necessarily a crawler request that Trfyx can classify. A crawler must actually request your server-rendered content, and the package must receive the relevant request.
+
+Check:
+
+- The crawler is reaching your application.
+- The request is not being blocked before your middleware runs.
+- Your route matcher includes the requested URL.
+- The request is not excluded by your custom filters.
+- Your `websiteId` and domain are correct.
+- Tracking is enabled with `enabled: true`.
+
+Remember that crawler traffic is real request traffic. Trfyx cannot display a bot that has not actually requested your server.
+
+## Best practices
+
+### Keep tracking server-side
+
+Do not put bot tracking into your browser JavaScript. Many crawlers never execute it, which means you would miss the traffic you are trying to measure.
+
+### Keep the integration non-blocking
+
+The page response is more important than the analytics event. Send the event in the background and use a short timeout.
+
+### Do not duplicate crawler classification
+
+Your application only needs to provide the original request information. Let Trfyx maintain crawler classification and verification logic centrally.
+
+### Do not send unnecessary data
+
+Keep the payload small. Do not send cookies, request bodies, authentication headers, or unrelated headers.
+
+### Keep crawler-facing files trackable
+
+If you want visibility into crawler discovery, do not accidentally exclude `robots.txt`, `llms.txt`, `llms-full.txt`, or sitemap files from your server middleware.
+
+### Filter in the dashboard when possible
+
+Unless you have a strong reason to reduce ingestion, keep crawler categories enabled and use Trfyx filters to analyze the data. This preserves the information needed for later analysis.
+
+## Quick reference
+
+| Question | Answer |
+| --- | --- |
+| Does bot tracking replace normal Trfyx analytics? | No. They are separate systems. |
+| Does it run in the browser? | No. It runs on your server. |
+| Does it track normal human visitors? | No. Human traffic remains in normal Trfyx analytics. |
+| Do I need Node.js? | Only for the npm package. The direct API works with any backend that can make HTTPS requests. |
+| Should I await the tracking call? | No. Keep it non-blocking. |
+| Can it track `robots.txt` and `llms.txt`? | Yes, when a known crawler requests them and your routing includes them. |
+| Can it record 404 requests? | Yes, when your backend can provide the status code. |
+| Can it verify crawler IPs? | Trfyx verifies against published ranges where possible. |
+| Should I send the crawler category myself? | No. Trfyx derives classification server-side. |
+| Is a Bot Tracking token required? | No. It is optional. |
+
+## Next steps
+
+After installation:
+
+1. Deploy your server-side integration.
+2. Open your website's **Bots** tab in Trfyx.
+3. Wait for crawler traffic to arrive.
+4. Filter by crawler, company, purpose, or page.
+5. Investigate frequently requested pages and unexpected missing URLs.
+6. Use the findings to improve the content and pages that AI systems and search crawlers are discovering.

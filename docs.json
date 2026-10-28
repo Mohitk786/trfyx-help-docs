@@ -25,7 +25,8 @@
             "group": "Analytics & Insights",
             "expanded": false,
             "pages": [
-              "analytics/overview"
+              "analytics/overview",
+              "bot-traffic-tracking"
             ]
           },
           {
