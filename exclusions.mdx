@@ -1,0 +1,208 @@
+---
+title: "Exclude visits from analytics"
+description: "Stop Trfyx from counting visits that match an IP, country, page, query parameter, hostname, or user-agent rule. Rules apply to new traffic only."
+sidebarTitle: "Exclusions"
+icon: "filter"
+keywords: ["exclusions", "internal traffic", "IP filter", "country filter", "ignore paths", "query parameters", "hostnames", "user agent"]
+---
+
+Exclusions tell Trfyx not to record visits that match rules you set for a site. Open **Settings → Exclusions** and add a rule. The next matching pageview, custom event, session replay batch, heatmap batch, or web-vitals payload is dropped and never stored.
+
+Rules do not rewrite reports you already have. Visits collected before you saved a rule stay in analytics.
+
+<Note>
+  You need permission to configure the site (editor, admin, or owner) to add or remove rules.
+</Note>
+
+## How a rule is saved
+
+Each card is its own list. Add and remove save immediately. A value that is already in that list (ignoring case) is rejected. Internal traffic, Pages, Query parameters, Hostnames, and User agents each accept up to 100 rules.
+
+## Rule types
+
+The cards use the same names as the Exclusions settings tab.
+
+### Internal traffic
+
+Ignore visits from your own or your team's IP addresses.
+
+Accepted formats:
+
+| Format | Example | Notes |
+| --- | --- | --- |
+| Single IPv4 or IPv6 | `1.2.3.4` | Exact match |
+| CIDR block | `10.0.0.0/24` | IPv4 and IPv6 |
+| IPv4 range | `1.2.3.4-1.2.3.9` | Inclusive. IPv6 ranges are not accepted. Use CIDR instead, such as `2001:db8::/32` |
+
+Trfyx compares the visitor IP it sees on the request, including addresses forwarded by a proxy or CDN. If your office shares one public IP, one rule covers the team. If people use a VPN, add the VPN exit address they actually connect from.
+
+### Countries
+
+Ignore visits from selected countries. Pick a country from the list. Matching uses the visitor's IP location. If Trfyx cannot determine a country, a country rule does not match that visit.
+
+### Pages
+
+Ignore visits whose URL path matches a pattern, such as `/admin/*`. Matching is case-insensitive and uses `*` as a wildcard for any sequence of characters, including none. The pattern must match the whole path, not a substring.
+
+`/admin/*` matches `/admin/` and `/admin/users`. It does not match `/admin`, because the pattern still requires the slash after `admin`.
+
+### Query parameters
+
+Ignore visits whose page URL contains a matching query parameter.
+
+- `preview` matches any value for that name, including an empty value.
+- `utm_source=internal` matches that name when the value matches the pattern.
+- The value side accepts `*`, so `utm_source=int*` matches `internal`.
+
+Names are compared case-insensitively. A URL with no query string cannot match.
+
+### Hostnames
+
+Ignore traffic from staging or preview hostnames. Matching is case-insensitive against the page hostname and uses `*` the same way as Pages. `*.vercel.app` matches `foo.vercel.app`. It does not match `vercel.app`.
+
+### User agents
+
+Ignore bots and tools whose user agent contains the text you enter, such as `HeadlessChrome`. Matching is case-insensitive and is a substring check, not a wildcard pattern. `*` is treated as a literal character.
+
+## Test a pattern
+
+Type a rule and a sample value to see whether Trfyx would exclude that visit. This uses the same matching rules as the product for Pages, Query parameters, Hostnames, and User agents.
+
+<ExclusionRuleTester />
+
+## What each product surface does
+
+When a visit matches any rule:
+
+- **Analytics events** (pageviews and custom events) are not stored.
+- **Web vitals** for that page are not stored.
+- **Session replay and heatmaps** treat visitor rules and page rules differently:
+  - Internal traffic, Countries, or User agents: recording stops for that visitor.
+  - Pages, Query parameters, or Hostnames: that page's batch is dropped. Recording can continue on other pages that do not match.
+
+<Warning>
+  Removing a rule does not restore visits that were dropped while it was active. Those events were never stored.
+</Warning>
+
+## Common problems
+
+<AccordionGroup>
+  <Accordion title="I still see my own visits">
+    Confirm the address your browser actually uses (IPv4 vs IPv6, office NAT, or VPN). Add that address, a CIDR block, or an IPv4 range. A country rule does not help if your location cannot be resolved.
+  </Accordion>
+  <Accordion title="A path or hostname rule does not match">
+    Pages match only the URL path (`/pricing`, not `https://example.com/pricing`). Hostnames match only the host (`staging.example.com`). The pattern must cover the whole value. Check leading slashes and whether you need a trailing `/*`.
+  </Accordion>
+  <Accordion title="A query parameter rule does not match">
+    The page URL must include that query string. `preview` matches any value. `preview=1` matches only that value (unless you add a `*` on the value side).
+  </Accordion>
+  <Accordion title="Old visits are still in reports">
+    Exclusions apply to new incoming data only. Past pageviews, events, replays, heatmaps, and vitals stay as they were collected.
+  </Accordion>
+  <Accordion title="A user-agent rule with * does nothing">
+    User agents do not treat `*` as a wildcard. Enter a substring that actually appears in the user agent, such as `HeadlessChrome` or `curl`.
+  </Accordion>
+</AccordionGroup>
+
+## Next steps
+
+- [Install tracking](/install-tracking) if the script is not on the pages you are testing.
+- [Session replay](/session-replay) for how recordings are used after capture.
+- [Troubleshooting](/troubleshooting) if numbers still look wrong after you rule out exclusions.
+
+export const ExclusionRuleTester = () => {
+  const types = [
+    { id: "path", label: "Pages", sampleLabel: "Path", sample: "/admin/users", placeholder: "/admin/*" },
+    { id: "query", label: "Query parameters", sampleLabel: "Query string", sample: "utm_source=internal&preview=1", placeholder: "utm_source=int*" },
+    { id: "hostname", label: "Hostnames", sampleLabel: "Hostname", sample: "preview.vercel.app", placeholder: "*.vercel.app" },
+    { id: "ua", label: "User agents", sampleLabel: "User agent", sample: "Mozilla/5.0 HeadlessChrome/120", placeholder: "HeadlessChrome" },
+  ];
+  const [typeId, setTypeId] = useState("path");
+  const [rule, setRule] = useState("/admin/*");
+  const [sample, setSample] = useState("/admin/users");
+  const type = types.find((item) => item.id === typeId) || types[0];
+
+  const matchesGlob = (value, pattern) => {
+    const glob = pattern.trim().toLowerCase();
+    if (!glob) return false;
+    const text = value.toLowerCase();
+    let textIndex = 0;
+    let globIndex = 0;
+    let lastStarGlobIndex = -1;
+    let textIndexAfterStar = 0;
+    while (textIndex < text.length) {
+      if (globIndex < glob.length && glob[globIndex] === text[textIndex]) {
+        textIndex += 1;
+        globIndex += 1;
+      } else if (globIndex < glob.length && glob[globIndex] === "*") {
+        lastStarGlobIndex = globIndex;
+        textIndexAfterStar = textIndex;
+        globIndex += 1;
+      } else if (lastStarGlobIndex !== -1) {
+        globIndex = lastStarGlobIndex + 1;
+        textIndexAfterStar += 1;
+        textIndex = textIndexAfterStar;
+      } else {
+        return false;
+      }
+    }
+    while (globIndex < glob.length && glob[globIndex] === "*") {
+      globIndex += 1;
+    }
+    return globIndex === glob.length;
+  };
+
+  const matchesQuery = (querystring, pattern) => {
+    const entries = Array.from(new URLSearchParams(querystring).entries());
+    if (entries.length === 0) return false;
+    const trimmed = pattern.trim();
+    if (!trimmed) return false;
+    const separatorIndex = trimmed.indexOf("=");
+    const name = (separatorIndex === -1 ? trimmed : trimmed.slice(0, separatorIndex)).toLowerCase();
+    const valueGlob = separatorIndex === -1 ? null : trimmed.slice(separatorIndex + 1);
+    if (!name) return false;
+    return entries.some(([key, value]) => key.toLowerCase() === name && (valueGlob === null || matchesGlob(value, valueGlob)));
+  };
+
+  const matched =
+    type.id === "path" ? matchesGlob(sample, rule) :
+    type.id === "hostname" ? matchesGlob(sample, rule) :
+    type.id === "query" ? matchesQuery(sample, rule) :
+    rule.trim().length > 0 && sample.toLowerCase().includes(rule.trim().toLowerCase());
+
+  const field = { display: "grid", gap: 4, fontSize: 14, minWidth: 0 };
+  const input = { width: "100%", minWidth: 0, boxSizing: "border-box", borderRadius: 8, border: "1px solid rgba(127,127,127,.35)", background: "transparent", color: "inherit", font: "inherit", padding: "8px 10px" };
+
+  return (
+    <div className="not-prose" style={{ border: "1px solid rgba(127,127,127,.25)", borderRadius: 12, padding: 16, display: "grid", gap: 12 }}>
+      <style>{`.ex-type { display:flex; flex-wrap:wrap; gap:6px } .ex-type button { font:inherit; color:inherit; cursor:pointer; border-radius:8px; padding:6px 10px; background:transparent }`}</style>
+      <div className="ex-type" role="group" aria-label="Rule type">
+        {types.map((item) => (
+          <button
+            key={item.id}
+            type="button"
+            onClick={() => {
+              setTypeId(item.id);
+              setRule(item.placeholder);
+              setSample(item.sample);
+            }}
+            style={{ border: item.id === typeId ? "2px solid #3b82f6" : "1px solid rgba(127,127,127,.35)", background: item.id === typeId ? "rgba(59,130,246,.12)" : "transparent" }}
+          >
+            {item.label}
+          </button>
+        ))}
+      </div>
+      <label style={field}>
+        Rule
+        <input aria-label="Rule" value={rule} onChange={(event) => setRule(event.target.value)} placeholder={type.placeholder} style={input} />
+      </label>
+      <label style={field}>
+        {type.sampleLabel}
+        <input aria-label={type.sampleLabel} value={sample} onChange={(event) => setSample(event.target.value)} placeholder={type.sample} style={input} />
+      </label>
+      <p style={{ margin: 0, fontSize: 14, fontWeight: 600, color: matched ? "#16a34a" : "inherit" }}>
+        {matched ? "This visit would be excluded." : "This visit would be counted."}
+      </p>
+    </div>
+  );
+};

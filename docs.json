@@ -136,6 +136,7 @@
             "group": "Data & Sharing",
             "expanded": false,
             "pages": [
+              "exclusions",
               "import-analytics-data",
               "embedded-dashboards"
             ]
