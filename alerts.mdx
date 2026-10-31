@@ -28,7 +28,7 @@ The value is an **exact** match. There is no `*` wildcard here.
 | A visitor opens a URL | A pageview arrives whose path equals the value | `/checkout/success` |
 | A custom event is sent | A non-pageview event arrives whose name equals the value | `purchase` |
 
-A URL trigger only looks at pageviews. `/checkout/success` does not match `/checkout/success/` or `/checkout/success?ref=1` (the path is `/checkout/success`, so a query string on the real page is fine; a trailing slash is not).
+A URL trigger only looks at pageviews. `/checkout/success` does not match `/checkout/success/`. A visit to `/checkout/success?ref=1` still matches, because the path is `/checkout/success`.
 
 A custom-event trigger matches the event name. That includes events you send yourself and the built-in names `payment`, `identify`, `external_link`, `file_download`, and `form_submission`.
 

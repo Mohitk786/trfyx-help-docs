@@ -1,180 +1,185 @@
 ---
-title: "Set up Trfyx Managed Proxy"
-sidebarTitle: "Managed Proxy"
-description: "Route Trfyx analytics through a subdomain you control without running proxy code."
+title: "Set up the managed proxy"
+sidebarTitle: "Managed proxy"
+description: "Set up the managed proxy in Settings, add a CNAME and a TXT record, then click Check status so the script loads from your own subdomain."
 icon: "shield-halved"
+keywords:
+  - "managed proxy"
+  - "CNAME"
+  - "TXT"
+  - "ad blocker"
+  - "first-party"
 ---
 
-Managed Proxy routes Trfyx analytics through a subdomain you control without requiring you to run proxy code.
+The managed proxy serves `script.js` from a subdomain of **your** site (for example `t.yoursite.com`) instead of `app.trfyx.com`. Ad blockers that block known analytics hosts are less likely to stop the script. You do not run any proxy code. Trfyx issues the HTTPS certificate after the proxy is Active.
 
-Trfyx handles the proxy routing and SSL. You only need to choose a subdomain, add the DNS record shown in your Trfyx settings, and update your tracking script.
+Open **Settings → Installation**. The Managed proxy card is on that tab. You need permission to configure the site, and a Starter plan or above.
 
 <Note>
-  Managed Proxy is the recommended option for most production websites. Use a self-hosted proxy only when you already need to control the proxy layer yourself.
+  Most sites should use this. The [self-hosted proxy guides](/proxy-guide) are only for teams that already forward requests through their own server.
 </Note>
 
-## Why use a proxy?
+## What you will do
 
-Browsers, extensions, corporate networks, and ad blockers can block requests to known analytics domains. A first-party subdomain makes your collection path look like part of your own website.
+1. Pick a subdomain of your site and click **Enable proxy**.
+2. Add **two** DNS records (CNAME and TXT) in your DNS provider.
+3. Click **Check status**.
+4. Copy the tracking snippet again if you already installed the old one.
 
-<CodeGroup>
+Try your own domain to see the Host values you will type:
 
-```text Without a proxy
-yourdomain.com → app.trfyx.com
-```
+<DnsPreview />
 
-```text With Managed Proxy
-yourdomain.com → analytics.yourdomain.com → Trfyx
-```
-
-</CodeGroup>
-
-Your analytics still go to Trfyx. The proxy only changes how the browser reaches the collection service.
-
-## Set up Managed Proxy
+## Set it up
 
 <Steps>
-  <Step title="Enable Managed Proxy">
-    In Trfyx, open the website you want to configure and go to its proxy or tracking settings. Enter a dedicated subdomain that belongs to your website, such as `a.yourdomain.com` or `cdn.yourdomain.com`.
+  <Step title="Choose a subdomain">
+    On **Settings → Installation**, find **Managed proxy**. Type a hostname that belongs to your site, such as `t.yoursite.com`.
 
-    Prefer a short, neutral hostname. Avoid obvious names such as `analytics`, `tracking`, or `metrics` if your goal is to reduce filtering by simplistic blocklists.
+    Rules the form enforces:
 
-    Enable Managed Proxy. Trfyx will show the DNS record required for your chosen hostname.
+    - It must be a **subdomain** of the site domain (or an extra domain you added). `yoursite.com` itself is not allowed.
+    - A short, plain name such as `t` or `cdn` is harder for simple blocklists to guess than `analytics` or `tracking`.
+    - Two sites cannot share the same hostname.
+
+    Click **Enable proxy**. The status becomes **Pending**.
   </Step>
-  <Step title="Add the DNS record">
-    Open your DNS provider and create the record shown in Trfyx.
+  <Step title="Add two DNS records">
+    The card now shows the exact records. Add both in the DNS zone for your site (the `yoursite.com` zone, not a different domain).
 
-    For a typical setup, this is a CNAME:
+    | Type | Host to type | Value |
+    | --- | --- | --- |
+    | `CNAME` | The prefix only, for example `t` | The target shown in the card. Copy it. Do not invent one. |
+    | `TXT` | `asuid.` plus that same prefix, for example `asuid.t` | The long value shown in the card. Copy it. |
 
-    | Field | Value |
-    | --- | --- |
-    | Type | `CNAME` |
-    | Name / Host | Your chosen subdomain, for example `a` |
-    | Target / Value | The target shown in Trfyx Managed Proxy settings |
+    Type the Host **exactly** as the card shows it. Do not add `.yoursite.com` again. If you type `asuid.t.yoursite.com` in a panel that already sits on the `yoursite.com` zone, the real name becomes `asuid.t.yoursite.com.yoursite.com` and the check fails.
 
     <Warning>
-      Do not guess the target value. Copy the exact target displayed in your Trfyx dashboard because it can change between environments or deployments.
+      If you use Cloudflare, set both records to **DNS only** (grey cloud). **Proxied** (orange cloud) will not pass the check.
     </Warning>
 
-    If Trfyx asks you to add a TXT verification record, add that record as well. Once the hostname is verified and the proxy becomes active, you can remove a temporary verification record if Trfyx explicitly says it is no longer required.
+    This is not a URL redirect and not a forwarding rule. It must be a real CNAME and a real TXT.
 
-    DNS changes can take a few minutes to propagate.
+    DNS can take up to 10 minutes.
   </Step>
-  <Step title="Update your tracking script">
-    Change the tracker so both the script and event requests use your managed proxy hostname.
+  <Step title="Click Check status">
+    When both records are live, click **Check status**.
 
-    ```html index.html
+    Trfyx looks up:
+
+    - The CNAME on your subdomain. It must point at the target from the card (or resolve to the same IP addresses).
+    - The TXT on `asuid.` plus your full subdomain. The value must match the card exactly.
+
+    If a record is missing, the card says which one it is still waiting for (`Waiting for CNAME`, `Waiting for TXT`, or both). Fix that record and click **Check status** again.
+
+    When both match, the status becomes **Active**. Trfyx then allows HTTPS on that hostname and issues the certificate on the first visit.
+  </Step>
+  <Step title="Use the new snippet">
+    After the proxy is **Active**, the tracking snippet at the top of **Settings → Installation** already uses your subdomain:
+
+    ```html
     <script
       defer
-      data-website-id="YOUR_TRFYX_PROJECT_ID"
-      data-domain="yourdomain.com"
-      data-api-url="https://a.yourdomain.com/api/events"
-      src="https://a.yourdomain.com/script.js"
-    ></script>
+      data-website-id="YOUR_WEBSITE_ID"
+      data-domain="yoursite.com"
+      src="https://t.yoursite.com/script.js">
+    </script>
     ```
 
-    The important details are:
+    Keep `data-domain` as your real site. Change only `src` to your proxy hostname (the form does this for you).
 
-    - `data-domain` remains your **real website domain**.
-    - `src` points to the script on your proxy hostname.
-    - `data-api-url` points to the event endpoint on the same proxy hostname.
-    - Use the same proxy hostname for both URLs.
+    You do **not** add `data-api-url`. The script sends events to `/api/collect` on the same host it was loaded from. Heatmaps, replays, and web vitals use that same host.
 
-    <Warning>
-      Do not make `data-api-url` relative when using Managed Proxy. A value such as `/api/events` resolves against the page's hostname, not the proxy hostname. Use the complete `https://...` URL instead.
-    </Warning>
+    If you installed the script before the proxy was Active, copy the snippet again and replace the old tag.
   </Step>
-  <Step title="Test locally (optional)">
-    If you need to test tracking locally, enable localhost tracking in your tracker configuration and keep the event URL pointed at the live managed proxy.
+  <Step title="Confirm it is working">
+    1. Open a real page on your site (not the proxy hostname).
+    2. Open Developer Tools → Network and reload.
+    3. Confirm `script.js` loads from your subdomain.
+    4. Confirm a request goes to `/api/collect` on that same subdomain.
+    5. Confirm a visit appears in Trfyx.
 
-    ```html index.html
-    <script
-      defer
-      data-website-id="YOUR_TRFYX_PROJECT_ID"
-      data-domain="yourdomain.com"
-      data-allow-localhost="true"
-      data-api-url="https://a.yourdomain.com/api/events"
-      src="https://a.yourdomain.com/script.js"
-    ></script>
-    ```
-  </Step>
-  <Step title="Verify installation">
-    1. Visit your real website. Do not use the proxy hostname as the page you browse.
-    2. Open **Developer Tools → Network** and reload the page. Confirm `script.js` is loaded from your proxy hostname.
-    3. Trigger a pageview or tracked event and confirm the request goes to your proxy hostname's `/api/events` endpoint.
-    4. Confirm the new visit or event appears in your Trfyx dashboard.
+    You can also click **Verify installation** on the same settings tab.
   </Step>
 </Steps>
 
-## Troubleshooting
+<Tip>
+  Tracking is off on localhost unless the script has `data-allow-localhost="true"`. Test on the live site, or add that attribute only while you test.
+</Tip>
 
-### Proxy status stays pending
+## If Check status stays Pending
 
-- Confirm the CNAME exactly matches the record shown in Trfyx.
-- Make sure you created a DNS record, not a URL redirect or forwarding rule.
-- Check that the DNS record is in the correct zone for your domain.
-- Wait for DNS propagation, then refresh the proxy status.
+| The card says | What to check |
+| --- | --- |
+| Waiting for CNAME | Host is the prefix only (`t`, not `t.yoursite.com` twice). Type is CNAME, not a redirect. Cloudflare is DNS only. |
+| Waiting for TXT | Host is `asuid.t` in the `yoursite.com` zone. The value is copied from the card with no extra quotes your provider does not expect. |
+| Waiting for CNAME and TXT | Both records are missing, in the wrong zone, or not public yet. Wait a few minutes and click **Check status** again. |
 
-### Proxy status shows an error
+Leave both records in place after the proxy is Active. The check does not run again, but the CNAME is what browsers use.
 
-Re-check the record type, hostname, target, and any TXT verification record shown in Trfyx. Do not add additional DNS records unless Trfyx asks for them.
+## If the script still comes from app.trfyx.com
 
-### Events are still sent to Trfyx directly
+The page is still serving the old snippet. Copy the snippet from **Settings → Installation** after the badge says **Active**, and replace the tag you already shipped.
 
-Inspect the tracker in the deployed page source and Network panel. Both `src` and `data-api-url` should use your managed proxy hostname.
+A Content Security Policy must allow your proxy hostname in `script-src` and `connect-src`.
 
-### All visitors have the same location
-
-This usually means the original visitor IP is not reaching Trfyx correctly. Managed Proxy is designed to handle visitor IP forwarding automatically. If the problem persists, verify that the request is actually going through the Managed Proxy and contact Trfyx support with the affected hostname.
-
-### Analytics are still blocked
-
-- Use a neutral proxy hostname.
-- Confirm the deployed script does not reference `app.trfyx.com`.
-- Check your Content Security Policy and allow the proxy hostname in `script-src` and `connect-src` where required.
-- Test in a clean browser session without extensions to separate implementation problems from browser filtering.
-
-## Remove Managed Proxy
+## Remove the proxy
 
 <Steps>
-  <Step title="Disable Managed Proxy">
-    Disable or remove Managed Proxy in your Trfyx website settings.
+  <Step title="Remove it in Trfyx">
+    On the Managed proxy card, click **Remove**. Confirm. The badge disappears and the snippet at the top switches back to `https://app.trfyx.com/script.js`.
   </Step>
-  <Step title="Remove DNS records">
-    Remove the DNS records created for the proxy.
+  <Step title="Update the snippet">
+    If you already shipped the proxy URL, copy the standard snippet again so visitors are not sent to a hostname that no longer serves the script.
   </Step>
-  <Step title="Switch back to standard tracking">
-    Change the tracker back to the standard Trfyx script:
-
-    ```html index.html
-    <script
-      defer
-      data-website-id="YOUR_TRFYX_PROJECT_ID"
-      data-domain="yourdomain.com"
-      src="https://app.trfyx.com/script.js"
-    ></script>
-    ```
+  <Step title="Delete the DNS records">
+    Remove the CNAME and the `asuid.` TXT in your DNS provider. They are unused after you remove the proxy.
   </Step>
 </Steps>
 
-Your existing analytics data is not removed just because you stop using the proxy.
+Your existing analytics data stays. Removing the proxy only changes where the script is loaded from.
 
 ## Next steps
 
-<CardGroup cols={2}>
-  <Card title="Goals" icon="bullseye" href="/goals">
-    Define the actions that matter to your business.
-  </Card>
+- [Install tracking](/install-tracking) for the standard snippet and verify steps.
+- [Proxy overview](/proxy-guide) if you need a self-hosted proxy instead.
+- [Exclusions](/exclusions) if your own visits should not be counted.
 
-  <Card title="Funnels" icon="filter" href="/funnels">
-    Understand where users convert or drop off.
-  </Card>
-
-  <Card title="Proxy setup" icon="signs-post" href="/proxy-guide">
-    Compare Managed Proxy with self-hosted options.
-  </Card>
-
-  <Card title="Troubleshooting" icon="life-ring" href="/troubleshooting">
-    Diagnose missing or unexpected data.
-  </Card>
-</CardGroup>
+export const DnsPreview = () => {
+  const [domain, setDomain] = useState("yoursite.com");
+  const [prefix, setPrefix] = useState("t");
+  const zone = domain.trim().toLowerCase().replace(/^www\./, "").replace(/^https?:\/\//, "").replace(/\/.*$/, "") || "yoursite.com";
+  const host = (prefix.trim().toLowerCase().replace(/[^a-z0-9-]/g, "") || "t");
+  const field = { display: "grid", gap: 4, fontSize: 14, minWidth: 0 };
+  const input = { width: "100%", minWidth: 0, boxSizing: "border-box", borderRadius: 8, border: "1px solid rgba(127,127,127,.35)", background: "transparent", color: "inherit", font: "inherit", padding: "8px 10px" };
+  const row = { display: "grid", gap: 4, padding: "10px 12px", borderRadius: 8, border: "1px solid rgba(127,127,127,.25)" };
+  const label = { fontSize: 11, letterSpacing: "0.04em", textTransform: "uppercase", opacity: 0.7 };
+  const mono = { fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace", fontSize: 13, wordBreak: "break-all" };
+  return (
+    <div className="not-prose" style={{ border: "1px solid rgba(127,127,127,.25)", borderRadius: 12, padding: 16, display: "grid", gap: 12 }}>
+      <div style={{ display: "grid", gap: 12, gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))" }}>
+        <label style={field}>
+          Your site domain
+          <input aria-label="Your site domain" value={domain} onChange={(event) => setDomain(event.target.value)} style={input} />
+        </label>
+        <label style={field}>
+          Subdomain prefix
+          <input aria-label="Subdomain prefix" value={prefix} onChange={(event) => setPrefix(event.target.value)} style={input} />
+        </label>
+      </div>
+      <p style={{ margin: 0, fontSize: 13, opacity: 0.75 }}>In the {zone} DNS zone, add these Host values. Copy the Value column from Settings.</p>
+      <div style={row}>
+        <div style={label}>CNAME</div>
+        <div style={mono}>Host: {host}</div>
+        <div style={mono}>Full name: {host}.{zone}</div>
+        <div style={mono}>Value: copy the CNAME target from Settings</div>
+      </div>
+      <div style={row}>
+        <div style={label}>TXT</div>
+        <div style={mono}>Host: asuid.{host}</div>
+        <div style={mono}>Full name: asuid.{host}.{zone}</div>
+        <div style={mono}>Value: copy the TXT value from Settings</div>
+      </div>
+    </div>
+  );
+};
