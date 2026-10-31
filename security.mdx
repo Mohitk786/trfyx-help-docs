@@ -1,0 +1,56 @@
+---
+title: "Protect a site with attack mode"
+description: "Turn on attack mode in Settings to rate-limit visitors who send too many events. Auto-enable uses the same spike check as traffic spike emails."
+sidebarTitle: "Security"
+icon: "shield"
+keywords: ["attack mode", "rate limit", "security", "traffic spike", "auto-enable"]
+---
+
+The Security tab is one card: **Attack mode**. It rate-limits a visitor who sends an abnormal burst of events, so a flood does not fill your reports. Open **Settings → Security**. Each switch saves as soon as you flip it.
+
+You need permission to configure the site (editor, admin, or owner).
+
+## Enable now
+
+Turn this on when you want rate limiting **right now**.
+
+While it is on, Trfyx counts events from each visitor over the last 60 seconds. The 30th event in that window is still stored. The 31st and later are rejected and never stored. Detected bots are not rate-limited.
+
+Session replay is also capped while attack mode is on: a session can send at most 60 replay batches per minute.
+
+Turn **Enable now** off to stop rate limiting. Auto-enable does not turn itself off later.
+
+## Auto-enable on spikes
+
+This does not rate-limit by itself. It waits for a traffic spike, then turns **Enable now** on for you.
+
+The spike check is the same hourly check behind **Settings → Reports → Traffic spike alerts**:
+
+- The last hour has at least 10 visitors.
+- That count is at least 3 times the hour before.
+
+<Warning>
+  Auto-enable only runs if Traffic spike alerts is also on. The spike checker does not look at sites that have that email off, so this switch does nothing on its own.
+</Warning>
+
+When a spike trips and this switch is on, Trfyx turns **Enable now** on and the spike email says attack mode was enabled. You turn it off yourself when the burst is over.
+
+## Which switch do I want?
+
+<Tabs>
+  <Tab title="I am seeing a flood right now">
+    Flip **Enable now**. Extra events from a visitor who is already over 30 in the last minute stop being stored.
+  </Tab>
+  <Tab title="I want it to trip overnight">
+    Turn on **Traffic spike alerts** under Reports, then turn on **Auto-enable on spikes** here. A real jump (10+ visitors and 3× the previous hour) enables attack mode and emails the workspace owner.
+  </Tab>
+  <Tab title="I only want an email">
+    Leave both Security switches off. Use Reports → Traffic spike alerts only.
+  </Tab>
+</Tabs>
+
+## Next steps
+
+- [Email traffic reports](/reports) for the weekly recap and the spike email.
+- [Email alerts for conversions](/alerts) for a notice when a URL or event fires.
+- [Exclude visits](/exclusions) if you want to drop known IPs or paths instead of rate-limiting everyone.
