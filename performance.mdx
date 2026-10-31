@@ -1,0 +1,193 @@
+---
+title: "How fast pages load for real visitors"
+sidebarTitle: "Performance"
+description: "Turn on web vitals in Performance settings, then read LCP, INP, CLS, FCP and TTFB, the experience score, and breakdowns by page and device."
+icon: "gauge"
+keywords:
+  - "performance"
+  - "web vitals"
+  - "LCP"
+  - "INP"
+  - "CLS"
+  - "experience score"
+---
+
+The **Performance** tab shows how fast pages load and respond for real visitors. It uses Core Web Vitals from the visitor's browser, not a lab test. This page matches what you see at **Performance** in the sidebar (Traffic), including the Web vitals settings behind the gear.
+
+<Frame>
+  <img src="/images/performance-marketing.png" alt="Trfyx Performance metrics: Core Web Vitals tracking, experience score rating, and per-page breakdowns" />
+</Frame>
+
+## Turn measurement on
+
+Nothing is collected until you enable it. The tracker already on your site does the rest. You do not add another snippet.
+
+<Steps>
+  <Step title="Open Performance">
+    In the dashboard sidebar, under Traffic, click **Performance**.
+  </Step>
+  <Step title="Turn on web vitals">
+    If the page says web vitals are not turned on, click **Turn on web vitals**. Or open the gear, titled **Web vitals**, and switch on **Measure web vitals**. That adds one small request per page load.
+  </Step>
+  <Step title="Wait for real visits">
+    Visitors' browsers start measuring within a few minutes. The experience score stays on **Collecting data** until the selected range has **50 or more** measured loads and all five metrics have a value.
+  </Step>
+</Steps>
+
+You need permission to configure the site to change the toggle. The date range, granularity, and filters in the header work the same way as on other reports.
+
+<Note>
+  Skip measurement on one page by adding `data-disable-web-vitals="true"` to the tracking script on that page. Pages without `fetch` or `PerformanceObserver` are skipped automatically.
+</Note>
+
+## How a load is measured
+
+After web vitals are on, the existing tracker asks `/api/vitals/{websiteId}/config`. If `enabled` is true, it loads `/vitals.js` from the same host as `script.js` (your [managed proxy](/managed-proxy) hostname if that is Active).
+
+The collector records five numbers only. It never sends page content.
+
+| When | What happens |
+| --- | --- |
+| A visitor loads a page | The script prepares LCP, INP, CLS, FCP, and TTFB |
+| The tab is hidden or the page unloads | One beacon is sent to `/api/vitals/{websiteId}` |
+| The visitor clicks around a single-page app | That load is not measured again |
+| There was no interaction | INP can be empty. The other metrics can still store |
+
+Bots are ignored. [Exclusions](/exclusions) are ignored. The Trfyx dashboard itself is never measured. The beacon attaches to the same visit as the pageview. If that pageview is still in flight, the collector retries once.
+
+Readings older than **400 days** are dropped.
+
+## The five metrics
+
+The top band shows the five timings at the percentile you pick (default **p75**, which is how Core Web Vitals are judged). Click a metric to drive the chart and the table's share and change columns.
+
+| Shown as | Full name | Role | Good | Poor |
+| --- | --- | --- | --- | --- |
+| LCP | Largest Contentful Paint | Core Web Vital. When the largest thing in view appears. | 2.5s or faster | slower than 4s |
+| INP | Interaction to Next Paint | Core Web Vital. Time from a click, tap, or key to the next paint. | 200ms or faster | slower than 500ms |
+| CLS | Cumulative Layout Shift | Core Web Vital. How much visible content jumps while loading. | 0.1 or less | more than 0.25 |
+| FCP | First Contentful Paint | Supporting. When the first content appears. | 1.8s or faster | slower than 3s |
+| TTFB | Time to First Byte | Supporting. Time until the first byte of the response. | 800ms or faster | slower than 1.8s |
+
+Each cell is rated **Good**, **Needs improvement**, or **Poor** with those limits. A circle, square, or triangle sits next to the words so the rating still reads without colour. The line under the value is the share of loads that were good. **Loads measured** is how many beacons landed in the range, and what share of pageviews that is.
+
+## Experience score
+
+The card under the band folds the five **p75** timings into one number from 0 to 100.
+
+- **90 or more**: Great experience
+- **50 to 89**: Needs improvement
+- **Below 50**: Poor experience
+
+Weights: LCP 30%, INP 30%, FCP 15%, CLS 15%, TTFB 10%. A metric at its Good limit scores 90. At its Poor limit it scores 50. A value of 0 scores 100. Twice the Poor limit scores 0.
+
+Until there are 50 measured loads in the range, or any metric is still empty, the ring shows a dash and the title stays **Collecting data**.
+
+Try the same math the dashboard uses:
+
+<ScoreExplorer />
+
+<Visibility for="agents">
+The experience score is a weighted mix of the five p75 values: LCP 0.3, INP 0.3, FCP 0.15, CLS 0.15, TTFB 0.1. Each metric scores 100 at 0, 90 at the Good limit, 50 at the Poor limit, and 0 at twice the Poor limit, in straight lines between those points. The card is hidden until 50 loads and every metric has a p75.
+</Visibility>
+
+## Chart and comparison
+
+**Compare** is **Previous period** or **No comparison**. Previous period uses the matching range before the one in the header. Timing deltas treat up as worse (red). Loads treat up as better (green). A change under 0.05% is hidden.
+
+The percentile tabs (**p50**, **p75**, **p90**, **p99**) change the band, the table, and the map. The chart can plot any mix of those four. p50, p75, and p90 start on. Dashed lines mark Good and Poor for the selected metric. A time bucket with no loads is a gap, not a zero.
+
+## Breakdowns
+
+The table under the chart has tabs: **Pages**, **Countries**, **Regions**, **Map**, **Devices**, **Browsers**, **Operating systems**.
+
+- Each row shows all five metrics at the selected percentile, how many loads were good for the selected metric (the tick on the bar is 75%), optional change versus the previous period, and load count.
+- Click a row name to filter the whole Performance view. Click again to remove the filter. A page filter applies to the measured path. Other filters apply to the visit.
+- On Pages, the external-link icon opens `https://{your-domain}{path}`.
+- The icons at the end of a row open **Sessions** or **Replay** with the same filter and date range.
+- The table paginates 10 rows at a time. Sort by a metric or by loads.
+
+**Map** colours countries by the selected metric and percentile: green good, amber needs improvement, red poor. Click a country to filter by it.
+
+## If the page is empty
+
+| You see | What to check |
+| --- | --- |
+| Web vitals aren’t turned on | Use **Turn on web vitals** or the gear toggle |
+| Collecting data | Wait for 50 measured loads in this range, with all five metrics present |
+| No performance data | Widen the date range or remove a filter. Confirm the tracker is on the pages you care about |
+| Script still not measuring | Confirm the snippet is installed. Tracking is off on localhost unless the script has `data-allow-localhost="true"`. A Content Security Policy must allow `/vitals.js` and `/api/vitals/` on the script's host |
+
+## Next steps
+
+- [Install tracking](/install-tracking) if the main script is not on the site yet.
+- [Managed proxy](/managed-proxy) if you serve the script from your own subdomain. Vitals follow that host.
+- [Exclusions](/exclusions) if your own visits should not be measured.
+- [Session replay](/session-replay) to watch a slow page.
+
+export const ScoreExplorer = () => {
+  const limits = {
+    lcp: { good: 2500, poor: 4000, unit: "ms" },
+    inp: { good: 200, poor: 500, unit: "ms" },
+    cls: { good: 0.1, poor: 0.25, unit: "" },
+    fcp: { good: 1800, poor: 3000, unit: "ms" },
+    ttfb: { good: 800, poor: 1800, unit: "ms" },
+  };
+  const weights = { lcp: 0.3, inp: 0.3, fcp: 0.15, cls: 0.15, ttfb: 0.1 };
+  const labels = { lcp: "LCP", inp: "INP", cls: "CLS", fcp: "FCP", ttfb: "TTFB" };
+  const order = ["lcp", "inp", "cls", "fcp", "ttfb"];
+  const [values, setValues] = useState({ lcp: 2500, inp: 200, cls: 0.1, fcp: 1800, ttfb: 800 });
+  function metricScore(key, value) {
+    const { good, poor } = limits[key];
+    if (value <= 0) return 100;
+    if (value <= good) return 100 - 10 * (value / good);
+    if (value <= poor) return 90 - 40 * ((value - good) / (poor - good));
+    if (value <= poor * 2) return 50 - 50 * ((value - poor) / poor);
+    return 0;
+  }
+  function rating(key, value) {
+    const { good, poor } = limits[key];
+    if (value <= good) return "Good";
+    if (value <= poor) return "Needs improvement";
+    return "Poor";
+  }
+  const parts = order.map((key) => ({ key, score: metricScore(key, values[key]) }));
+  const total = Math.round(parts.reduce((sum, p) => sum + p.score * weights[p.key], 0));
+  const band = total >= 90 ? "Great experience" : total >= 50 ? "Needs improvement" : "Poor experience";
+  const color = total >= 90 ? "#16a34a" : total >= 50 ? "#d97706" : "#dc2626";
+  const field = { display: "grid", gap: 4, fontSize: 13, minWidth: 0 };
+  const format = (key, value) => {
+    if (key === "cls") return String(Math.round(value * 1000) / 1000);
+    if (value >= 1000) return (Math.round(value / 10) / 100) + "s";
+    return Math.round(value) + "ms";
+  };
+  return (
+    <div className="not-prose" style={{ border: "1px solid rgba(127,127,127,.25)", borderRadius: 12, padding: 16, display: "grid", gap: 16 }}>
+      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 16 }}>
+        <div style={{ width: 96, height: 96, borderRadius: "50%", border: "8px solid rgba(127,127,127,.2)", boxSizing: "border-box", display: "flex", alignItems: "center", justifyContent: "center", color: color, fontSize: 28, fontWeight: 700 }}>
+          {total}
+        </div>
+        <div>
+          <div style={{ fontWeight: 600 }}>{band}</div>
+          <p style={{ margin: "4px 0 0", fontSize: 13, opacity: 0.75 }}>Same weights and cut-offs as the Performance tab. Move a slider to see the score change.</p>
+        </div>
+      </div>
+      <div style={{ display: "grid", gap: 12, gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))" }}>
+        {order.map((key) => (
+          <label key={key} style={field}>
+            {labels[key]} p75 ({format(key, values[key])}) {rating(key, values[key])}
+            <input
+              type="range"
+              aria-label={labels[key] + " p75"}
+              min={0}
+              max={key === "cls" ? 0.5 : limits[key].poor * 2}
+              step={key === "cls" ? 0.01 : 10}
+              value={values[key]}
+              onChange={(event) => setValues({ ...values, [key]: Number(event.target.value) })}
+            />
+          </label>
+        ))}
+      </div>
+    </div>
+  );
+};
