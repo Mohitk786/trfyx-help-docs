@@ -1,0 +1,95 @@
+---
+title: "Email alerts for conversions"
+description: "Email the workspace owner when a visitor opens an exact URL path or sends an exact event name. You can create up to 10 alerts on Starter and above."
+sidebarTitle: "Alerts"
+icon: "bell"
+keywords: ["alerts", "conversion email", "URL match", "custom event", "send test"]
+---
+
+The Alerts tab emails the **workspace owner** when a visitor hits a trigger you choose. This is not the traffic-spike email. That one lives under **Settings → Reports**.
+
+Open **Settings → Alerts**. Alerts need a Starter plan or above. You can create up to 10. You need permission to configure the site (editor, admin, or owner).
+
+## Create an alert
+
+Click **New alert**. The form is two blocks: **Trigger** (when this happens) and **Action** (send an email).
+
+1. Give it a **Name**. This is what `{{goal.name}}` becomes in the email.
+2. Choose the trigger type and the exact value.
+3. Write the **Subject** and **Message**. Use **Insert variable** to drop in `{{visitor.country}}` and the other tokens.
+4. Click **Create alert**.
+
+## What actually fires it
+
+The value is an **exact** match. There is no `*` wildcard here.
+
+| Trigger in the form | Fires when | Value to type |
+| --- | --- | --- |
+| A visitor opens a URL | A pageview arrives whose path equals the value | `/checkout/success` |
+| A custom event is sent | A non-pageview event arrives whose name equals the value | `purchase` |
+
+A URL trigger only looks at pageviews. `/checkout/success` does not match `/checkout/success/`. A visit to `/checkout/success?ref=1` still matches, because the path is `/checkout/success`.
+
+A custom-event trigger matches the event name. That includes events you send yourself and the built-in names `payment`, `identify`, `external_link`, `file_download`, and `form_submission`.
+
+Bots do not fire alerts. Heartbeat and engagement pings do not fire alerts. Each matching event sends one email (not a daily digest).
+
+## Try an exact match
+
+<AlertMatchTester />
+
+## Email variables
+
+These tokens work in the subject and the message. Unknown tokens are left as you typed them.
+
+| Token | What the owner sees |
+| --- | --- |
+| `{{goal.name}}` | The alert's **Name** |
+| `{{visitor.name}}` | A generated label for that visitor, such as `azure meadowlark` (not a real name) |
+| `{{visitor.country}}` | The country code from the visit, or `an unknown location` |
+| `{{visitor.device}}` | Device type, or `unknown device` |
+| `{{visitor.browser}}` | Browser, or `unknown browser` |
+| `{{visitor.referrer}}` | Referring hostname, or `direct` |
+| `{{visitor.channel}}` | Channel, or `Direct` |
+
+Line breaks in the message become separate paragraphs in the email.
+
+## Send test and Remove
+
+**Send test** emails **you** (the person who clicked), not the owner. The subject is prefixed with `[TEST]`. The body uses sample values (`United States`, `Chrome`, `google.com`), so a test is not a live visitor.
+
+**Remove** stops future emails. It cannot be undone. Events that already matched are not replayed.
+
+## Next steps
+
+- [Email traffic reports](/reports) for a weekly recap or a site-wide spike.
+- [Goals](/goals) if you also want the conversion on the dashboard, not only in email.
+
+export const AlertMatchTester = () => {
+  const [kind, setKind] = useState("url");
+  const [rule, setRule] = useState("/checkout/success");
+  const [sample, setSample] = useState("/checkout/success");
+  const matched = rule.trim() === sample.trim();
+  const field = { display: "grid", gap: 4, fontSize: 14, minWidth: 0 };
+  const input = { width: "100%", minWidth: 0, boxSizing: "border-box", borderRadius: 8, border: "1px solid rgba(127,127,127,.35)", background: "transparent", color: "inherit", font: "inherit", padding: "8px 10px" };
+  const btn = { font: "inherit", color: "inherit", cursor: "pointer", borderRadius: 8, padding: "6px 10px", background: "transparent" };
+  return (
+    <div className="not-prose" style={{ border: "1px solid rgba(127,127,127,.25)", borderRadius: 12, padding: 16, display: "grid", gap: 12 }}>
+      <div role="group" aria-label="Trigger type" style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+        <button type="button" style={{ ...btn, border: kind === "url" ? "2px solid #3b82f6" : "1px solid rgba(127,127,127,.35)", background: kind === "url" ? "rgba(59,130,246,.12)" : "transparent" }} onClick={() => { setKind("url"); setRule("/checkout/success"); setSample("/checkout/success"); }}>A visitor opens a URL</button>
+        <button type="button" style={{ ...btn, border: kind === "event" ? "2px solid #3b82f6" : "1px solid rgba(127,127,127,.35)", background: kind === "event" ? "rgba(59,130,246,.12)" : "transparent" }} onClick={() => { setKind("event"); setRule("purchase"); setSample("purchase"); }}>A custom event is sent</button>
+      </div>
+      <label style={field}>
+        Value in the alert
+        <input aria-label="Value in the alert" value={rule} onChange={(event) => setRule(event.target.value)} style={input} />
+      </label>
+      <label style={field}>
+        {kind === "url" ? "Page path that arrived" : "Event name that arrived"}
+        <input aria-label={kind === "url" ? "Page path that arrived" : "Event name that arrived"} value={sample} onChange={(event) => setSample(event.target.value)} style={input} />
+      </label>
+      <p style={{ margin: 0, fontSize: 14, fontWeight: 600 }}>
+        {matched ? "This would send the email." : "This would not send the email."}
+      </p>
+    </div>
+  );
+};

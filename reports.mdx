@@ -1,0 +1,73 @@
+---
+title: "Email traffic reports"
+description: "Email the workspace owner a Monday traffic recap, or an hourly notice when visitors jump to at least 10 and three times the previous hour."
+sidebarTitle: "Reports"
+icon: "mail"
+keywords: ["weekly summary", "traffic spike", "email reports", "Monday recap"]
+---
+
+The Reports tab is one card: **Email reports**. Both emails go to the **workspace owner**, not to every member. Open **Settings → Reports**. Each switch saves as soon as you flip it.
+
+You need permission to configure the site (editor, admin, or owner).
+
+## Weekly summary
+
+A recap every Monday at 08:00 UTC. The numbers cover the last 7 days in the site's timezone, compared with the 7 days before that.
+
+The email includes:
+
+- Visitors, with the percent change versus the previous week
+- Sessions
+- Pageviews
+- Bounce rate
+- The top 3 channels
+
+If the site had 0 visitors in those 7 days, Trfyx skips the email.
+
+## Traffic spike alerts
+
+An hourly check. Trfyx compares visitors in the last hour with visitors in the hour before that. A spike is both of these:
+
+1. At least **10 visitors** in the last hour (a jump from 1 to 4 does not count).
+2. At least **3 times** the previous hour.
+
+The email shows both counts. If **Settings → Security → Auto-enable on spikes** is also on, attack mode is turned on and the email says so. If that switch is off, the email tells the owner they can enable attack mode themselves.
+
+This switch is also the on/off for the spike checker. Auto-enable on the Security tab cannot run unless this email is on.
+
+## Would this hour count as a spike?
+
+Enter the two visitor counts the checker uses.
+
+<SpikeChecker />
+
+## Next steps
+
+- [Protect a site with attack mode](/security) if a spike should rate-limit visitors automatically.
+- [Email alerts for conversions](/alerts) if you want a notice for a specific URL or event, not a traffic jump.
+
+export const SpikeChecker = () => {
+  const [current, setCurrent] = useState(36);
+  const [previous, setPrevious] = useState(10);
+  const isSpike = current >= 10 && current >= previous * 3;
+  const field = { display: "grid", gap: 4, fontSize: 14, minWidth: 0 };
+  const input = { width: "100%", minWidth: 0, boxSizing: "border-box", borderRadius: 8, border: "1px solid rgba(127,127,127,.35)", background: "transparent", color: "inherit", font: "inherit", padding: "8px 10px" };
+  return (
+    <div className="not-prose" style={{ border: "1px solid rgba(127,127,127,.25)", borderRadius: 12, padding: 16, display: "grid", gap: 12 }}>
+      <label style={field}>
+        Visitors in the last hour: {current}
+        <input type="range" min={0} max={200} value={current} onChange={(event) => setCurrent(Number(event.target.value))} aria-label="Visitors in the last hour" />
+      </label>
+      <label style={field}>
+        Visitors in the hour before: {previous}
+        <input type="range" min={0} max={200} value={previous} onChange={(event) => setPrevious(Number(event.target.value))} aria-label="Visitors in the hour before" />
+      </label>
+      <p style={{ margin: 0, fontSize: 14, fontWeight: 600 }}>
+        {isSpike ? "This would send a spike email." : "This would not send a spike email."}
+      </p>
+      <p style={{ margin: 0, fontSize: 13, opacity: 0.75 }}>
+        Needs at least 10 visitors this hour, and at least {previous * 3} (3× {previous}).
+      </p>
+    </div>
+  );
+};

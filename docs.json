@@ -27,6 +27,7 @@
             "pages": [
               "analytics/overview",
               "bot-traffic-tracking"
+              "performance"
             ]
           },
           {
@@ -137,8 +138,17 @@
             "group": "Data & Sharing",
             "expanded": false,
             "pages": [
+              "exclusions",
+              "security",
               "import-analytics-data",
               "embedded-dashboards"
+            ]
+          },
+          {
+            "group": "Notifications",
+            "pages": [
+              "reports",
+              "alerts"
             ]
           },
           {

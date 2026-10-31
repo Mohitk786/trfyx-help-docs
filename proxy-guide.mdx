@@ -22,7 +22,7 @@ This can improve collection reliability when browser extensions, network filters
 
 ### Managed Proxy
 
-Use Managed Proxy when you want the simplest setup. Trfyx provides the proxy routing and SSL; you configure a subdomain and one DNS record, then point your tracker at that hostname.
+Use Managed Proxy when you want the simplest setup. You pick a subdomain, add the two DNS records shown in Settings, and click Check status. Trfyx issues HTTPS after the proxy is Active. The tracking snippet then loads from your subdomain, and events go to `/api/collect` on that same host.
 
 <Tip>
   Managed Proxy is recommended for most sites.
@@ -82,8 +82,10 @@ Choose the guide that matches your stack:
 
 A working proxy needs to forward both:
 
-1. The Trfyx browser script.
-2. The event collection endpoint.
+1. The Trfyx browser script (`script.js`).
+2. Event collection (`/api/collect`).
+
+On Managed Proxy, loading the script from your subdomain is enough. The script posts to `/api/collect` on the same host. You do not set `data-api-url`.
 
 For self-hosted setups, preserve the visitor's original IP information when forwarding requests. If every visitor appears to come from your server or proxy location, the proxy is not forwarding the client IP correctly.
 

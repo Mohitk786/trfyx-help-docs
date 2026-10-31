@@ -8,7 +8,7 @@ icon: "code"
 Trfyx needs to receive website or product activity before its analytics reports can be useful. This guide covers the implementation checks that apply across common web stacks.
 
 <Note>
-  The Trfyx browser tracker is loaded from `https://app.trfyx.com/script.js`. Use that URL in your installation. The framework-specific guides below show how to load the same tracker in different stacks.
+  The standard tracker is loaded from `https://app.trfyx.com/script.js`. After you turn on the [managed proxy](/managed-proxy), Settings replaces that `src` with your own subdomain. The framework guides below use the same snippet.
 </Note>
 
 ## Standard HTML snippet
@@ -27,6 +27,10 @@ For a traditional HTML site, add this snippet inside the shared `<head>` section
 <Warning>
   Replace `YOUR_TRFYX_PROJECT_ID` with your Trfyx Website ID and `yourdomain.com` with the domain you want to track. Do not copy another project's Website ID. The script URL is shown explicitly above and should not be replaced with a placeholder.
 </Warning>
+
+## Bypass ad blockers
+
+If extensions or networks block `app.trfyx.com`, set up the [managed proxy](/managed-proxy). You add two DNS records and click Check status. You do not run proxy code.
 
 ## Install the tracker
 
